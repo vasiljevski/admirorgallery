@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="COM_ADMIRORGALLERY_LAYOUT">
+        <message>
+			<![CDATA[COM_ADMIRORGALLERY_LAYOUT_DESC]]>
+        </message>
+    </layout>
+    <fields name="params" addfieldpath="/components/com_admirorgallery/elements" >
+
+		<!-- Basic options. -->
+        <fieldset
+            name="basic"
+            label="COM_ADMIRORGALLERY_CONFIGURATION_BASIC"
+        >
+
+            <field name="galleryName" required="1" type="galleryName" default="" label="AG_ENTER_GALLERY_NAME" description="AG_ENTER_GALLERY_NAME_DESC" size="40" />
+
+            <field name="rootFolder" 
+               type="text" 
+               default="/images/sampledata/"
+               required="1"
+               label="AG_IMAGES_ROOT_FOLDER" 
+               description="AG_IMAGES_ROOT_FOLDER_DESC" />
+            <field name="thumbWidth" 
+               type="text" 
+               filter="integer" 
+               default="200"
+               required="1"
+               label="AG_THUMBNAIL_WIDTH" 
+               description="AG_THUMBNAIL_WIDTH_DESC" />
+            <field name="thumbHeight" 
+               type="text" 
+               filter="integer" 
+               default="120"
+               required="1" 
+               label="AG_THUMBNAIL_HEIGHT" 
+               description="AG_THUMBNAIL_HEIGHT_DESC" /> 
+            <field name="thumbAutoSize"
+               type="list"
+               default="none"
+               label="AG_THUMBNAIL_AUTO_SIZE"
+               description="AG_THUMBNAIL_AUTO_SIZE_DESC"
+            >
+                <option value="width">AG_WIDTH</option>
+                <option value="height">AG_HEIGHT</option>
+                <option value="none">AG_NONE</option>
+            </field>
+            <field name="template" 
+               type="folderlist" 
+               default="classic" 
+               label="AG_GALLERY_TEMPLATE" 
+               description="AG_GALLERY_TEMPLATE_DESC" 
+               directory="plugins/content/admirorgallery/admirorgallery/templates" 
+               exclude="" 
+               stripext="" 
+               hide_none="true" 
+               hide_default="true" />
+            <field name="popupEngine" 
+               type="folderlist" 
+               default="slimbox" 
+               label="AG_POPUP_ENGINE" 
+               description="AG_POPUP_ENGINE_DESC" 
+               directory="plugins/content/admirorgallery/admirorgallery/popups" 
+               exclude="" 
+               stripext="" 
+               hide_none="true" 
+               hide_default="true" />
+            <field name="arrange"
+               type="list"
+               default="priority"
+               label="AG_ARRANGE_IMAGES_BY"
+               description="AG_ARRANGE_IMAGES_BY_DESC"
+            >
+                <option value="priority">AG_PRIORITY</option>
+                <option value="date">AG_DATE</option>
+                <option value="name">AG_NAME</option>
+            </field>
+        	        
+            <field name="newImageTag" 
+               type="radio" 
+               default="1" 
+               label="AG_MARK_NEW_IMAGES" 
+               description="AG_MARK_NEW_IMAGES_DESC">
+                <option value="1">AG_YES</option>
+                <option value="0">AG_NO</option>
+            </field>
+        
+            <field
+                name="newImageTag"
+                type="radio"
+                class="btn-group btn-group-yesno"
+                default="1"
+                label="AG_MARK_NEW_IMAGES"
+                description="AG_MARK_NEW_IMAGES_DESC"
+            >
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>		
+	        
+            <field name="newImageTag_days" 
+               type="text" 
+               filter="integer" 
+               default="7"
+               required="1"
+               label="AG_NEW_IMAGE_DAYS_LIMIT" 
+               description="AG_NEW_IMAGE_DAYS_LIMIT_DESC" />
+	        
+            <field
+                name="paginUse"
+                type="radio"
+                class="btn-group btn-group-yesno"
+                default="1"
+                label="AG_USE_PAGINATION"
+                description="AG_USE_PAGINATION_DESC"
+            >
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="paginImagesPerGallery" 
+               type="text" 
+               default="10"
+               filter="integer"
+               required="1"
+               label="AG_IMAGES_PER_GALLERY" 
+               description="AG_IMAGES_PER_GALLERY_DESC" />
+            <field
+                name="albumUse"
+                type="radio"
+                class="btn-group btn-group-yesno"
+                default="1"
+                label="AG_USE_ALBUMS"
+                description="AG_USE_ALBUMS_DESC"
+            >
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>  
+        </fieldset>
+        <fieldset
+            name="gallery_colors"
+            label="COM_ADMIRORGALLERY_CONFIGURATION_STYLES"
+        > 
+            <field name="backgroundColor" 
+               type="color" 
+               default="ffffff"
+               required="1"
+               label="AG_GALLERY_BACKGROUND_COLOR" 
+               description="AG_GALLERY_BACKGROUND_COLOR_DESC" />
+            <field name="foregroundColor" 
+               type="color" 
+               default="808080"
+               required="1"
+               label="AG_GALLERY_FOREGROUND_COLOR" 
+               description="AG_GALLERY_FOREGROUND_COLOR_DESC" />     
+            <field name="highliteColor" 
+               type="color" 
+               default="fea804"
+               required="1"
+               label="AG_GALLERY_HIGHLITE_COLOR" 
+               description="AG_GALLERY_HIGHLITE_COLOR_DESC" />
+            <field name="spacer1" type="spacer" class="text"
+               label="AG_GALLERY_FRAME_NOTICE"
+		/>
+            <field name="frame_width" 
+               type="text" 
+               filter="integer" 
+               default="500" 
+               required="1"
+               label="AG_GALLERY_FRAME_WIDTH" 
+               description="AG_GALLERY_FRAME_WIDTH_DESC" />
+            <field name="frame_height"
+               type="text"
+               filter="integer"
+               default="300"
+               required="1"
+               label="AG_GALLERY_FRAME_HEIGHT" 
+               description="AG_GALLERY_FRAME_HEIGHT_DESC" />
+        </fieldset>
+        <fieldset
+            name="additional_settings"
+            label="COM_ADMIRORGALLERY_CONFIGURATION_ADVANCED"
+        >	
+            <field
+                name="showSignature"
+                type="radio"
+                class="btn-group btn-group-yesno"
+                default="1"
+                label="AG_SHOW_SIGNATURE"
+                description="AG_SHOW_SIGNATURE_DESC"
+            >
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>         
+
+            <field
+                name="plainTextCaptions"
+                type="radio"
+                class="btn-group btn-group-yesno"
+                default="1"
+                label="AG_USE_PLAIN_TEXT_CAPTIONS"
+                description="AG_USE_PLAIN_TEXT_CAPTIONS_DESC"
+            >
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+	        
+            <field
+                name="ignoreError"
+                type="radio"
+                class="btn-group btn-group-yesno"
+                default="1"
+                label="AG_IGNORE_INVALID_IMAGE"
+                description="AG_IGNORE_INVALID_IMAGE_DESC"
+            >
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field
+                name="ignoreAllError"
+                type="radio"
+                class="btn-group btn-group-yesno"
+                default="0"
+                label="AG_IGNORE_NOTICE_OF_RECOVERABLE_ERRORS"
+                description="AG_IGNORE_NOTICE_OF_RECOVERABLE_ERRORS_DESC"
+            >
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+        </fieldset>
+    </fields>
+</metadata>

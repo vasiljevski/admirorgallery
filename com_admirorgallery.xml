@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension type="component" version="2.5" method="upgrade">
+    <name>COM_ADMIRORGALLERY</name>
+    <creationDate>Jan 7, 2014</creationDate>
+    <author>Kekeljevic, Vasiljevski, Jongen</author>
+    <authorEmail>Igor.Kekeljevic@gmail.com</authorEmail>
+    <authorUrl>http://www.admiror-design-studio.com</authorUrl>
+    <copyright>This extension in released under the GNU/GPL License - http://www.gnu.org/copyleft/gpl.html</copyright>
+    <license>GNU/GPL</license>
+    <version>5.0.0</version>
+    <button_version>5.0.0</button_version>
+    <plugin_version>5.0.0</plugin_version>
+    <description>COM_ADMIRORGALLERY_DESCRIPTION</description>
+    <scriptfile>admirorgallery.scriptfile.php</scriptfile>
+    <files folder="com_admirorgallery/site">
+        <folder>controllers</folder>
+        <folder>elements</folder>
+        <folder>helpers</folder>
+        <folder>models</folder>
+        <folder>views</folder>
+        <filename>admirorgallery.php</filename>
+        <filename>controller.php</filename>
+        <filename>index.html</filename>
+    </files>
+    <languages folder="com_admirorgallery/site">
+        <language tag="en-GB">language/en-GB/en-GB.com_admirorgallery.ini</language>
+        <language tag="de-DE">language/de-DE/de-DE.com_admirorgallery.ini</language>
+        <language tag="nl-NL">language/nl-NL/nl-NL.com_admirorgallery.ini</language>
+    </languages>
+    <params/>
+    <administration>
+        <menu img="components/com_admirorgallery/templates/default/images/ag-icon.png" link="option=com_admirorgallery">COM_ADMIRORGALLERY</menu>
+        <submenu>
+            <menu img="components/com_admirorgallery/templates/default/images/icon-16-default.png" link="option=com_admirorgallery&amp;controller=admirorgallery" view="control_panel">COM_ADMIRORGALLERY_CONTROL_PANEL</menu>
+            <menu img="components/com_admirorgallery/templates/default/images/icon-16-templates.png" link="option=com_admirorgallery&amp;view=resourcemanager&amp;AG_resourceType=templates" view="templates">COM_ADMIRORGALLERY_TEMPLATES</menu>
+            <menu img="components/com_admirorgallery/templates/default/images/icon-16-popups.png" link="option=com_admirorgallery&amp;view=resourcemanager&amp;AG_resourceType=popups" view="popups">COM_ADMIRORGALLERY_POPUPS</menu>
+            <menu img="components/com_admirorgallery/templates/default/images/icon-16-imagemanager.png" link="option=com_admirorgallery&amp;view=imagemanager" view="image_manager">COM_ADMIRORGALLERY_IMAGE_MANAGER</menu>
+        </submenu>
+        <files folder="com_admirorgallery/admin">
+            <folder>assets</folder>
+            <folder>controllers</folder>
+            <folder>helpers</folder>
+            <folder>models</folder>
+            <folder>scripts</folder>
+            <folder>slimbox</folder>
+            <folder>templates</folder>
+            <folder>views</folder>
+            <filename>admirorgallery.php</filename>
+            <filename>controller.php</filename>
+            <filename>config.xml</filename>
+            <filename>access.xml</filename>
+            <filename>index.html</filename>
+        </files>
+        <languages folder="com_admirorgallery/admin/language">
+            <language tag="en-GB">en-GB/en-GB.com_admirorgallery.ini</language>
+            <language tag="en-GB">en-GB/en-GB.com_admirorgallery.sys.ini</language>
+            <language tag="de-DE">de-DE/de-DE.com_admirorgallery.ini</language>
+            <language tag="de-DE">de-DE/de-DE.com_admirorgallery.sys.ini</language>
+            <language tag="nl-NL">nl-NL/nl-NL.com_admirorgallery.ini</language>
+            <language tag="nl-NL">nl-NL/nl-NL.com_admirorgallery.sys.ini</language>
+        </languages>
+        <params/>
+    </administration>
+    <plugins>
+        <plugin plugin="admirorgallery" group="content" folder="com_admirorgallery">
+            <files folder="com_admirorgallery/admirorgallery">
+                <folder>admirorgallery</folder>
+                <file>admirorgallery.php</file>
+                <file>admirorgallery.xml</file>
+                <filename>index.html</filename>
+            </files>
+            <languages folder="com_admirorgallery/admirorgallery/language">
+                <language tag="en-GB">en-GB/en-GB.plg_content_admirorgallery.ini</language>
+                <language tag="en-GB">en-GB/en-GB.plg_content_admirorgallery.sys.ini</language>
+                <language tag="nl-NL">nl-NL/nl-NL.plg_content_admirorgallery.ini</language>
+                <language tag="nl-NL">nl-NL/nl-NL.plg_content_admirorgallery.sys.ini</language>
+            </languages>
+            <media/>
+        </plugin>
+        <plugin plugin="admirorbutton" group="editors-xtd" folder="com_admirorgallery">
+            <files folder="com_admirorgallery/admirorbutton">
+                <filename>admirorbutton.php</filename>
+                <filename>admirorbutton.xml</filename>
+                <filename>index.html</filename>
+            </files>
+            <languages folder="com_admirorgallery/admirorbutton/language">
+                <language tag="en-GB">en-GB/en-GB.plg_editors-xtd_admirorbutton.ini</language>
+                <language tag="en-GB">en-GB/en-GB.plg_editors-xtd_admirorbutton.sys.ini</language>
+                <language tag="nl-NL">nl-NL/nl-NL.plg_editors-xtd_admirorbutton.ini</language>
+                <language tag="nl-NL">nl-NL/nl-NL.plg_editors-xtd_admirorbutton.sys.ini</language>
+            </languages>
+            <media/>
+        </plugin>
+    </plugins>
+</extension>

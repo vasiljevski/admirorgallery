@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : com_admirorgallery.xml
+    Created on : January 2, 2012, 1:23 AM
+    Modified on: May 5, 2012, 7:01 PM
+    Author     : Anakin
+    Description:
+        ANT build script for AdmirorGallery component.
+        It build, sync's and creates packages for all three parts of the component.
+-->
+
+<project name="admirorgallery" default="all" basedir=".">
+    <import file="common.xml"/>
+    <target name="all" depends="cbuild,csync,cpackage"/>
+    <target name="cpackage">
+        <antcall target="_package">
+            <param name="NAME" value="com_admirorgallery"/>
+        </antcall>
+    </target>
+    <target name="cbuild">
+        <antcall target="buildcomponent">
+            <param name="NAME" value="com_admirorgallery"/>
+            <param name="PREFIX" value=""/>
+        </antcall>
+    </target>
+    <target name="csync">
+        <antcall target="_sync">
+            <param name="NAME" value="com_admirorgallery"/>
+        </antcall>
+    </target>
+</project>

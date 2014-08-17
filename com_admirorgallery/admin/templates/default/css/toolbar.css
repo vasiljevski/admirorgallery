@@ -1,0 +1,113 @@
+.icon-controlpanel:before {
+content:"";
+}
+
+.icon-templates:before {
+content:"<";
+}
+
+.icon-popups:before {
+content:"h";
+}
+
+.icon-ag_upload:before {
+content:"";
+}
+
+.icon-imagemanager:before {
+content:"0";
+}
+
+.toolbar-list {
+text-align:right;
+}
+
+.toolbar-list ul li a span {
+margin:0 auto;
+}
+
+.toolbar-list ul li a {
+text-decoration:none;
+color:#444;
+display:inline-block;
+padding:5px 5px 0;
+}
+
+.clr {
+clear:both;
+}
+
+.btn-wrapper {
+float:right;
+margin-left:10px;
+}
+
+div.toolbar {
+display:block;
+height:80px;
+}
+
+.btn-toolbar {
+display:block;
+height:20px;
+}
+
+div.toolbar table {
+float:right;
+}
+
+.AG_toolbar {
+display:block;
+border-bottom-style:solid;
+padding:10px;
+}
+
+.AG_toolbar table.toolbar {
+border-collapse:collapse;
+margin:0;
+padding:0;
+}
+
+.AG_toolbar table.toolbar td {
+text-align:center;
+color:#666;
+height:48px;
+padding:1px 1px 1px 4px;
+}
+
+.AG_toolbar table.toolbar td.spacer {
+width:10px;
+}
+
+.AG_toolbar table.toolbar td.divider {
+border-right:1px solid #eee;
+width:5px;
+}
+
+.AG_toolbar table.toolbar span {
+float:none;
+width:32px;
+height:32px;
+display:block;
+margin:0 auto;
+}
+
+.AG_toolbar table.toolbar a {
+display:block;
+float:left;
+white-space:nowrap;
+cursor:pointer;
+color:#333;
+padding:5px;
+}
+
+.AG_toolbar table.toolbar a:hover {
+background-color:#ddd;
+text-decoration:none;
+color:#333;
+margin:0;
+}
+
+.toolbar-list ul,.toolbar-list ul li {
+display:inline-block;
+}

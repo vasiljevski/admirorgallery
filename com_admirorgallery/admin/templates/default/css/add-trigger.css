@@ -1,0 +1,73 @@
+body {
+     font-size: 10px;
+     font-family: Arial,Helvetica,sans-serif;
+}
+
+h2 {
+     font-family: Arial,Helvetica,sans-serif;
+     font-size: 11px;
+}
+
+table.admintable td.key, table.admintable td.paramlist_key {
+    background-color: #F6F6F6;
+    border-bottom: 1px solid #E9E9E9;
+    border-right: 1px solid #E9E9E9;
+    color: #666666;
+    font-weight: bold;
+    text-align: right;
+    width: 140px;
+}
+
+table.admintable td {
+    padding: 3px;
+}
+
+table.admintable td.key, table.admintable td.paramlist_key {
+    color: #666666;
+    font-weight: bold;
+    text-align: right;
+}
+
+input, select {
+    border: 1px solid silver;
+    font-size: 10px;
+}
+
+.button2-left {
+    background: url("../images/j_button2_left.png") no-repeat scroll 0 0 transparent;
+    float: left;
+    margin-left: 5px;
+}
+
+.button2-left a, .button2-left span {
+    padding: 0 24px 0 6px;
+}
+
+.button2-left a, .button2-right a, .button2-left span, .button2-right span {
+    color: #333333;
+    cursor: pointer;
+    display: block;
+    float: left;
+    font-size: 11px;
+    height: 22px;
+    line-height: 22px;
+    text-decoration: none;
+}
+
+.button2-left, .button2-right, .button2-left div, .button2-right div {
+    float: left;
+}
+
+.button2-left .admirorgallery {
+    background: url("../images/j_button2_admirorgallery.png") no-repeat scroll 100% 0 transparent;
+}
+/*.icon-admirorgallery:before
+{
+    content: "/";
+}*/
+
+.icon-admirorgallery
+{
+    background: url("../images/j_button2_admirorgallery.png") no-repeat scroll 50% 50% transparent;
+}
+

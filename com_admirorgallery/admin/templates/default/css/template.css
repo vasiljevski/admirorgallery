@@ -1,0 +1,395 @@
+#AG_main {
+padding-right:10px;
+}
+
+.AG_background_color {
+background-color:#eee;
+}
+
+.AG_border_color {
+border-color:#ccc;
+}
+
+.AG_border_width {
+border-width:1px;
+}
+
+.AG_base_font,.AG_body_wrapper th,.AG_body_wrapper td {
+font-family:sans-serif;
+font-style:normal;
+font-size:11px;
+color:#333;
+}
+
+.AG_margin_medium {
+margin:10px;
+}
+
+.AG_margin_bottom {
+margin-bottom:20px;
+}
+
+#system-message {
+margin-bottom:10px;
+padding:0;
+}
+
+#system-message dd {
+font-weight:700;
+text-indent:30px;
+margin:0;
+}
+
+#system-message dd ul {
+color:#05B;
+margin-bottom:10px;
+list-style:none;
+border-top:3px solid #84A7DB;
+border-bottom:3px solid #84A7DB;
+padding:10px;
+}
+
+#system-message dd.error ul {
+background-color:#E6C0C0;
+color:#c00;
+background:#E6C0C0 url(../images/notice-alert.png) 4px top no-repeat;
+border-top:3px solid #DE7A7B;
+border-bottom:3px solid #DE7A7B;
+}
+
+#system-message dd.notice ul {
+color:#c00;
+background:#EFE7B8 url(../images/notice-note.png) 4px top no-repeat;
+border-top:3px solid #F0DC7E;
+border-bottom:3px solid #F0DC7E;
+}
+
+#system-message dd.message ul {
+background:#C3D2E5 url(../images/notice-info.png) 4px center no-repeat;
+}
+
+.ag_guickIcon {
+float:left;
+margin-bottom:5px;
+margin-right:5px;
+text-align:center;
+}
+
+.ag_guickIcon a {
+border:1px solid #F0F0F0;
+display:block;
+float:left;
+height:97px;
+text-decoration:none;
+vertical-align:middle;
+width:108px;
+}
+
+.ag_guickIcon a span {
+color:#666;
+}
+
+.ag_guickIcon a:hover {
+background:#F9F9F9 none repeat scroll 0 0;
+text-decoration:none;
+border-color:#EEE #CCC #CCC #EEE;
+border-style:solid;
+border-width:1px;
+}
+
+.ag_guickIcon a:hover span {
+color:#0B55C4;
+}
+
+.ag_guickIcon img {
+margin:0 auto;
+padding:10px 0;
+}
+
+.ag_guickIcon span {
+display:block;
+text-align:center;
+}
+
+#ag_params {
+vertical-align:top;
+padding:10px 30px;
+}
+
+#ag_controlPanel_wrapper {
+padding:20px;
+}
+
+.AG_descriptionWrapper {
+padding-left:20px;
+}
+
+input[type="file"] {
+background:none repeat scroll 0 0 #FFF;
+border:1px solid silver;
+font-size:.909em;
+}
+
+fieldset,form,label,legend,caption,tbody,tfoot,thead,tr,th,td,.contentpaneopen,.contentheading,input[type="text"].AG_input,input[type="radio"].AG_input
+input[type="checkbox"].AG_cbox_selectItem {
+font-size:100%;
+outline:none;
+line-height:normal;
+vertical-align:top;
+height:auto;
+width:auto;
+margin:0;
+padding:0;
+}
+
+input[type="text"].AG_input,input[type="radio"].AG_input
+input[type="checkbox"].AG_cbox_selectItem {
+height:16px;
+margin:1px 0;
+}
+
+input[type="checkbox"].AG_cbox_selectItem {
+margin:0 0 0 2px;
+}
+
+.icon-ag_install:before {
+content:"";
+}
+
+.AG_body_wrapper,.AG_bookmarks_wrapper,.AG_details_wrapper,.AG_body_wrapper hr {
+margin:0;
+padding:0;
+}
+
+.AG_body_wrapper hr {
+border:0;
+background-color:#ccc;
+height:1px;
+margin:7px 0;
+}
+
+.AG_body_wrapper a,.AG_body_wrapper a span {
+color:#dd0b50;
+}
+
+.AG_body_wrapper h1 {
+border:0!important;
+}
+
+.AG_fieldset td {
+vertical-align:top;
+text-align:left;
+padding:0 5px 5px 0;
+}
+
+.AG_input {
+font-weight:700;
+font-size:10px;
+height:16px;
+border:1px solid silver;
+display:block;
+margin:1px 0;
+padding:0;
+}
+
+.AG_bookmarks_wrapper,.AG_details_wrapper {
+vertical-align:top;
+text-align:left;
+}
+
+.AG_bookmarks_wrapper h1,.AG_details_wrapper h1 {
+font-size:16px;
+font-family:Tahoma,sans-serif;
+font-weight:700;
+color:#333;
+}
+
+.AG_bookmarks_wrapper h2,.AG_details_wrapper h2 {
+font-size:14px;
+font-family:sans-serif;
+font-style:italic;
+font-weight:400;
+color:#333;
+}
+
+.AG_bookmarks_wrapper {
+width:150px;
+padding:20px;
+}
+
+.AG_details_wrapper {
+border-left-style:solid;
+padding:20px;
+}
+
+.AG_legend td {
+border:0;
+padding:0 10px 10px 0;
+}
+
+.AG_legend tr {
+border:0;
+}
+
+.AG_item_wrapper {
+float:left;
+border-style:solid;
+margin:0 5px 5px 0;
+}
+
+.AG_item_link {
+display:block;
+padding:2px;
+}
+
+.AG_item_link:hover {
+background-color:#dd0b50;
+}
+
+.AG_item_img_wrapper {
+overflow:hidden;
+vertical-align:middle;
+height:80px;
+padding:5px;
+}
+
+.AG_item_controls_wrapper {
+text-align:left;
+white-space:nowrap;
+border-top-style:solid;
+height:175px;
+padding:5px;
+}
+
+.AG_item_controls_wrapper td {
+vertical-align:middle;
+line-height:24px;
+}
+
+.AG_separator {
+display:block;
+width:1px;
+height:90%;
+border-left-style:solid;
+margin:0 3px;
+}
+
+.AG_controls_item_name {
+border-top-style:solid;
+display:block;
+padding:3px 0;
+}
+
+.AG_common_button {
+display:inline-block;
+background-image:url(../images/AG_common_button.jpg);
+background-repeat:no-repeat;
+background-position:right -96px;
+text-decoration:none;
+margin:0 3px;
+padding:0 10px 0 0;
+}
+
+.AG_common_button span {
+display:inline-block;
+background-image:url(../images/AG_common_button.jpg);
+background-position:left top;
+margin:0;
+padding:0 0 0 10px;
+}
+
+.AG_common_button span span {
+display:inline-block;
+background-position:left -48px;
+line-height:24px;
+font-size:10px;
+font-weight:700;
+white-space:nowrap;
+margin:0;
+padding:0;
+}
+
+a.AG_common_button:hover {
+background-position:right -120px;
+text-decoration:none;
+}
+
+a.AG_common_button:hover span {
+background-position:left -24px;
+}
+
+a.AG_common_button:hover span span {
+background-position:left -72px;
+}
+
+.ag_hasXML,.ag_itemControls {
+vertical-align:middle;
+line-height:22px;
+margin:0;
+padding:0;
+}
+
+.ag_hasXML,.ag_hasThumb {
+vertical-align:middle;
+margin:0;
+padding:0;
+}
+
+.AG_mark_selectItem {
+border-color:#dd0b50;
+}
+
+.AG_thumbAndInfo_wrapper td div {
+padding:2px 0;
+}
+
+.AG_textarea {
+width:100%;
+height:70px;
+font-size:12px;
+background-color:#ddd;
+border-width:0;
+padding:3px 5px;
+}
+
+#jGrowl div.ag_header,#jGrowl div.ag_message {
+font-style:normal;
+font-family:sans-serif;
+font-size:12px;
+color:#FFF;
+}
+
+#jGrowl div.ag_header {
+line-height:20px;
+border-bottom:1px solid #FFF;
+margin:0 0 5px;
+padding:0;
+}
+
+#jGrowl div.ag_message {
+border:0;
+text-align:left;
+margin:0;
+padding:0;
+}
+
+#jGrowl .error {
+background-color:#a00;
+}
+
+#system-message dt,.AG_breadcrumbs_wrapper {
+font-weight:700;
+}
+
+#system-message dt.message,#system-message dt.error,#system-message dt.notice {
+display:none;
+}
+
+#ag_descData,#AG_folder_add input[type="text"] {
+display:block;
+}
+
+.AG_thumbAndInfo_wrapper td,.AG_thumbAndInfo_wrapper tr {
+border:0 solid #DDD;
+padding:0 5px;
+}

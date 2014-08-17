@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+    <layout title="COM_ADMIRORGALLERY_IMAGE_MANAGER">
+        <message>
+		<![CDATA[COM_ADMIRORGALLERY_IMAGE_MANAGER_DESC]]>
+        </message>
+    </layout>
+
+    <fields name="params" addfieldpath="/components/com_admirorgallery/elements" >
+
+        <!-- Basic options. -->
+        <fieldset name="basic" >
+
+            <field name="galleryName" type="galleryName" default="" required="1" label="AG_ENTER_GALLERY_NAME" description="AG_ENTER_GALLERY_NAME_DESC" size="20" />
+        </fieldset>
+    </fields>
+</metadata>

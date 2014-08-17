@@ -1,0 +1,27 @@
+div.AG_pagin_wrap
+{
+  margin-bottom:20px;
+  text-align:center;
+  display:block;
+}
+
+span.AG_pagin_current, a.AG_pagin_link, a.AG_pagin_prev, a.AG_pagin_next
+{
+  display:inline-block;
+  line-height:24px;
+  margin:4px;
+  padding:0 5px;
+  float:left;
+  text-decoration:none;
+}
+
+a.AG_pagin_link, a.AG_pagin_prev, a.AG_pagin_next
+{
+  border:1px solid silver;
+  margin:3px;
+}
+
+a.AG_pagin_link, a.AG_pagin_link:hover, a.AG_pagin_prev:hover, a.AG_pagin_next:hover
+{
+  text-decoration:none;
+}

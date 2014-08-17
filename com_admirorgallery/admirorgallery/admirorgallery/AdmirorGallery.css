@@ -1,0 +1,43 @@
+div.error {
+  background: #f7e5e5 url(error-icon.gif) no-repeat 8px 8px; 
+  border-top: 2px solid #db9f9f; 
+  border-bottom: 2px solid #db9f9f;
+  margin:10px 0px;
+  padding: 10px 10px 10px 40px;
+  color: #551111;
+}
+
+div.error a {
+  color: #cc0000;
+  text-decoration: underline;
+}
+
+div.error a:hover{
+  text-decoration: none;
+}
+
+
+.ag_newTag {
+  background-color:transparent;
+  position:absolute;
+  z-index:100;
+  margin:0;
+  padding:0;
+}
+
+.ag_newImageTag {
+  z-index:100;
+  background-color:transparent;
+  border-width:0;
+  margin:0;
+  padding:0;
+}
+.ag_reseter div,.ag_reseter span,.ag_reseter applet,.ag_reseter object,.ag_reseter iframe,
+.ag_reseter h1,.ag_reseter h2,.ag_reseter h3,.ag_reseter h4,.ag_reseter h5,.ag_reseter h6,.ag_reseter p,.ag_reseter blockquote,.ag_reseter pre,
+.ag_reseter a,.ag_reseter abbr,.ag_reseter acronym,.ag_reseter address,.ag_reseter big,.ag_reseter cite,.ag_reseter code,
+.ag_reseter del,.ag_reseter dfn,.ag_reseter em,.ag_reseter font,.ag_reseter img,.ag_reseter ins,.ag_reseter kbd,.ag_reseter q,.ag_reseter s,.ag_reseter samp,
+.ag_reseter small,.ag_reseter strike,.ag_reseter strong,.ag_reseter sub,.ag_reseter sup,.ag_reseter tt,.ag_reseter var,
+.ag_reseter dl,.ag_reseter dt,.ag_reseter dd,.ag_reseter ol,.ag_reseter ul,.ag_reseter li,
+.ag_reseter fieldset,.ag_reseter form,.ag_reseter label,.ag_reseter legend,
+.ag_reseter table,.ag_reseter caption,.ag_reseter tbody,.ag_reseter tfoot,.ag_reseter thead,.ag_reseter tr,.ag_reseter th,.ag_reseter td
+{ margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;border:none;border-spacing:0px;border-collapse:collapse;max-width:none !important;}
