@@ -360,9 +360,10 @@ class agGallery extends agHelper {
                 }
             }
 
-            // Breadcrump Support           
-            if (JFactory::getApplication()->getMenu()->getActive()->query['view'] == "layout") {
-                $this->writeBreadcrum();
+            // Breadcrump Support
+            $active = JFactory::getApplication()->getMenu()->getActive();
+            if (isset($active) && $active->query['view'] == 'layout'){ 
+               $this->writeBreadcrum();
             }
 
             $script = 'var albumInitFolders_' . $this->articleID . '="' . implode(",", $this->albumInitFolders) . '";';
