@@ -31,6 +31,9 @@ class plgContentAdmirorGallery extends JPlugin {
 
     function onContentPrepare($context, &$row, &$params, $limitstart = 0) {
         $gd_exists = true;
+        if (!isset($row->text)){
+            return;
+        }
         if (!preg_match("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}|{ag[^}]*}(.*?){/ag}#s", $row->text)) {
             return;
         }
