@@ -604,7 +604,7 @@ class agGallery extends agHelper {
      */
     function writeErrors() {
         $errors = "";
-        $osVersion = $this->ag_get_os_($_SERVER['HTTP_USER_AGENT']);
+        $osVersion = isset($_SERVER['HTTP_USER_AGENT']) ? $this->ag_get_os_($_SERVER['HTTP_USER_AGENT']) : 'Unknown - no user agent';
         $phpVersion = phpversion();
         if (isset($this->errors)) {
             foreach ($this->errors as $key => $value) {
