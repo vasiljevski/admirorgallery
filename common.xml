@@ -10,25 +10,32 @@
 
 <project>
     <property environment="env"/>
-    <property name="source" value="D:\wamp\www\joomla321"/>
-    <property name="release" value="D:\webdev\php\projects"/>
+    <property name="source" value="D:\wamp\www\joomla36"/>
+    <property name="release" value="D:\Projects\Admiror_Extensions\releases"/>
     <property name="builddir" value="C:\TEMP\com_admirorgallery"/>
     <property name="verbose" value="false"/>
+    <property name="git_path" value="C:/Program Files/Git/bin/git"/>
     <!-- Get timestamp -->
     <tstamp>
         <format property="NOW" pattern="yyyyMMdd"/>
     </tstamp>
     <!-- Get revision number -->
-    <loadfile property="dist.revision" srcFile="./.svn/entries" failonerror="false">
-        <filterchain>
-            <headfilter lines="1" skip="3"/>
-            <deletecharacters chars="\n"/>
-        </filterchain>
-    </loadfile>
-
-    <condition property="version" value="${NOW}_r${dist.revision}" else="${NOW}">
-        <isset property="dist.revision"/>
-    </condition>
+    <available file=".git" type="dir" property="git.present"/>
+    <target name="git.revision" description="Store git revision in ${repository.version}" if="git.present">
+        <exec executable="${git_path}" outputproperty="git.revision" failifexecutionfails="false" errorproperty="">
+            <arg value="describe"/>
+            <arg value="--tags"/>
+            <arg value="--always"/>
+            <arg value="HEAD"/>
+        </exec>
+        <condition property="repository.version" value="${git.revision}" else="unknown">
+            <and>
+                <isset property="git.revision"/>
+                <length string="${git.revision}" trim="yes" length="0" when="greater"/>
+            </and>
+        </condition>
+    </target>
+    
     <!-- Build targets -->
     <target name="_clean">
         <delete dir="${builddir}/${NAME}" verbose="${verbose}"/>
@@ -38,24 +45,28 @@
         <sync todir="${NAME}" includeemptydirs="true">
             <fileset dir="${builddir}/${NAME}"/>
             <preserveintarget>
-                <include name="**/.svn/**"/>
+                <include name="**/.git/**"/>
             </preserveintarget>
         </sync>
     </target>
     <target name="_package">
-        <zip destfile="${release}/${NAME}_${version}.zip" basedir="" excludes=".svn,nbproject/**,com_admirorgallery_ant.xml,common.xml"/>
+        <zip destfile="${release}/${NAME}_${repository.version}.zip" basedir="" excludes=".git,nbproject/**,com_admirorgallery_ant.xml,common.xml"/>
     </target>
     <target name="buildcomponent" depends="_clean">
         <mkdir dir="${builddir}/${NAME}/admin"/>
         <mkdir dir="${builddir}/${NAME}/admin/language/en-GB"/>
         <mkdir dir="${builddir}/${NAME}/admin/language/de-DE"/>
+        <mkdir dir="${builddir}/${NAME}/admin/language/nl-NL"/>
         <mkdir dir="${builddir}/${NAME}/admirorbutton"/>
         <mkdir dir="${builddir}/${NAME}/admirorbutton/language/en-GB"/>
+        <mkdir dir="${builddir}/${NAME}/admirorbutton/language/nl-NL"/>
         <mkdir dir="${builddir}/${NAME}/admirorgallery"/>
         <mkdir dir="${builddir}/${NAME}/admirorgallery/language/en-GB"/>
+        <mkdir dir="${builddir}/${NAME}/admirorgallery/language/nl-NL"/>
         <mkdir dir="${builddir}/${NAME}/site"/>
         <mkdir dir="${builddir}/${NAME}/site/language/en-GB"/>
         <mkdir dir="${builddir}/${NAME}/site/language/de-DE"/>
+        <mkdir dir="${builddir}/${NAME}/site/language/nl-NL"/>
         
         <copy todir="${builddir}/${NAME}/admin" overwrite="true" verbose="${verbose}">
             <fileset dir="${source}/administrator/components/${NAME}"/>
@@ -74,6 +85,13 @@
                 <include name="**/de-DE.${NAME}*.ini" />
             </fileset>
         </copy>
+        <copy todir="${builddir}/${NAME}/admin/language/nl-NL" overwrite="true" verbose="${verbose}" flatten="true">
+            <fileset dir="${source}/administrator/language">
+                <exclude name="overrides/*"/>
+                <exclude name="pdf_fonts/*"/>
+                <include name="**/nl-NL.${NAME}*.ini" />
+            </fileset>
+        </copy>
         <copy todir="${builddir}/${NAME}/admirorbutton" overwrite="true" verbose="${verbose}">
             <fileset dir="${source}/plugins/editors-xtd/admirorbutton"/>
         </copy>
@@ -82,6 +100,13 @@
                 <exclude name="overrides/*"/>
                 <exclude name="pdf_fonts/*"/>
                 <include name="**/en-GB.plg_editors-xtd_admirorbutton*.ini" />
+            </fileset>
+        </copy>
+        <copy todir="${builddir}/${NAME}/admirorbutton/language/nl-NL" overwrite="true" verbose="${verbose}" flatten="true">
+            <fileset dir="${source}/administrator/language">
+                <exclude name="overrides/*"/>
+                <exclude name="pdf_fonts/*"/>
+                <include name="**/nl-NL.plg_editors-xtd_admirorbutton*.ini" />
             </fileset>
         </copy>
         <copy todir="${builddir}/${NAME}/admirorgallery" overwrite="true" verbose="${verbose}">
@@ -94,7 +119,13 @@
                 <include name="**/en-GB.plg_content_admirorgallery*.ini" />
             </fileset>
         </copy>
-
+        <copy todir="${builddir}/${NAME}/admirorgallery/language/nl-NL" overwrite="true" verbose="${verbose}" flatten="true">
+            <fileset dir="${source}/administrator/language">
+                <exclude name="overrides/*"/>
+                <exclude name="pdf_fonts/*"/>
+                <include name="**/nl-NL.plg_content_admirorgallery*.ini" />
+            </fileset>
+        </copy>
         <copy todir="${builddir}/${NAME}/site" overwrite="true" verbose="${verbose}">
             <fileset dir="${source}/components/${NAME}"/>
         </copy>
@@ -110,6 +141,13 @@
                 <exclude name="overrides/*"/>
                 <exclude name="pdf_fonts/*"/>
                 <include name="**/de-DE.${NAME}*.ini" />
+            </fileset>
+        </copy>
+        <copy todir="${builddir}/${NAME}/site/language/nl-NL" overwrite="true" verbose="${verbose}" flatten="true">
+            <fileset dir="${source}/language">
+                <exclude name="overrides/*"/>
+                <exclude name="pdf_fonts/*"/>
+                <include name="**/nl-NL.${NAME}*.ini" />
             </fileset>
         </copy>
         <move file="${builddir}/${NAME}/admin/${NAME}.xml" todir="${builddir}/" verbose="${verbose}"/>

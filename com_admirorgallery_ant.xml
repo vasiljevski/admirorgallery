@@ -13,7 +13,7 @@
 <project name="admirorgallery" default="all" basedir=".">
     <import file="common.xml"/>
     <target name="all" depends="cbuild,csync,cpackage"/>
-    <target name="cpackage">
+    <target name="cpackage" depends="git.revision">
         <antcall target="_package">
             <param name="NAME" value="com_admirorgallery"/>
         </antcall>
