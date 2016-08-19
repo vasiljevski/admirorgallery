@@ -61,10 +61,10 @@ input, select {
 .button2-left .admirorgallery {
     background: url("../images/j_button2_admirorgallery.png") no-repeat scroll 100% 0 transparent;
 }
-/*.icon-admirorgallery:before
+.icon-admirorgallery:before
 {
     content: "/";
-}*/
+}
 
 .icon-admirorgallery
 {
