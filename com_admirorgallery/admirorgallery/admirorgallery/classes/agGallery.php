@@ -335,7 +335,7 @@ class agGallery extends agHelper {
                 $AG_form_paginInitPages_array = explode(",", $_GET['AG_form_paginInitPages_' . $this->articleID]);
                 $this->paginInitPages[$this->index] = strip_tags($AG_form_paginInitPages_array[$this->index]);
             }
-            $script = 'var paginInitPages_' . $this->articleID . '="' . implode(",", $this->paginInitPages) . '";';
+            $script = 'var paginInitPages_' . intval($this->articleID) . '="' . intval(implode(",", $this->paginInitPages)) . '";';
             
             $this->doc->addScriptDeclaration(strip_tags($script));
 
