@@ -330,15 +330,18 @@ class agGallery extends agHelper {
         $this->imagesFolderName = strip_tags($this->imagesFolderNameOriginal);
         // Pagination Support
         if ($this->params['paginUse'] || $this->params['albumUse']) {
+            $jinput = JFactory::getApplication()->input;
+            $initPages = $jinput->getInt('AG_form_paginInitPages_' . $this->articleID);
+            $albumPath = $jinput->getPath('AG_form_albumInitFolders_' . $this->articleID);
+            
             $this->paginInitPages[] = 1;
             if (!empty($_GET['AG_form_paginInitPages_' . $this->articleID])) {
                 $AG_form_paginInitPages_array = explode(",", $_GET['AG_form_paginInitPages_' . $this->articleID]);
                 $this->paginInitPages[$this->index] = strip_tags($AG_form_paginInitPages_array[$this->index]);
             }
-            $script = 'var paginInitPages_' . intval($this->articleID) . '="' . intval(implode(",", $this->paginInitPages)) . '";';
+            $script = 'var paginInitPages_' . intval($this->articleID) . '="' . $initPages . '";';
             
             $this->doc->addScriptDeclaration(strip_tags($script));
-
             // Album Support
             $this->albumParentLink = '';
             $this->albumInitFolders[] = "";
@@ -365,8 +368,7 @@ class agGallery extends agHelper {
             if (isset($active) && $active->query['view'] == 'layout'){ 
                $this->writeBreadcrum();
             }
-
-            $script = 'var albumInitFolders_' . $this->articleID . '="' . implode(",", $this->albumInitFolders) . '";';
+            $script = 'var albumInitFolders_' . $this->articleID . '="' . $albumPath . '";';
             $this->doc->addScriptDeclaration(strip_tags($script));
         }
         $this->imagesFolderPhysicalPath = $this->sitePhysicalPath . $this->params['rootFolder'] . $this->imagesFolderName . $this->DS;
