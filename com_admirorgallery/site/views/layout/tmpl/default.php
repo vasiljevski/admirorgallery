@@ -38,8 +38,13 @@ $ag_inlineParams.=' paginImagesPerGallery="'.$this->paginImagesPerGallery.'"';
 JPluginHelper::importPlugin( 'content' );
 
 $article = new JObject();
+
+$app = JFactory::getApplication();
+$active = $app->getMenu()->getActive();
+
+$article->text = null;
 //Display page heading
-if(JSite::getMenu()->getActive()->params->get('show_page_heading'))
+if($active->params->get('show_page_heading'))
 {
     $article->text = '<h1>'.JSite::getMenu()->getActive()->params->get('page_title').'</h1>';
 }
