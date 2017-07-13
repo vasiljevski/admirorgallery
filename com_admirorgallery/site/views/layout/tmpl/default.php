@@ -46,7 +46,7 @@ $article->text = null;
 //Display page heading
 if($active->params->get('show_page_heading'))
 {
-    $article->text = '<h1>'.JSite::getMenu()->getActive()->params->get('page_title').'</h1>';
+    $article->text = '<h1>'.$active->params->get('page_title').'</h1>';
 }
 $article->text .= '{AG '.$ag_inlineParams.' }'.$this->galleryName.'{/AG}';
 $article->id = 0;

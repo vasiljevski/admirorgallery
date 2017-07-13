@@ -19,16 +19,19 @@ jimport('joomla.html.parameter');
 class AdmirorgalleryController extends JControllerLegacy {
 
     function display($cachable = false, $urlparams = false) {
+        $jinput = JFactory::getApplication()->input;
         require_once JPATH_COMPONENT . '/helpers/admirorgallery.php';
         if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
-            JError::raiseWarning('2', JText::_('COM_PLUGIN_NOT_INSTALLED'));
+            JFactory::getApplication()->enqueueMessage(
+                    JText::_('COM_PLUGIN_NOT_INSTALLED'), 'warning');
         }
-        AdmirorGalleryHelper::addSubmenu(JRequest::getCmd('view', 'control_panel'), JRequest::getCmd('AG_resourceType', ''));
+        AdmirorGalleryHelper::addSubmenu(
+                $jinput->getCmd('view', 'control_panel'), $jinput->getCmd('AG_resourceType', ''));
 
         $doc = JFactory::getDocument();
         $viewType = $doc->getType();
-        $viewName = $this->input->get('view', $this->default_view);
-        $viewLayout = $this->input->get('layout', 'default', 'string');
+        $viewName = $jinput->get('view', $this->default_view);
+        $viewLayout = $jinput->get('layout', 'default', 'string');
 
         $view = $this->getView($viewName, $viewType, '', array('base_path' => $this->basePath, 'layout' => $viewLayout));
 
@@ -36,13 +39,10 @@ class AdmirorgalleryController extends JControllerLegacy {
 
         if (JFactory::getUser()->authorise('core.admin', 'com_admirorgallery')) {
             JToolbarHelper::preferences('com_admirorgallery');
-            if($viewName == 'resourcemanager')
-            {
+            if ($viewName == 'resourcemanager') {
                 JToolbarHelper::custom('ag_install', 'ag_install', 'ag_install', 'JTOOLBAR_INSTALL', false, false);
                 JToolbarHelper::deleteList('COM_ADMIRORGALLERY_ARE_YOU_SURE', 'ag_uninstall', 'JTOOLBAR_UNINSTALL');
-            }
-            else
-            {
+            } else {
                 JToolbarHelper::custom('AG_apply', 'publish', 'publish', 'COM_ADMIRORGALLERY_APPLY_DESC', false, false);
                 JToolbarHelper::custom('AG_reset', 'unpublish', 'unpublish', 'COM_ADMIRORGALLERY_RESET_DESC', false, false);
             }
