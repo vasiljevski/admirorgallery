@@ -10,7 +10,7 @@
 
 <project>
     <property environment="env"/>
-    <property name="source" value="D:\wamp\www\joomla36"/>
+    <property name="source" value="D:\wamp\www\joomla373"/>
     <property name="release" value="D:\Projects\Admiror_Extensions\releases"/>
     <property name="builddir" value="C:\TEMP\com_admirorgallery"/>
     <property name="verbose" value="false"/>
