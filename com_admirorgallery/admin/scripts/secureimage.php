@@ -1,8 +1,15 @@
 <?php
 
-//SecureImage v0.3 by Mesut Timur
-//contact : mesut@h-labs.org
-//date : 03/2008
+/* ------------------------------------------------------------------------
+  # SecureImage
+  # ------------------------------------------------------------------------
+  # author   Mesut Timur
+  # copyright Mesut Timur
+  # date : 03/2008
+  # @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+  # Contact : mesut@h-labs.org
+  # Version: v0.3
+  ------------------------------------------------------------------------- */
 
 class SecureImage
 {
