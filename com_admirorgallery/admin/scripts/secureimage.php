@@ -1,15 +1,17 @@
 <?php
 
 /* ------------------------------------------------------------------------
-  # SecureImage
-  # ------------------------------------------------------------------------
-  # author   Mesut Timur
-  # copyright Mesut Timur
-  # date : 03/2008
-  # @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
-  # Contact : mesut@h-labs.org
-  # Version: v0.3
-  ------------------------------------------------------------------------- */
+# SecureImage
+# ------------------------------------------------------------------------
+# author   Mesut Timur
+# copyright Mesut Timur
+# date : 03/2008
+# @license - http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+# Contact : mesut@h-labs.org
+# Version: v0.3
+------------------------------------------------------------------------- */
+// Check to ensure this file is included in Joomla!
+defined('_JEXEC') or die;
 
 class SecureImage
 {

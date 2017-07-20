@@ -56,8 +56,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController {
             }
 
             // UPLOAD
-            //$file = JRequest::getVar('AG_fileUpload', null, 'files');
-            $file = JFactory::getApplication()->input->files->get('AG_fileUpload');
+            $file = JRequest::getVar('AG_fileUpload', null, 'files');
             if (isset($file) && !empty($file['name'])) {
                 $model->_fileUpload($AG_itemURL, $file);
             }
