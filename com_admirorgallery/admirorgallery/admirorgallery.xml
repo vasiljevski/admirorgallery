@@ -7,7 +7,7 @@
     <license>GNU/GPL</license>
     <authorEmail></authorEmail>
     <authorUrl>http://www.admiror-design-studio.com</authorUrl>
-    <version>5.0.0</version>
+    <version>5.1.2</version>
     <description>plg_admirorgallery_xml_description</description>
     <config>
         <fields name="params">
