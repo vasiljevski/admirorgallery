@@ -173,7 +173,7 @@ class plgContentAdmirorGallery extends JPlugin {
                     . '& '
                     . '<a href="http://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.'
                     . '<br /> '
-                    . '<a href="https://www.security-audit.com/website-security-auditing-and-testing/" target="_blank">Website security audit provided by Security Audit Systems</a> a website security company</div>';
+                    . '<a href="https://www.security-audit.com/" target="_blank">website audited by https://www.security-audit.com/ for IT security, penetration testing and cyber security</a></div>';
         }//if (preg_match_all("#{AdmirorGallery}(.*?){/AdmirorGallery}#s", $row->text, $matches, PREG_PATTERN_ORDER)>0)
     }
 
