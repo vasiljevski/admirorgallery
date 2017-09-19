@@ -23,13 +23,13 @@ $ag_init_itemURL = $ag_rootFolder;
     <form action="index.php" id="AG_form" method="post" enctype="multipart/form-data">
 
         <div style="float: right">
-            <button class="btn" type="button" onclick="AG_createTriggerCode();window.parent.SqueezeBox.close();"><?php echo JText::_('Insert') ?></button>
-            <button class="btn" type="button" onclick="window.parent.SqueezeBox.close();"><?php echo JText::_('Cancel') ?></button>
+            <button class="btn" type="button" onclick="AG_createTriggerCode();window.parent.SqueezeBox.close();"><?php echo JText::_("AG_BUTTON_INSERT") ?></button>
+            <button class="btn" type="button" onclick="window.parent.SqueezeBox.close();"><?php echo JText::_("AG_BUTTON_CANCEL") ?></button>
         </div>
         <br style="clear:both;"/>
         <hr />
         <h2><?php echo JText::_("AG_FOLDERS"); ?></h2>
-        <?php echo JText::_('Select Folder:'); ?>&nbsp;
+        <?php echo JText::_("AG_SELECT_FOLDER"); ?>&nbsp;
         <select name="AG_form_folderName">
             <?php
             $ag_folders = JFolder::listFolderTree(JPATH_SITE . $ag_init_itemURL, "");
