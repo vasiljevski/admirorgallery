@@ -25,10 +25,10 @@
         <filename>controller.php</filename>
         <filename>index.html</filename>
     </files>
-    <languages folder="com_admirorgallery/site">
-        <language tag="en-GB">language/en-GB/en-GB.com_admirorgallery.ini</language>
-        <language tag="de-DE">language/de-DE/de-DE.com_admirorgallery.ini</language>
-        <language tag="nl-NL">language/nl-NL/nl-NL.com_admirorgallery.ini</language>
+    <languages folder="com_admirorgallery/admin/language">
+        <language tag="en-GB">en-GB/en-GB.com_admirorgallery.ini</language>
+        <language tag="de-DE">de-DE/de-DE.com_admirorgallery.ini</language>
+        <language tag="nl-NL">nl-NL/nl-NL.com_admirorgallery.ini</language>
     </languages>
     <params/>
     <administration>

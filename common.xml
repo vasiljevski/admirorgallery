@@ -129,27 +129,6 @@
         <copy todir="${builddir}/${NAME}/site" overwrite="true" verbose="${verbose}">
             <fileset dir="${source}/components/${NAME}"/>
         </copy>
-        <copy todir="${builddir}/${NAME}/site/language/en-GB" overwrite="true" verbose="${verbose}" flatten="true">
-            <fileset dir="${source}/language">
-                <exclude name="overrides/*"/>
-                <exclude name="pdf_fonts/*"/>
-                <include name="**/en-GB.${NAME}*.ini" />
-            </fileset>
-        </copy>
-        <copy todir="${builddir}/${NAME}/site/language/de-DE" overwrite="true" verbose="${verbose}" flatten="true">
-            <fileset dir="${source}/language">
-                <exclude name="overrides/*"/>
-                <exclude name="pdf_fonts/*"/>
-                <include name="**/de-DE.${NAME}*.ini" />
-            </fileset>
-        </copy>
-        <copy todir="${builddir}/${NAME}/site/language/nl-NL" overwrite="true" verbose="${verbose}" flatten="true">
-            <fileset dir="${source}/language">
-                <exclude name="overrides/*"/>
-                <exclude name="pdf_fonts/*"/>
-                <include name="**/nl-NL.${NAME}*.ini" />
-            </fileset>
-        </copy>
         <move file="${builddir}/${NAME}/admin/${NAME}.xml" todir="${builddir}/" verbose="${verbose}"/>
         <move file="${builddir}/${NAME}/admin/admirorgallery.scriptfile.php" todir="${builddir}/" verbose="${verbose}"/>
     </target>
