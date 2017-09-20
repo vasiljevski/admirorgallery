@@ -109,7 +109,7 @@
                 <include name="**/nl-NL.plg_editors-xtd_admirorbutton*.ini" />
             </fileset>
         </copy>
-                <copy todir="${builddir}/${NAME}/admirorbutton/language/de-DE" overwrite="true" verbose="${verbose}" flatten="true">
+        <copy todir="${builddir}/${NAME}/admirorbutton/language/de-DE" overwrite="true" verbose="${verbose}" flatten="true">
             <fileset dir="${source}/administrator/language">
                 <exclude name="overrides/*"/>
                 <exclude name="pdf_fonts/*"/>
@@ -118,7 +118,7 @@
         </copy>
         <copy todir="${builddir}/${NAME}/admirorgallery" overwrite="true" verbose="${verbose}">
             <fileset dir="${source}/plugins/content/admirorgallery">
-                <exclude name="admirorgallery/thumbs/*"/>
+                <exclude name="admirorgallery/thumbs/**/*"/>
             </fileset>
         </copy>
         <copy todir="${builddir}/${NAME}/admirorgallery/language/en-GB" overwrite="true" verbose="${verbose}" flatten="true">
