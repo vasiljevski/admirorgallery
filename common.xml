@@ -69,7 +69,9 @@
         <mkdir dir="${builddir}/${NAME}/site/language/nl-NL"/>
         
         <copy todir="${builddir}/${NAME}/admin" overwrite="true" verbose="${verbose}">
-            <fileset dir="${source}/administrator/components/${NAME}"/>
+            <fileset dir="${source}/administrator/components/${NAME}" >
+                <exclude name="assets/thumbs/**" />
+            </fileset>
         </copy>
         <copy todir="${builddir}/${NAME}/admin/language/en-GB" overwrite="true" verbose="${verbose}" flatten="true">
             <fileset dir="${source}/administrator/language">
@@ -117,10 +119,11 @@
             </fileset>
         </copy>
         <copy todir="${builddir}/${NAME}/admirorgallery" overwrite="true" verbose="${verbose}">
-            <fileset dir="${source}/plugins/content/admirorgallery">
-                <exclude name="admirorgallery/thumbs/**/*"/>
-            </fileset>
+            <fileset dir="${source}/plugins/content/admirorgallery" />
         </copy>
+        <delete includeemptydirs="true">
+            <fileset dir="${builddir}/${NAME}/admirorgallery/admirorgallery/thumbs/" includes="**/*" excludes="*.html"/>
+        </delete>
         <copy todir="${builddir}/${NAME}/admirorgallery/language/en-GB" overwrite="true" verbose="${verbose}" flatten="true">
             <fileset dir="${source}/administrator/language">
                 <exclude name="overrides/*"/>
