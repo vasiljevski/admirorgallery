@@ -18,7 +18,7 @@ define('AG_VERSION', '5.1.1');
 class plgContentAdmirorGallery extends JPlugin {
 
     //Constructor
-    function plgContentadmirorGallery(&$subject, $params) {
+    function __construct(&$subject, $params) {
         parent::__construct($subject, $params);
         // load current language
         $this->loadLanguage();

@@ -250,7 +250,6 @@ class agHelper {
             }
         }
     }
-
     /**
      * Makes directory, returns TRUE if exists or made
      * @param string $pathname The directory path.
