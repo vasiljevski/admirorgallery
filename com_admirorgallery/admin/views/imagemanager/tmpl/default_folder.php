@@ -10,7 +10,7 @@
 /** ensure this file is being included by a parent file */
 defined('_JEXEC') or die('Restricted access');
 
-require_once (JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'agHelper.php');
+JLoader::register('agHelper', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'agHelper.php');
 
 $ag_itemURL = $this->ag_init_itemURL;
 

@@ -15,6 +15,8 @@ jimport('joomla.plugin.plugin');
 jimport( 'joomla.filesystem.folder' );
 define('AG_VERSION', '5.1.1');
 
+JLoader::register('agGallery', dirname(__FILE__) . '/admirorgallery/classes/agGallery.php');
+
 class plgContentAdmirorGallery extends JPlugin {
 
     //Constructor
@@ -49,9 +51,8 @@ class plgContentAdmirorGallery extends JPlugin {
             }
             return;
         }
-        // Load gallery class php script
-        require_once (dirname(__FILE__) . '/admirorgallery/classes/agGallery.php');
-        //CreateGallerys
+
+        //Create galeries
         if (preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}#s", $row->text, $matches, PREG_PATTERN_ORDER) > 0) {
             $AG = new agGallery($this->params, JURI::base(), JPATH_SITE, $doc);
             //Load current language

@@ -10,10 +10,8 @@
 
 defined('_JEXEC') or die();
 
-define('PLUGIN_BASE_PATH', '/plugins/content/admirorgallery/admirorgallery/');
-
-require_once (dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agHelper.php');
-require_once (dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agPopup.php');
+JLoader::register('agHelper', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agHelper.php');
+JLoader::register('agPopup', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agPopup.php');
 
 class agGallery extends agHelper {
 
@@ -51,6 +49,7 @@ class agGallery extends agHelper {
     private $descArray = array();
     private $match = '';
     private $DS = DIRECTORY_SEPARATOR;
+    private $plugin_path = '/plugins/content/admirorgallery/admirorgallery/';
 
     //**************************************************************************
     //Template API functions                                                  //
@@ -77,7 +76,7 @@ class agGallery extends agHelper {
      * @param <string> $path
      */
     function loadCSS($path) {
-        $this->doc->addStyleSheet($this->sitePath . PLUGIN_BASE_PATH . $path);
+        $this->doc->addStyleSheet($this->sitePath .  $this->plugin_path. $path);
     }
 
     /**
@@ -85,7 +84,7 @@ class agGallery extends agHelper {
      * @param <string> $path
      */
     function loadJS($path) {
-        $this->doc->addScript($this->sitePath . PLUGIN_BASE_PATH . $path);
+        $this->doc->addScript($this->sitePath .  $this->plugin_path . $path);
     }
 
     /**
@@ -125,7 +124,7 @@ class agGallery extends agHelper {
      * @return <html> 
      */
     function writeThumb($imageName, $cssClass='') {
-        return '<img src="' . $this->sitePath . PLUGIN_BASE_PATH . 'thumbs/' . $this->imagesFolderName . '/' . $imageName . '"
+        return '<img src="' . $this->sitePath .  $this->plugin_path . 'thumbs/' . $this->imagesFolderName . '/' . $imageName . '"
                 alt="' . strip_tags($this->descArray[$imageName]) . '"
                 class="' . $cssClass . '">';
     }
@@ -139,7 +138,7 @@ class agGallery extends agHelper {
         $FileAge = date("YmdHi", filemtime($this->imagesFolderPhysicalPath . $image)); // DEFAULT DATE
         $dateLimit = date("YmdHi", mktime(date("H"), date("i"), date("s"), date("m"), date("d") - (int) ($this->params['newImageTag_days']), date("Y")));
         if ($FileAge > $dateLimit && $this->params['newImageTag'] == 1) {
-            return '<span class="ag_newTag"><img src="' . $this->sitePath . PLUGIN_BASE_PATH . 'newTag.gif" class="ag_newImageTag" /></span>';
+            return '<span class="ag_newTag"><img src="' . $this->sitePath .  $this->plugin_path . 'newTag.gif" class="ag_newImageTag" /></span>';
         }
     }
 
@@ -158,9 +157,17 @@ class agGallery extends agHelper {
             $html = str_replace("{rel}", $this->popupEngine->rel, $html);
             $html = str_replace("{customAttr}", $this->popupEngine->customTag, $html);
             $html = str_replace("{newImageTag}", $this->writeNewImageTag($image), $html);
-            $html = str_replace("{thumbImagePath}", $this->sitePath . PLUGIN_BASE_PATH . 'thumbs/' . $this->imagesFolderName . '/' . $image, $html);
+            $html = str_replace("{thumbImagePath}", $this->sitePath .  $this->plugin_path . 'thumbs/' . $this->imagesFolderName . '/' . $image, $html);
         } else {
-            $html.='<a href="' . $this->imagesFolderPath . $image . '" title="' . htmlspecialchars($this->descArray[$image], ENT_QUOTES, "UTF-8") . '" class="' . $this->popupEngine->className . '" rel="' . $this->popupEngine->rel . '" ' . $this->popupEngine->customAttr . ' target="_blank">' . $this->writeNewImageTag($image) . '<img src="' . $this->sitePath . PLUGIN_BASE_PATH . 'thumbs/' . $this->imagesFolderName . '/' . $image . '" alt="' . strip_tags($this->descArray[$image]) . '" class="ag_imageThumb"></a>';
+            $html.='<a href="' . $this->imagesFolderPath . $image . '" title="' . 
+                    htmlspecialchars($this->descArray[$image], ENT_QUOTES, "UTF-8") . 
+                    '" class="' . $this->popupEngine->className . '" rel="' . 
+                    $this->popupEngine->rel . '" ' . $this->popupEngine->customAttr . 
+                    ' target="_blank">' . $this->writeNewImageTag($image) . 
+                    '<img src="' . $this->sitePath .  $this->plugin_path . 'thumbs/' . 
+                    $this->imagesFolderName . '/' . $image . '" alt="' . 
+                    strip_tags($this->descArray[$image]) . 
+                    '" class="ag_imageThumb"></a>';
         }
         return $html;
     }
@@ -223,7 +230,7 @@ class agGallery extends agHelper {
         {
             $thumb_file = $this->currTemplateRoot.$default_folder_img;
         }
-        return $this->sitePath . PLUGIN_BASE_PATH .$thumb_file;
+        return $this->sitePath .  $this->plugin_path .$thumb_file;
     }
 
     /**
@@ -269,7 +276,7 @@ class agGallery extends agHelper {
             foreach ($this->images as $imagesKey => $imagesValue) {
                 $html.='<a href="' . $this->imagesFolderPath . $imagesValue . '" title="' . htmlspecialchars(strip_tags($this->descArray[$imagesValue])) . '" class="' . $this->popupEngine->cssClass . '" rel="' . $this->popupEngine->rel . '" ' . $this->popupEngine->customTag . ' target="_blank">';
                 $html.=$this->writeNewImageTag($imagesValue);
-                $html.='<img src="' . $this->sitePath . PLUGIN_BASE_PATH . 'thumbs/' . $this->imagesFolderName . '/' . $imagesValue . '
+                $html.='<img src="' . $this->sitePath .  $this->plugin_path . 'thumbs/' . $this->imagesFolderName . '/' . $imagesValue . '
                         " alt="' . htmlspecialchars(strip_tags($this->descArray[$imagesValue])) . '" class="ag_imageThumb"></a>';
             }
         }
@@ -371,14 +378,14 @@ class agGallery extends agHelper {
             $this->doc->addScriptDeclaration(strip_tags($script));
         }
         $this->imagesFolderPhysicalPath = $this->sitePhysicalPath . $this->params['rootFolder'] . $this->imagesFolderName . $this->DS;
-        $this->thumbsFolderPhysicalPath = $this->sitePhysicalPath . PLUGIN_BASE_PATH . 'thumbs' . $this->DS . $this->imagesFolderName . $this->DS;
+        $this->thumbsFolderPhysicalPath = $this->sitePhysicalPath .  $this->plugin_path . 'thumbs' . $this->DS . $this->imagesFolderName . $this->DS;
         $this->imagesFolderPath = $this->sitePath . $this->params["rootFolder"] . $this->imagesFolderName . '/';
         $this->readDescriptionFiles();
         $this->loadImageFiles();
         $this->loadFolders();
         $this->currPopupRoot = 'popups/' . $this->params['popupEngine'] . '/';
         $this->currTemplateRoot = 'templates/' . $this->params['template'] . '/';
-        $this->pluginPath = $this->sitePath . PLUGIN_BASE_PATH;
+        $this->pluginPath = $this->sitePath .  $this->plugin_path;
     }
 
     /**
@@ -708,7 +715,7 @@ class agGallery extends agHelper {
             $path = substr($path, 0, -1);
         $this->sitePath = $path;
         $this->sitePhysicalPath = $sitePhysicalPath;
-        $this->thumbsFolderPhysicalPath = $sitePhysicalPath . PLUGIN_BASE_PATH . 'thumbs' . $this->DS;
+        $this->thumbsFolderPhysicalPath = $sitePhysicalPath .  $this->plugin_path . 'thumbs' . $this->DS;
         $this->imagesFolderPhysicalPath = $sitePhysicalPath . $this->params["rootFolder"];
         $this->cleanThumbsFolder();
         $this->doc = $document;

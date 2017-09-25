@@ -11,15 +11,13 @@
 /** ensure this file is being included by a parent file */
 defined( '_JEXEC' ) or die( 'Restricted access' );
 
-require_once (JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'agHelper.php');
+JLoader::register('agHelper', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'agHelper.php');
 
 $ag_itemURL = $this->ag_init_itemURL;
 
 $ag_folderName = dirname($ag_itemURL);
 $ag_fileName = basename($ag_itemURL);
 $AG_imgInfo = agHelper::ag_imageInfo(JPATH_SITE.$ag_itemURL);
-
-require_once (JPATH_SITE.DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.'content'.DIRECTORY_SEPARATOR.'admirorgallery'.DIRECTORY_SEPARATOR.'admirorgallery'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'agHelper.php');
 
 $thumbsFolderPhysicalPath = JPATH_SITE.DIRECTORY_SEPARATOR.'administrator'.DIRECTORY_SEPARATOR.'components'.DIRECTORY_SEPARATOR.'com_admirorgallery'.DIRECTORY_SEPARATOR.'assets'.DIRECTORY_SEPARATOR.'thumbs';
 

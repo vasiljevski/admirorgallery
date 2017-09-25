@@ -10,9 +10,11 @@
 // Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
+//Deprecated
 jimport('joomla.application.component.model');
-require_once (JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'agHelper.php');
-require_once (dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR."secureimage.php");
+
+JLoader::register('agHelper', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'agHelper.php');
+JLoader::register('SecureImage', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR."secureimage.php");
 
 class AdmirorgalleryModelImagemanager extends JModelLegacy {
 
