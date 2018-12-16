@@ -10,9 +10,9 @@
 
 <project>
     <property environment="env"/>
-    <property name="source" value="D:\wamp\www\joomla373"/>
-    <property name="release" value="D:\Projects\Admiror_Extensions\releases"/>
-    <property name="builddir" value="C:\TEMP\com_admirorgallery"/>
+    <property name="source" value="C:\wamp64\www\Joomla_3.9.1"/>
+    <property name="release" value="C:\Users\user\Documents\admiror_extensions\releases"/>
+    <property name="builddir" value="C:\Users\user\Documents\admiror_extensions\temp\com_admirorgallery"/>
     <property name="verbose" value="false"/>
     <property name="git_path" value="C:/Program Files/Git/bin/git"/>
     <!-- Get timestamp -->
