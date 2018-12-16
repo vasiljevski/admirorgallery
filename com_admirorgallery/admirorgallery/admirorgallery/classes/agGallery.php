@@ -12,6 +12,7 @@ defined('_JEXEC') or die();
 
 JLoader::register('agHelper', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agHelper.php');
 JLoader::register('agPopup', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agPopup.php');
+JLoader::register('agTemplate', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agTemplate.php');
 
 class agGallery extends agHelper {
 
