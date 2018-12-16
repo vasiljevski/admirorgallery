@@ -7,17 +7,12 @@
  * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
-
 // Joomla security code
 defined('_JEXEC') or die();
 
-$template = new agTemplate($AG, $AG->params['albumUse']);
+$template = new agTemplate($AG);
 
-// Load CSS from current template folder
-$template->loadStyles(array ($AG->currTemplateRoot . 'template.css',
-    $AG->currTemplateRoot . 'albums/albums.css',
-    $AG->currTemplateRoot . 'pagination/pagination.css'));
-
+$template->preContent();
 // Form HTML code, with unique ID and Class Name
 $template->appendContent('
 <style type="text/css">
@@ -25,13 +20,11 @@ $template->appendContent('
     .AG_classic .ag_imageThumb {border-color:#' . $AG->params['foregroundColor'] . '}
     .AG_classic .ag_imageThumb:hover {background-color:#' . $AG->params['highliteColor'] . '}
 
-    /* PAGINATION AND ALBUM STYLE DEFINITIONS */
-      #AG_' . $AG->getGalleryID() . ' a.AG_album_thumb, #AG_' . $AG->getGalleryID() . ' div.AG_album_wrap, #AG_' . $AG->getGalleryID() . ' a.AG_pagin_link, #AG_' . $AG->getGalleryID() . ' a.AG_pagin_prev, #AG_' . $AG->getGalleryID() . ' a.AG_pagin_next {border-color:#' . $AG->params['foregroundColor'] . '}
-      #AG_' . $AG->getGalleryID() . ' a.AG_album_thumb:hover, #AG_' . $AG->getGalleryID() . ' a.AG_pagin_link:hover, #AG_' . $AG->getGalleryID() . ' a.AG_pagin_prev:hover, #AG_' . $AG->getGalleryID() . ' a.AG_pagin_next:hover {background-color:#' . $AG->params['highliteColor'] . '}
-      #AG_' . $AG->getGalleryID() . ' div.AG_album_wrap h1, #AG_' . $AG->getGalleryID() . ' a.AG_pagin_link, #AG_' . $AG->getGalleryID() . ' a.AG_pagin_prev, #AG_' . $AG->getGalleryID() . ' a.AG_pagin_next{color:#' . $AG->params['foregroundColor'] . '}
+' . $template->generatePaginationStyle() . '
 
 </style>
-<div id="AG_' . $AG->getGalleryID() . '" class="ag_reseter AG_' . $AG->params['template'] . '">');
+<div id="AG_' . $AG->getGalleryID() .
+        '" class="ag_reseter AG_' . $AG->params['template'] . '">');
 
 $template->appendContent($AG->albumParentLink);
 
@@ -41,7 +34,8 @@ $template->appendContent('
       <tr>
 	<td>');
 
-// Loops over the array of images inside target gallery folder, adding wrapper with SPAN tag and write Popup thumbs inside this wrapper
+// Loops over the array of images inside target gallery folder, 
+// adding wrapper with SPAN tag and write Popup thumbs inside this wrapper
 if (!empty($AG->images)) {
     foreach ($AG->images as $imageKey => $imageName) {
         $template->appendContent('<span class="ag_thumb' . $AG->params['template'] . '">');
@@ -57,7 +51,7 @@ $template->appendContent('
   </table>');
 
 // Support for Pagination
-$template->appendContent($AG->writePagination(). '
+$template->appendContent($AG->writePagination() . '
 </div>
 ');
 
@@ -66,6 +60,4 @@ $template->addAlbumSupport();
 
 // Render HTML for this template
 $html = $template->render();
-
-
 ?>
