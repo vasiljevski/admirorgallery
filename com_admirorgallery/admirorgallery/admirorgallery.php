@@ -172,7 +172,7 @@ class plgContentAdmirorGallery extends JPlugin {
                     . ' ' . JText::_("AG_AUTHORS") 
                     . ' <a href="http://www.vasiljevski.com/" target="_blank">Vasiljevski</a> '
                     . '& '
-                    . '<a href="http://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.';
+                    . '<a href="http://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.</div>';
         }//if (preg_match_all("#{AdmirorGallery}(.*?){/AdmirorGallery}#s", $row->text, $matches, PREG_PATTERN_ORDER)>0)
     }
 //onPrepareContent(&$row, &$params, $limitstart)
