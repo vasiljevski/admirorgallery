@@ -15,7 +15,7 @@ jimport('joomla.plugin.plugin');
 jimport( 'joomla.filesystem.folder' );
 define('AG_VERSION', '5.1.1');
 
-JLoader::register('agGallery', dirname(__FILE__) . '/admirorgallery/classes/agGallery.php');
+JLoader::register('agGallery', dirname(__FILE__) . '/admirorgallery/core/agGallery.php');
 
 class plgContentAdmirorGallery extends JPlugin {
 
