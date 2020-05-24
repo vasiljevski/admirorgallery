@@ -1,9 +1,6 @@
 <?php
-use admirorgallery\core\agGallery;
-use admirorgallery\core\agJoomla;
-
 /**
- * @version     5.1.2
+ * @version     5.5.0
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
@@ -16,9 +13,9 @@ defined('_JEXEC') or die();
 jimport('joomla.event.plugin');
 jimport('joomla.plugin.plugin');
 jimport( 'joomla.filesystem.folder' );
-define('AG_VERSION', '5.1.1');
+define('AG_VERSION', '5.5.0');
 
-//JLoader::register('agGallery', dirname(__FILE__) . '/admirorgallery/core/agGallery.php');
+JLoader::register('agGallery', dirname(__FILE__) . '/admirorgallery/core/agGallery.php');
 
 class plgContentAdmirorGallery extends JPlugin {
 

@@ -1,7 +1,6 @@
 <?php
-namespace admirorgallery\core;
 /**
- * @version     5.1.2
+ * @version     5.5.0
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski

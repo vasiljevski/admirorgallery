@@ -1,73 +1,105 @@
 <?php
-namespace admirorgallery\core;
+/**
+ * @version     5.5.0
+ * @package     Admiror Gallery (plugin)
+ * @subpackage  admirorgallery
+ * @author      Igor Kekeljevic & Nikola Vasiljevski
+ * @copyright   Copyright (C) 2010 - 2017 http://www.admiror-design-studio.com All Rights Reserved.
+ * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ */
 
 defined('_JEXEC') or die();
 
 // Import library dependencies
 jimport('joomla.event.plugin');
 jimport('joomla.plugin.plugin');
-jimport( 'joomla.filesystem.folder' );
+jimport('joomla.filesystem.folder');
 
 class agJoomla implements CmsInterface
 {
+
     private $doc;
-    
-    function __construct($document) 
-    {
-        $this->doc = \JFactory::getDocument();;
-    }
-    public function LoadClass()
-    {}
 
-    public function AddJsFile($path)
+    function __construct($document)
     {
-        $this->doc->addScript($this->sitePath .  $this->plugin_path . $path);
+        $this->doc = JFactory::getDocument();
     }
 
-    public function GetFiles($path)
+    public function LoadClass(): void
     {}
 
-    public function AddToPathway($item)
-    {}
+    public function AddJsFile(string $path): void
+    {
+        $this->doc->addScript($path);
+    }
 
-    public function GetFolders($path)
-    {}
+    public function GetFiles(string $path): array
+    {
+        return JFolder::files($path);
+    }
 
-    public function Text($string_id)
-    {}
+    public function AddToPathway(string $item, string $link): void
+    {
+        JFactory::getApplication()->getPathway()->addItem($item, $link);
+    }
 
-    public function GetAlbumPath($key)
-    {}
+    public function GetFolders(string $path): array
+    {
+        return JFolder::folders($path);
+    }
 
-    public function SetTitle($title)
-    {}
+    public function GetAlbumPath(string $key): ?string
+    {
+        return JFactory::getApplication()->input->getPath($key);
+    }
 
-    public function GetActiveLanguageTag($path)
-    {}
+    public function SetTitle(string $title): void
+    {
+        JFactory::getDocument()->setTitle($title);
+    }
 
-    public function CreateFolder($path)
-    {}
+    public function GetActiveLanguageTag(string $path): string
+    {
+        return strtolower(JFactory::getLanguage()->getTag());
+    }
 
-    public function AddCss($path)
+    public function CreateFolder(string $path): bool
+    {
+        return JFolder::create($path, 0755);
+    }
+
+    public function AddCss(string $path): void
     {
         $this->doc->addStyleSheet($path);
     }
 
-    public function GetActivePage($key)
-    {}
+    public function GetActivePage(string $key): ?int
+    {
+        return JFactory::getApplication()->input->getInt($key);
+    }
 
-    public function BreadcrumbsNeeded()
-    {}
+    public function BreadcrumbsNeeded(): bool
+    {
+        $active = JFactory::getApplication()->getMenu()->getActive();
+        return (isset($active) && $active->query['view'] == 'layout');
+    }
 
-    public function TextConcat($string_id, $value)
-    {}
+    public function Text(int $string_id): string
+    {
+        return JText::_($string_id);
+    }
+    
+    public function TextConcat(string $string_id, $value): string
+    {
+        return JText::sprintf($string_id, $value);
+    }
 
-    public static function SecurityCheck()
+    public static function SecurityCheck(): void
     {
         defined('_JEXEC') or die();
     }
 
-    public function AddJsDeclaration($script)
+    public function AddJsDeclaration(string $script): void
     {
         $this->doc->addScriptDeclaration($script);
     }
