@@ -1,4 +1,5 @@
 <?php
+namespace com_admirorgallery\admirorgallery\admirorgallery\core;
 /**
  * @version     5.1.2
  * @package     Admiror Gallery (plugin)

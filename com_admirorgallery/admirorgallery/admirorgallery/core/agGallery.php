@@ -1,4 +1,5 @@
 <?php
+namespace com_admirorgallery\admirorgallery\admirorgallery\core;
 /**
  * @version     5.1.2
  * @package     Admiror Gallery (plugin)
@@ -8,10 +9,15 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-defined('_JEXEC') or die();
+use com_admirorgallery\admirorgallery\admirorgallery\core\agJoomla;
+use com_admirorgallery\admirorgallery\admirorgallery\core\agHelper;
+use com_admirorgallery\admirorgallery\admirorgallery\core\agPopup;
+use com_admirorgallery\admirorgallery\admirorgallery\core\CmsInterface;
 
-JLoader::register('agHelper', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agHelper.php');
-JLoader::register('agPopup', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agPopup.php');
+agJoomla::SecurityCheck();
+
+//JLoader::register('agHelper', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agHelper.php');
+//JLoader::register('agPopup', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agPopup.php');
 
 class agGallery extends agHelper {
 
@@ -46,6 +52,7 @@ class agGallery extends agHelper {
     var $albumParentLink = '';
     private $errors = array();
     private $doc = null;
+    private CmsInterface $cmsIf;
     private $descArray = array();
     private $match = '';
     private $DS = DIRECTORY_SEPARATOR;
@@ -76,23 +83,23 @@ class agGallery extends agHelper {
      * @param <string> $path
      */
     function loadCSS($path) {
-        $this->doc->addStyleSheet($this->sitePath .  $this->plugin_path. $path);
+        $this->cmsIf->AddCss($this->sitePath .  $this->plugin_path. $path);
     }
-
+    
     /**
      * Loads JavaScript file from the given path.
      * @param <string> $path
      */
     function loadJS($path) {
-        $this->doc->addScript($this->sitePath .  $this->plugin_path . $path);
+        $this->cmsIf->AddJsFile($this->sitePath .  $this->plugin_path . $path);
     }
-
+    
     /**
      * Loads JavaScript code block into document head.
      * @param <string> $script
      */
     function insertJSCode($script) {
-        $this->doc->addScriptDeclaration($script);
+        $this->cmsIf->AddJsDeclaration($script);
     }
 
     /**
@@ -689,7 +696,10 @@ class agGallery extends agHelper {
      * @param <string> $sitePhysicalPath
      * @param <pointer> $document
      */
-    function __construct($globalParams, $path, $sitePhysicalPath, $document) {
+    function __construct($globalParams, $path, $sitePhysicalPath, $document, CmsInterface $cms) {
+        $this->doc = $document;
+        $this->cmsIf = $cms;
+        
         $this->staticParams['thumbWidth'] = $globalParams->get('thumbWidth', 200);
         $this->staticParams['thumbHeight'] = $globalParams->get('thumbHeight', 120);
         $this->staticParams['thumbAutoSize'] = $globalParams->get('thumbAutoSize', "none");
@@ -718,7 +728,6 @@ class agGallery extends agHelper {
         $this->thumbsFolderPhysicalPath = $sitePhysicalPath .  $this->plugin_path . 'thumbs' . $this->DS;
         $this->imagesFolderPhysicalPath = $sitePhysicalPath . $this->params["rootFolder"];
         $this->cleanThumbsFolder();
-        $this->doc = $document;
         $this->loadCSS('AdmirorGallery.css');
         //$this->errors = new agErrors();
         // Album Support

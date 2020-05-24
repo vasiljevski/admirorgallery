@@ -1,4 +1,7 @@
 <?php
+use com_admirorgallery\admirorgallery\admirorgallery\core\agJoomla;
+use com_admirorgallery\admirorgallery\admirorgallery\core\agGallery;
+
 /**
  * @version     5.1.2
  * @package     Admiror Gallery (plugin)
@@ -15,7 +18,7 @@ jimport('joomla.plugin.plugin');
 jimport( 'joomla.filesystem.folder' );
 define('AG_VERSION', '5.1.1');
 
-JLoader::register('agGallery', dirname(__FILE__) . '/admirorgallery/core/agGallery.php');
+//JLoader::register('agGallery', dirname(__FILE__) . '/admirorgallery/core/agGallery.php');
 
 class plgContentAdmirorGallery extends JPlugin {
 
@@ -54,7 +57,7 @@ class plgContentAdmirorGallery extends JPlugin {
 
         //Create galeries
         if (preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}#s", $row->text, $matches, PREG_PATTERN_ORDER) > 0) {
-            $AG = new agGallery($this->params, JURI::base(), JPATH_SITE, $doc);
+            $AG = new agGallery($this->params, JURI::base(), JPATH_SITE, $doc, new agJoomla($doc));
             //Load current language
             JPlugin::loadLanguage('plg_content_admirorgallery', JPATH_ADMINISTRATOR);
             // Version check
