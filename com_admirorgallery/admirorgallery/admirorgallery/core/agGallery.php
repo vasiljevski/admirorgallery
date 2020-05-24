@@ -1,5 +1,5 @@
 <?php
-namespace com_admirorgallery\admirorgallery\admirorgallery\core;
+namespace admirorgallery\core;
 /**
  * @version     5.1.2
  * @package     Admiror Gallery (plugin)
@@ -9,10 +9,8 @@ namespace com_admirorgallery\admirorgallery\admirorgallery\core;
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-use com_admirorgallery\admirorgallery\admirorgallery\core\agJoomla;
-use com_admirorgallery\admirorgallery\admirorgallery\core\agHelper;
-use com_admirorgallery\admirorgallery\admirorgallery\core\agPopup;
-use com_admirorgallery\admirorgallery\admirorgallery\core\CmsInterface;
+use JFolder;
+use JText;
 
 agJoomla::SecurityCheck();
 

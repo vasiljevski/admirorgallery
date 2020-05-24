@@ -1,6 +1,6 @@
 <?php
-use com_admirorgallery\admirorgallery\admirorgallery\core\agJoomla;
-use com_admirorgallery\admirorgallery\admirorgallery\core\agGallery;
+use admirorgallery\core\agGallery;
+use admirorgallery\core\agJoomla;
 
 /**
  * @version     5.1.2

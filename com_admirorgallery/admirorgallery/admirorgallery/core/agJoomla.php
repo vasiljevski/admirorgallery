@@ -1,5 +1,5 @@
 <?php
-namespace com_admirorgallery\admirorgallery\admirorgallery\core;
+namespace admirorgallery\core;
 
 defined('_JEXEC') or die();
 
