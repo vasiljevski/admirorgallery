@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     5.1.2
+ * @version     5.2.0
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2017 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -13,7 +13,7 @@ defined('_JEXEC') or die();
 jimport('joomla.event.plugin');
 jimport('joomla.plugin.plugin');
 jimport( 'joomla.filesystem.folder' );
-define('AG_VERSION', '5.1.1');
+define('AG_VERSION', '5.2.0');
 
 JLoader::register('agGallery', dirname(__FILE__) . '/admirorgallery/classes/agGallery.php');
 
@@ -42,11 +42,11 @@ class plgContentAdmirorGallery extends JPlugin {
         //check for PHP version, 5.0.0 and above are accepted
         if (strnatcmp(phpversion(), '5.0.0') <= 0) {
             $doc->addStyleSheet('plugins/content/admirorgallery/admirorgallery/AdmirorGallery.css');
-            $html = '<div class="error">Admiror Gallery requires PHP version 5.0.0 or greater!</div>' . "\n";
+            $php_version_error_html= '<div class="error">'. JText::_('AG_PHP_VERSION_MUST_BE_ABOVE_PHP5') . '</div>' . "\n";
             if ((preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}#s", $row->text, $matches, PREG_PATTERN_ORDER) > 0) || (preg_match_all("#{AG[^}]*}(.*?){/AG}#s", $row->text, $matches, PREG_PATTERN_ORDER) > 0)) {
                 foreach ($matches[0] as $match) {
                     $galleryname = preg_replace("/{.+?}/", "", $match);
-                    $row->text = preg_replace("#{AdmirorGallery[^}]*}" . $galleryname . "{/AdmirorGallery}|{AG[^}]*}" . $galleryname . "{/AG}#s", "<div style='clear:both'></div>" . $html, $row->text, 1);
+                    $row->text = preg_replace("#{AdmirorGallery[^}]*}" . $galleryname . "{/AdmirorGallery}|{AG[^}]*}" . $galleryname . "{/AG}#s", "<div style='clear:both'></div>" . $php_version_error_html, $row->text, 1);
                 }
             }
             return;
@@ -172,12 +172,9 @@ class plgContentAdmirorGallery extends JPlugin {
                     . ' ' . JText::_("AG_AUTHORS") 
                     . ' <a href="http://www.vasiljevski.com/" target="_blank">Vasiljevski</a> '
                     . '& '
-                    . '<a href="http://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.'
-                    . '<br /> '
-                    . 'Website secured by Security Audit Systems, visit our cyber security <a href="https://www.security-audit.com">website</a></div>';
+                    . '<a href="http://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.</div>';
         }//if (preg_match_all("#{AdmirorGallery}(.*?){/AdmirorGallery}#s", $row->text, $matches, PREG_PATTERN_ORDER)>0)
     }
-
 //onPrepareContent(&$row, &$params, $limitstart)
 }
 

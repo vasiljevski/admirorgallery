@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     5.1.2
+ * @version     5.2.0
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2017 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -67,7 +67,7 @@ $html.= $AG->writePagination();
 
 // Support for Albums
 if(!empty($AG->folders) && $AG->params['albumUse']){
-     $html.= '<h1>'.JText::_( 'Albums' ).'</h1>'."\n";
+     $html.= '<h1>'.JText::_( 'AG_ALBUMS' ).'</h1>'."\n";
      $html.= $AG->writeFolderThumb("albums/album.png",$AG->params['thumbHeight']);
 }
 

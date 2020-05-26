@@ -1,0 +1,53 @@
+div.AG_album_wrap
+{
+     display:block;
+     margin-bottom:20px;
+     padding-bottom:5px;
+}
+
+div.AG_album_wrap a
+{
+     text-decoration:none;
+}
+
+a.AG_album_thumb
+{
+     display:block;
+     float:left;
+     margin:0 10px 10px;
+     padding:4px;
+     border:1px solid silver;
+}
+
+span.AG_album_thumb_img
+{
+     display:block;
+}
+
+span.AG_album_thumb_label
+{
+     display:block;
+     text-align:center;
+     text-decoration:none;
+     font-size:10px;
+     line-height:16px;
+}
+
+a.AG_album_parent
+{
+     display:block;   
+     width:24px;
+}
+
+a.AG_album_parent span
+{
+     display:block;   
+     width:24px;
+     line-height:24px;
+     width:100%;
+     text-align:left;
+     padding-left:20px;
+     background-image:url("back.png");
+     background-repeat:no-repeat;
+     white-space:nowrap;
+}
