@@ -4,7 +4,7 @@
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2017 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -12,6 +12,7 @@
 \JLoader::register('agPopup', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agPopup.php');
 \JLoader::register('CmsInterface', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'CmsInterface.php');
 \JLoader::register('agJoomla', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agJoomla.php');
+\JLoader::register('agTemplate', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agTemplate.php');
 
 //agJoomla::SecurityCheck();
 
