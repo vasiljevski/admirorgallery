@@ -14,7 +14,7 @@
 \JLoader::register('agJoomla', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agJoomla.php');
 \JLoader::register('agTemplate', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agTemplate.php');
 
-//agJoomla::SecurityCheck();
+agJoomla::SecurityCheck();
 
 
 class agGallery extends agHelper {
