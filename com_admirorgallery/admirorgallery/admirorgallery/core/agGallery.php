@@ -10,7 +10,7 @@
 
 \JLoader::register('agHelper', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agHelper.php');
 \JLoader::register('agPopup', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agPopup.php');
-\JLoader::register('CmsInterface', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'CmsInterface.php');
+\JLoader::register('agCmsInterface', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agCmsInterface.php');
 \JLoader::register('agJoomla', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agJoomla.php');
 \JLoader::register('agTemplate', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agTemplate.php');
 

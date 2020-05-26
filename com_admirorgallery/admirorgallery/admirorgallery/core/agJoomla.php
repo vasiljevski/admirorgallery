@@ -15,7 +15,7 @@ jimport('joomla.event.plugin');
 jimport('joomla.plugin.plugin');
 jimport('joomla.filesystem.folder');
 
-class agJoomla implements CmsInterface
+class agJoomla implements agCmsInterface
 {
 
     private $doc;

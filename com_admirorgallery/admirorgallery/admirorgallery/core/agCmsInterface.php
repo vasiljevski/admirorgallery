@@ -8,7 +8,7 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-interface CmsInterface
+interface agCmsInterface
 {
     public static function SecurityCheck(): void;
     public function LoadClass(): void;
