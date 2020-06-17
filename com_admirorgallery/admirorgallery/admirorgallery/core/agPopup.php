@@ -9,15 +9,13 @@
  */
 
 defined('_JEXEC') or die();
-class agPopup {
-
-        var $customAttr='';
-        var $rel='';
-        var $className='';
-        var $jsInclude = '';
-        var $initCode='';
-	var $customPopupThumb='';
-	var $endCode='';
-
+class agPopup
+{
+    public $customAttr='';
+    public $rel='';
+    public $className='';
+    public $jsInclude = '';
+    public $initCode='';
+    public $customPopupThumb='';
+    public $endCode='';
 }
-?>

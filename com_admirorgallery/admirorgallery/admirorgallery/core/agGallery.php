@@ -17,37 +17,36 @@
 agJoomla::SecurityCheck();
 
 
-class agGallery extends agHelper {
-
-    var $sitePath = '';
-    var $sitePhysicalPath = '';
+class agGallery extends agHelper
+{
+    public $sitePath = '';
+    public $sitePhysicalPath = '';
     // Virtual path. Example: "http://www.mysite.com/plugin/content/admirorgallery/thumbs/"
-    var $thumbsFolderPath = '';
+    public $thumbsFolderPath = '';
     // Physical path on the server. Example: "E:\php\www\joomla/plugin/content/admirorgallery/thumbs/"
-    var $thumbsFolderPhysicalPath = '';
+    public $thumbsFolderPhysicalPath = '';
     // Gallery name. Example: food
-    var $imagesFolderName = '';
+    public $imagesFolderName = '';
     // Physical path on the server. Example: "E:\php\www\joomla/plugin/content/"
-    var $imagesFolderPhysicalPath = '';
+    public $imagesFolderPhysicalPath = '';
     // Virtual path. Example: "http://www.mysite.com/images/stories/food/"
-    var $imagesFolderPath = '';
-    var $images = array();
-    var $imageInfo = array();
-    var $params = array();
-    var $staticParams = array();
-    var $index = -1;
-    var $articleID = 0;
-    var $popupEngine;
-    var $currPopupRoot = '';
-    var $currTemplateRoot = '';
+    public $imagesFolderPath = '';
+    public $images = array();
+    public $imageInfo = array();
+    public $params;
+    public $index = -1;
+    public $articleID = 0;
+    public $popupEngine;
+    public $currPopupRoot = '';
+    public $currTemplateRoot = '';
     // Virtual path. Example: "http://www.mysite.com/plugins/content/admirorgallery/"
-    var $pluginPath = '';
-    var $squareImage = false;
-    var $paginInitPages = array();
-    var $albumInitFolders = array();
-    var $paginImgTotal = 0;
-    var $numOfGal = 0;
-    var $albumParentLink = '';
+    public $pluginPath = '';
+    public $squareImage = false;
+    public $paginInitPages = array();
+    public $albumInitFolders = array();
+    public $paginImgTotal = 0;
+    public $numOfGal = 0;
+    public $albumParentLink = '';
     private $errors = array();
     private $cms;
     private $descArray = array();
@@ -62,7 +61,8 @@ class agGallery extends agHelper {
      * Gets image info data, and loads it in imageInfo array. It also rounds image size.
      * @param <string> $imageName
      */
-    function getImageInfo($imageName) {
+    public function getImageInfo($imageName)
+    {
         $this->imageInfo = agHelper::ag_imageInfo($this->imagesFolderPhysicalPath . $this->DS . $imageName);
         $this->imageInfo["size"] = agHelper::ag_fileRoundSize($this->imageInfo["size"]);
     }
@@ -71,7 +71,8 @@ class agGallery extends agHelper {
      * Returns gallery id formed from gallery index and article ID
      * @return <string>
      */
-    function getGalleryID() {
+    public function getGalleryID()
+    {
         return $this->index . $this->articleID;
     }
 
@@ -79,7 +80,8 @@ class agGallery extends agHelper {
      * Loads CSS file from the given path.
      * @param <string> $path
      */
-    function loadCSS($path) {
+    public function loadCSS($path)
+    {
         $this->cms->AddCss($this->sitePath .  $this->plugin_path. $path);
     }
     
@@ -87,7 +89,8 @@ class agGallery extends agHelper {
      * Loads JavaScript file from the given path.
      * @param <string> $path
      */
-    function loadJS($path) {
+    public function loadJS($path)
+    {
         $this->cms->AddJsFile($this->sitePath .  $this->plugin_path . $path);
     }
     
@@ -95,7 +98,8 @@ class agGallery extends agHelper {
      * Loads JavaScript code block into document head.
      * @param <string> $script
      */
-    function insertJSCode($script) {
+    public function insertJSCode($script)
+    {
         $this->cms->AddJsDeclaration($script);
     }
 
@@ -103,9 +107,10 @@ class agGallery extends agHelper {
      * Returns specific inline parametar if entered or returns default value
      * @param <string> $atrib
      * @param <string> $default
-     * @return <value> 
+     * @return <value>
      */
-    function getParameter($atrib, $default) {
+    public function getParameter($atrib, $default)
+    {
         return $this->ag_getParams($atrib, $this->match, $default);
     }
 
@@ -113,9 +118,10 @@ class agGallery extends agHelper {
      * Returns full image html
      * @param <string> $imageName
      * @param <string> $cssClass
-     * @return <html> 
+     * @return <html>
      */
-    function writeImage($imageName, $cssClass='') {
+    public function writeImage($imageName, $cssClass='')
+    {
         return '<img src="' . $this->imagesFolderPath . $imageName . '"
                 alt="' . strip_tags($this->descArray[$imageName]) . '"
                 class="' . $cssClass . '">';
@@ -125,9 +131,10 @@ class agGallery extends agHelper {
      * Returns thumb html
      * @param <string> $imageName
      * @param <string> $cssClass
-     * @return <html> 
+     * @return <html>
      */
-    function writeThumb($imageName, $cssClass='') {
+    public function writeThumb($imageName, $cssClass='')
+    {
         return '<img src="' . $this->sitePath .  $this->plugin_path . 'thumbs/' . $this->imagesFolderName . '/' . $imageName . '"
                 alt="' . strip_tags($this->descArray[$imageName]) . '"
                 class="' . $cssClass . '">';
@@ -138,7 +145,8 @@ class agGallery extends agHelper {
      * @param <string> $image
      * @return <html>
      */
-    function writeNewImageTag($image) {
+    public function writeNewImageTag($image)
+    {
         $FileAge = date("YmdHi", filemtime($this->imagesFolderPhysicalPath . $image)); // DEFAULT DATE
         $dateLimit = date("YmdHi", mktime(date("H"), date("i"), date("s"), date("m"), date("d") - (int) ($this->params['newImageTag_days']), date("Y")));
         if ($FileAge > $dateLimit && $this->params['newImageTag'] == 1) {
@@ -151,7 +159,8 @@ class agGallery extends agHelper {
      * @param <string> $image
      * @return <html>
      */
-    function writePopupThumb($image) {
+    public function writePopupThumb($image)
+    {
         $html = '';
         if ($this->popupEngine->customPopupThumb) {
             $html = $this->popupEngine->customPopupThumb;
@@ -163,14 +172,14 @@ class agGallery extends agHelper {
             $html = str_replace("{newImageTag}", $this->writeNewImageTag($image), $html);
             $html = str_replace("{thumbImagePath}", $this->sitePath .  $this->plugin_path . 'thumbs/' . $this->imagesFolderName . '/' . $image, $html);
         } else {
-            $html.='<a href="' . $this->imagesFolderPath . $image . '" title="' . 
-                    htmlspecialchars($this->descArray[$image], ENT_QUOTES, "UTF-8") . 
-                    '" class="' . $this->popupEngine->className . '" rel="' . 
-                    $this->popupEngine->rel . '" ' . $this->popupEngine->customAttr . 
-                    ' target="_blank">' . $this->writeNewImageTag($image) . 
-                    '<img src="' . $this->sitePath .  $this->plugin_path . 'thumbs/' . 
-                    $this->imagesFolderName . '/' . $image . '" alt="' . 
-                    strip_tags($this->descArray[$image]) . 
+            $html.='<a href="' . $this->imagesFolderPath . $image . '" title="' .
+                    htmlspecialchars($this->descArray[$image], ENT_QUOTES, "UTF-8") .
+                    '" class="' . $this->popupEngine->className . '" rel="' .
+                    $this->popupEngine->rel . '" ' . $this->popupEngine->customAttr .
+                    ' target="_blank">' . $this->writeNewImageTag($image) .
+                    '<img src="' . $this->sitePath .  $this->plugin_path . 'thumbs/' .
+                    $this->imagesFolderName . '/' . $image . '" alt="' .
+                    strip_tags($this->descArray[$image]) .
                     '" class="ag_imageThumb"></a>';
         }
         return $html;
@@ -182,15 +191,16 @@ class agGallery extends agHelper {
      * @param <type> $thumbHeight
      * @return string
      */
-    function writeFolderThumb($default_folder_img, $thumbHeight) {
+    public function writeFolderThumb($default_folder_img, $thumbHeight)
+    {
 
         // Album Support
         $html = "";
         if ($this->params['albumUse'] && !empty($this->folders)) {
             $html.='<div class="AG_album_wrap">' . "\n";
             foreach ($this->folders as $folderKey => $folderName) {
-                $thumb_path = $this->ag_get_album_thumb_path($default_folder_img,$folderName);
-                $html.='<a href="javascript:void(0);" onClick="AG_form_submit_' . $this->articleID . '(' . $this->index . ',1,\'' . $this->imagesFolderName . '/' . $folderName . '\'); return false;" class="AG_album_thumb">';    
+                $thumb_path = $this->ag_get_album_thumb_path($default_folder_img, $folderName);
+                $html.='<a href="javascript:void(0);" onClick="AG_form_submit_' . $this->articleID . '(' . $this->index . ',1,\'' . $this->imagesFolderName . '/' . $folderName . '\'); return false;" class="AG_album_thumb">';
                 $html.='<span class="AG_album_thumb_img" >';
                 $html.='<img style="height: '.$thumbHeight.'px;" src="'.$thumb_path.'" />' . "\n";
                 $html.='</span>';
@@ -204,9 +214,9 @@ class agGallery extends agHelper {
         return $html;
     }
     
-    function ag_get_album_thumb_path($default_folder_img,$folderName)
+    public function ag_get_album_thumb_path($default_folder_img, $folderName)
     {
-        // Get Thumb URL value                
+        // Get Thumb URL value
         // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
         $ag_pathWithStripExt = $this->imagesFolderPhysicalPath . $folderName;
         $ag_XML_path = $ag_pathWithStripExt . ".XML";
@@ -223,15 +233,13 @@ class agGallery extends agHelper {
             $images = agHelper::ag_imageArrayFromFolder($this->imagesFolderPhysicalPath . $folderName);
             if (!empty($images)) {
                 $images = agHelper::array_sorting($images, $this->imagesFolderPhysicalPath . $folderName . $this->DS, $this->params['arrange']);
-                $thumb_file = $images[0]; // Get First image in folder as thumb 
+                $thumb_file = $images[0]; // Get First image in folder as thumb
             }
         }
         if (!empty($thumb_file)) {
             $this->Album_generateThumb($folderName, $thumb_file);
             $thumb_file = 'thumbs/' . $this->imagesFolderName . '/' . $folderName . '/' . basename($thumb_file);
-        }
-        else
-        {
+        } else {
             $thumb_file = $this->currTemplateRoot.$default_folder_img;
         }
         return $this->sitePath .  $this->plugin_path .$thumb_file;
@@ -241,7 +249,8 @@ class agGallery extends agHelper {
      * Pagination HTML output
      * @return string
      */
-    function writePagination() {
+    public function writePagination()
+    {
         // Paggination Support
         $html = "";
         if ($this->params['paginUse']) {
@@ -274,7 +283,8 @@ class agGallery extends agHelper {
      * Generates html with popup support for all the images in the gallery.
      * @return <html>
      */
-    function writeAllPopupThumbs() {
+    public function writeAllPopupThumbs()
+    {
         $html = '';
         if (!empty($this->images)) {
             foreach ($this->images as $imagesKey => $imagesValue) {
@@ -290,9 +300,10 @@ class agGallery extends agHelper {
     /**
      * Returns image description. The current localization is taken into account.
      * @param <string> $imageName
-     * @return <string> 
+     * @return <string>
      */
-    function writeDescription($imageName) {
+    public function writeDescription($imageName)
+    {
         return $this->descArray[$imageName];
     }
 
@@ -300,8 +311,9 @@ class agGallery extends agHelper {
      * Initialises Popup engine. Loads popupEngine settings and scripts
      */
 
-    function initPopup() {
-        require (dirname(dirname(__FILE__)). $this->DS . 'popups' . $this->DS . $this->params['popupEngine'] . $this->DS . 'index.php');
+    public function initPopup()
+    {
+        require(dirname(dirname(__FILE__)). $this->DS . 'popups' . $this->DS . $this->params['popupEngine'] . $this->DS . 'index.php');
         return $this->popupEngine->initCode;
     }
 
@@ -309,7 +321,8 @@ class agGallery extends agHelper {
      * Includes JavaScript code ad the end of the gallery html
      */
 
-    function endPopup() {
+    public function endPopup()
+    {
         return $this->popupEngine->endCode;
     }
 
@@ -317,7 +330,8 @@ class agGallery extends agHelper {
      * adds new error value to the error array
      */
 
-    function addError($value) {
+    public function addError($value)
+    {
         if ($value != '') {
             $this->errors[] = $value;
         }
@@ -333,7 +347,8 @@ class agGallery extends agHelper {
      * Gallery initialization
      * @param <string> $match
      */
-    function initGallery($match) {
+    public function initGallery($match)
+    {
         $this->match = $match;
         $this->readInlineParams();
         $this->imagesFolderNameOriginal = preg_replace("/{.+?}/", "", $match);
@@ -372,9 +387,8 @@ class agGallery extends agHelper {
                 }
             }
 
-            // Breadcrump Support           
-            if ($this->cms->BreadcrumbsNeeded())
-            {
+            // Breadcrump Support
+            if ($this->cms->BreadcrumbsNeeded()) {
                 $this->writeBreadcrum();
             }
             $script = 'var albumInitFolders_' . $this->articleID . '="' . $albumPath . '";';
@@ -394,27 +408,29 @@ class agGallery extends agHelper {
     /**
      *  Clears obsolete thumbnail folders
      */
-    function cleanThumbsFolder() {
+    public function cleanThumbsFolder()
+    {
         $this->ag_cleanThumbsFolder($this->imagesFolderPhysicalPath, $this->thumbsFolderPhysicalPath);
     }
 
     /**
      *  Clears obsolete thumbnails
      */
-    function clearOldThumbs() {
+    public function clearOldThumbs()
+    {
         $this->ag_clearOldThumbs($this->imagesFolderPhysicalPath, $this->thumbsFolderPhysicalPath, $this->params['albumUse']);
     }
 
     /**
      *  Reads description files
      */
-    private function readDescriptionFiles() {
+    private function readDescriptionFiles()
+    {
         // Create Images Array
         unset($this->descArray);
 
         if (file_exists($this->imagesFolderPhysicalPath)) {
-
-            $ag_images = Array();
+            $ag_images = array();
             $ag_files = $this->cms->GetFiles($this->imagesFolderPhysicalPath);
             $ag_ext_valid = array("jpg", "jpeg", "gif", "png"); // SET VALID IMAGE EXTENSION
             foreach ($ag_files as $key => $value) {
@@ -440,7 +456,7 @@ class agGallery extends agHelper {
                     if (file_exists($descriptionFileApsolutePath)) {// Check is descriptions file exists
                         $ag_imgXML_xml = JFactory::getXML($descriptionFileApsolutePath);
                         $ag_imgXML_captions = $ag_imgXML_xml->captions;
-                        $langTag = $this->cms->GetActiveLanguageTag(); 
+                        $langTag = $this->cms->GetActiveLanguageTag();
 
                         // GET DEFAULT LABEL
                         if (!empty($ag_imgXML_captions->caption)) {
@@ -469,24 +485,25 @@ class agGallery extends agHelper {
                     }
                 }
             }// if(file_exists($descriptionFileApsolutePath))
-        }
-        else
+        } else {
             $this->descArray = null;
+        }
     }
 
     /**
      *  Loads images array, sorted as defined bu parametar.
      */
-    private function loadImageFiles() {
+    private function loadImageFiles()
+    {
         $this->images = agHelper::ag_imageArrayFromFolder($this->imagesFolderPhysicalPath);
         if (!empty($this->images)) {
-            $this->images = agHelper::array_sorting($this->images, $this->imagesFolderPhysicalPath,$this->params['arrange']);
+            $this->images = agHelper::array_sorting($this->images, $this->imagesFolderPhysicalPath, $this->params['arrange']);
         }
 
         // Paginations Support
         if ($this->params['paginUse']) {
             $this->paginImgTotal = count($this->images);
-            $paginImages = Array();
+            $paginImages = array();
             $ag_pagin_start = ($this->paginInitPages[$this->index] - 1) * $this->params['paginImagesPerGallery'];
             $ag_pagin_end = ($this->paginInitPages[$this->index] * $this->params['paginImagesPerGallery']) - 1;
 
@@ -505,17 +522,19 @@ class agGallery extends agHelper {
     /**
      * Loads folder array, sorted as defined bu parametar.
      */
-    private function loadFolders() {
+    private function loadFolders()
+    {
         $this->folders = agHelper::ag_foldersArrayFromFolder($this->imagesFolderPhysicalPath);
         if (!empty($this->folders)) {
-            $this->folders = agHelper::array_sorting($this->folders, $this->imagesFolderPhysicalPath,$this->params['arrange']);
+            $this->folders = agHelper::array_sorting($this->folders, $this->imagesFolderPhysicalPath, $this->params['arrange']);
         }
     }
 
     /**
      * Generates thumbs, check for settings change and recreates thumbs if it needs to
      */
-    function generateThumbs() {
+    public function generateThumbs()
+    {
         if (($this->params['thumbWidth'] == 0) || ($this->params['thumbHeight'] == 0)) {
             $this->adderror($this->cmsif->Text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
             return;
@@ -532,7 +551,6 @@ class agGallery extends agHelper {
                 if (!file_exists($thumb_file)) {
                     $this->addError(agHelper::ag_createThumb($this->imagesFolderPhysicalPath . $imagesValue, $thumb_file, $this->params['thumbWidth'], $this->params['thumbHeight'], $this->params['thumbAutoSize']));
                 } else {
-
                     list($imagewidth, $imageheight) = getimagesize($thumb_file);
                     switch ($this->params['thumbAutoSize']) {
                         case "none":
@@ -563,7 +581,8 @@ class agGallery extends agHelper {
     /**
      * Generates Album Thumbs
      */
-    function Album_generateThumb($AG_parent_folder, $AG_img) {
+    public function Album_generateThumb($AG_parent_folder, $AG_img)
+    {
         if (($this->params['thumbWidth'] == 0) || ($this->params['thumbHeight'] == 0)) {
             $this->adderror($this->cms->Text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
             return;
@@ -613,7 +632,8 @@ class agGallery extends agHelper {
     /**
      * Returns error html
      */
-    function writeErrors() {
+    public function writeErrors()
+    {
         $errors = "";
         $osVersion = isset($_SERVER['HTTP_USER_AGENT']) ? $this->ag_get_os_($_SERVER['HTTP_USER_AGENT']) : 'Unknown - no user agent';
         $phpVersion = phpversion();
@@ -636,7 +656,8 @@ class agGallery extends agHelper {
      * Author: Lee Anderson
      * Authors e-mail: landerson@atlas-tech.com
      */
-    function writeBreadcrum() {
+    public function writeBreadcrum()
+    {
         $folderNames = str_replace('//', '/', $this->imagesFolderName);
         $albumName = explode("/", $folderNames);
         $folderNumber = count($albumName) - 1;
@@ -656,29 +677,9 @@ class agGallery extends agHelper {
     /**
      *  Reads inline parametar if any or sets default values
      */
-    function readInlineParams() {
-        ////setting parametars for current gallery, if there is no inline params default params are set
-        $this->params['template'] = $this->ag_getParams("template", $this->match, $this->staticParams['template']);
-        $this->params['thumbWidth'] = $this->ag_getParams("thumbWidth", $this->match, $this->staticParams['thumbWidth']);
-        $this->params['thumbHeight'] = $this->ag_getParams("thumbHeight", $this->match, $this->staticParams['thumbHeight']);
-        $this->params['thumbAutoSize'] = $this->ag_getParams("thumbAutoSize", $this->match, $this->staticParams['thumbAutoSize']);
-        $this->params['arrange'] = $this->ag_getParams("arrange", $this->match, $this->staticParams['arrange']);
-        $this->params['newImageTag'] = $this->ag_getParams("newImageTag", $this->match, $this->staticParams['newImageTag']);
-        $this->params['newImageTag_days'] = $this->ag_getParams("newImageDays", $this->match, $this->staticParams['newImageTag_days']);
-        $this->params['frameWidth'] = $this->ag_getParams("frameWidth", $this->match, $this->staticParams['frame_width']);
-        $this->params['frameHeight'] = $this->ag_getParams("frameHeight", $this->match, $this->staticParams['frame_height']);
-        $this->params['showSignature'] = $this->ag_getParams("showSignature", $this->match, $this->staticParams['showSignature']);
-        $this->params['plainTextCaptions'] = $this->ag_getParams("plainTextCaptions", $this->match, $this->staticParams['plainTextCaptions']);
-        $this->params['popupEngine'] = $this->ag_getParams("popupEngine", $this->match, $this->staticParams['popupEngine']);
-        $this->params['backgroundColor'] = $this->ag_getParams("backgroundColor", $this->match, $this->staticParams['backgroundColor']);
-        $this->params['foregroundColor'] = $this->ag_getParams("foregroundColor", $this->match, $this->staticParams['foregroundColor']);
-        $this->params['highliteColor'] = $this->ag_getParams("highliteColor", $this->match, $this->staticParams['highliteColor']);
-
-        // Albums Support
-        $this->params['albumUse'] = $this->ag_getParams("albumUse", $this->match, $this->staticParams['albumUse']);
-        // Paginations Support
-        $this->params['paginUse'] = $this->ag_getParams("paginUse", $this->match, $this->staticParams['paginUse']);
-        $this->params['paginImagesPerGallery'] = $this->ag_getParams("paginImagesPerGallery", $this->match, $this->staticParams['paginImagesPerGallery']);
+    public function readInlineParams()
+    {
+        $this->params->readInlineParams($this->match);
     }
 
     /**
@@ -688,48 +689,22 @@ class agGallery extends agHelper {
      * @param <string> $sitePhysicalPath
      * @param <pointer> $document
      */
-    function __construct($globalParams, $path, $sitePhysicalPath, $document, $cms) {
+    public function __construct($globalParams, $path, $sitePhysicalPath, $document, $cms)
+    {
         $this->cms = $cms;
-        
-        $this->staticParams['thumbWidth'] = $globalParams->get('thumbWidth', 200);
-        $this->staticParams['thumbHeight'] = $globalParams->get('thumbHeight', 120);
-        $this->staticParams['thumbAutoSize'] = $globalParams->get('thumbAutoSize', "none");
-        $this->staticParams['template'] = $globalParams->get('template', 'classic');
-        $this->staticParams['arrange'] = $globalParams->get('arrange', 'priority');
-        $this->staticParams['newImageTag'] = $globalParams->get('newImageTag', true);
-        $this->staticParams['newImageTag_days'] = $globalParams->get('newImageTag_days', '7');
-        $this->staticParams['frame_width'] = $globalParams->get('frame_width', false);
-        $this->staticParams['frame_height'] = $globalParams->get('frame_height', false);
-        $this->staticParams['showSignature'] = $globalParams->get('showSignature', true);
-        $this->staticParams['plainTextCaptions'] = $globalParams->get('plainTextCaptions', true);
-        $this->staticParams['popupEngine'] = $globalParams->get('popupEngine', 'slimbox');
-        $this->staticParams['usePopuEngine'] = $globalParams->get('usePopuEngine', true);
-        $this->staticParams['ignoreError'] = $globalParams->get('ignoreError', true);
-        $this->staticParams['ignoreAllError'] = $globalParams->get('ignoreAllError', false);
-        $this->staticParams['rootFolder'] = $globalParams->get('rootFolder', '/images/sampledata/');
-        $this->staticParams['backgroundColor'] = $globalParams->get('backgroundColor', 'ffffff');
-        $this->staticParams['foregroundColor'] = $globalParams->get('foregroundColor', '808080');
-        $this->staticParams['highliteColor'] = $globalParams->get('highliteColor', 'fea804');
+        $this->params = new agParams($globalParams);
         $this->popupEngine = new agPopup();
-        $this->params = $this->staticParams;
-        if (substr($path, -1) == "/")
+        if (substr($path, -1) == "/") {
             $path = substr($path, 0, -1);
+        }
         $this->sitePath = $path;
         $this->sitePhysicalPath = $sitePhysicalPath;
         $this->thumbsFolderPhysicalPath = $sitePhysicalPath .  $this->plugin_path . 'thumbs' . $this->DS;
         $this->imagesFolderPhysicalPath = $sitePhysicalPath . $this->params["rootFolder"];
         $this->cleanThumbsFolder();
         $this->loadCSS('AdmirorGallery.css');
-        //$this->errors = new agErrors();
-        // Album Support
-        $this->staticParams['albumUse'] = $globalParams->get('albumUse', true);
-        // Paginations Support
-        $this->staticParams['paginUse'] = $globalParams->get('paginUse', true);
-        $this->staticParams['paginImagesPerGallery'] = $globalParams->get('paginImagesPerGallery', 10);
     }
     //**************************************************************************
     // END Gallery Functions                                                  //
     //**************************************************************************
 }
-
-?>

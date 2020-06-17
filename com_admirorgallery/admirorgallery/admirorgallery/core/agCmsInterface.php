@@ -35,6 +35,4 @@ interface agCmsInterface
     //HTMLOutput
     public function Text(int $string_id): string;
     public function TextConcat(string $string_id, $value): string;
-    
 }
-

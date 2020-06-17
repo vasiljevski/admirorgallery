@@ -9,31 +9,33 @@
  */
 
 defined('_JEXEC') or die();
-class agHelper {
+class agHelper
+{
     /**
      * http://www.php.net/manual/en/function.natsort.php#45346
      * @param <type> $array
      * @return <type>
      */
-    public static function array_sorting($array,$targetFolder,$arrange) {     
-        $ag_array_data = Array();
+    public static function array_sorting($array, $targetFolder, $arrange)
+    {
+        $ag_array_data = array();
         // READS XML DATA AND GENERATES ARRAYS
         foreach ($array as $key => $value) {
             // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
-            $ag_pathWithStripExt = $targetFolder . agHelper::ag_removExtension(basename($value));                           
+            $ag_pathWithStripExt = $targetFolder . agHelper::ag_removExtension(basename($value));
             $ag_XML_path = $ag_pathWithStripExt . ".xml";
             if (agHelper::ag_exists($ag_pathWithStripExt . ".XML")) {
                 $ag_XML_path = $ag_pathWithStripExt . ".XML";
-            }    
-            $ag_xml_value = Array();
-            $ag_xml_value["value"] = $value; // IMAGE NAME                
-            $ag_xml_value["priority"] = "none"; // DEFAULT PRIORITY                
-            $ag_xml_value["date"] = date("YmdHi", filemtime($targetFolder.$value)); // DEFAULT DATE    
+            }
+            $ag_xml_value = array();
+            $ag_xml_value["value"] = $value; // IMAGE NAME
+            $ag_xml_value["priority"] = "none"; // DEFAULT PRIORITY
+            $ag_xml_value["date"] = date("YmdHi", filemtime($targetFolder.$value)); // DEFAULT DATE
             if (agHelper::ag_exists($ag_XML_path)) {
                 $ag_XML_xml = simplexml_load_file($ag_XML_path);
-                if(isset($ag_XML_xml)){
-                    if (isset($ag_XML_xml->visible)){
-                        if ((string)$ag_XML_xml->visible == 'false'){
+                if (isset($ag_XML_xml)) {
+                    if (isset($ag_XML_xml->visible)) {
+                        if ((string)$ag_XML_xml->visible == 'false') {
                             continue; // SKIP HIDDEN IMAGES
                         }
                     }
@@ -41,8 +43,8 @@ class agHelper {
                         $ag_xml_value["priority"] = (string)$ag_XML_xml->priority; // XML PRIORITY
                     }
                 }
-            }    
-            $ag_array_data[] = $ag_xml_value;    
+            }
+            $ag_array_data[] = $ag_xml_value;
         }
         $sort_by= 'priority';
         switch ($arrange) {
@@ -58,23 +60,23 @@ class agHelper {
         $new_array = array();
         $temporary_array = array();
         // walk through original array
-        foreach($ag_array_data as $original_key => $original_value) {
+        foreach ($ag_array_data as $original_key => $original_value) {
             // and save only values
             $temporary_array[] = $original_value[$sort_by];
         }
         // sort array on values
         natcasesort($temporary_array);
-        if($sort_by=="date"){
-            $temporary_array=array_reverse($temporary_array,true);
+        if ($sort_by=="date") {
+            $temporary_array=array_reverse($temporary_array, true);
         }
         // delete double values
         $temporary_array = array_unique($temporary_array);
         // walk through temporary array
-        foreach($temporary_array as $temporary_value) {
+        foreach ($temporary_array as $temporary_value) {
             // walk through original array
-            foreach($ag_array_data as $original_key => $original_value) {
+            foreach ($ag_array_data as $original_key => $original_value) {
                 // and search for entries having the right value
-                if($temporary_value == $original_value[$sort_by]) {
+                if ($temporary_value == $original_value[$sort_by]) {
                     // save in new array
                     $new_array[$original_key] = $original_value;
                 }
@@ -82,21 +84,22 @@ class agHelper {
         }
         // update original array
         $ag_array_data = $new_array;
-        // CREATE SORTED ARRAY 
-        $array = Array(); 
-        foreach($ag_array_data as $original_key => $original_value) {
+        // CREATE SORTED ARRAY
+        $array = array();
+        foreach ($ag_array_data as $original_key => $original_value) {
             // and save only values
             $array[] = $original_value['value'];
         }
         return $array;
-    }  
+    }
     /**
      *  TODO:Add description
      * @param <type> $hex
      * @param <type> $adjust
      * @return <type>
      */
-    public static function ag_foregroundColor($hex, $adjust) {
+    public static function ag_foregroundColor($hex, $adjust)
+    {
         $red = hexdec($hex[0] . $hex[1]);
         $green = hexdec($hex[2] . $hex[3]);
         $blue = hexdec($hex[4] . $hex[5]);
@@ -104,22 +107,28 @@ class agHelper {
             $red -= $adjust;
             $green -= $adjust;
             $blue -= $adjust;
-            if ($red < 0)
+            if ($red < 0) {
                 $red = 0;
-            if ($green < 0)
+            }
+            if ($green < 0) {
                 $green = 0;
-            if ($blue < 0)
+            }
+            if ($blue < 0) {
                 $blue = 0;
-        }else {
+            }
+        } else {
             $red += $adjust;
             $green += $adjust;
             $blue += $adjust;
-            if ($red > 255)
+            if ($red > 255) {
                 $red = 255;
-            if ($green > 255)
+            }
+            if ($green > 255) {
                 $green = 255;
-            if ($blue > 255)
+            }
+            if ($blue > 255) {
                 $blue = 255;
+            }
         }
 
         return str_pad(dechex($red), 2, '0', 0)
@@ -131,11 +140,11 @@ class agHelper {
      * @param <string> $imageURL
      * @return $imageInfo array:"width","height","type","size"
      */
-    public static function ag_imageInfo($imageURL) {
-
+    public static function ag_imageInfo($imageURL)
+    {
         list($width, $height, $type, $attr) = getimagesize($imageURL);
 
-        $types = Array(
+        $types = array(
             1 => 'GIF',
             2 => 'JPG',
             3 => 'PNG',
@@ -155,7 +164,6 @@ class agHelper {
         );
 
         if ($type) {
-
             return $imageInfo = array(
         "width" => $width,
         "height" => $height,
@@ -169,7 +177,8 @@ class agHelper {
      * @param <type> $size
      * @return <type>
      */
-    public static function ag_fileRoundSize($size) {
+    public static function ag_fileRoundSize($size)
+    {
         $bytes = array('B', 'KB', 'MB', 'GB', 'TB');
         foreach ($bytes as $val) {
             if ($size > 1024) {
@@ -185,7 +194,8 @@ class agHelper {
      * @param <string> $targetFolder
      * @return array or null
      */
-    public static function ag_foldersArrayFromFolder($targetFolder) {
+    public static function ag_foldersArrayFromFolder($targetFolder)
+    {
         $returnValue = null;
         unset($folders);
         if (!file_exists($targetFolder)) {
@@ -209,7 +219,8 @@ class agHelper {
      * @param <type> $originalFolder
      * @param <type> $thumbFolder
      */
-    public static function ag_cleanThumbsFolder($originalFolder, $thumbFolder) {
+    public static function ag_cleanThumbsFolder($originalFolder, $thumbFolder)
+    {
         $origin = agHelper::ag_foldersArrayFromFolder($originalFolder);
         $thumbs = agHelper::ag_foldersArrayFromFolder($thumbFolder);
         $diffArray = array_diff($thumbs, $origin);
@@ -226,7 +237,8 @@ class agHelper {
      * @param <type> $albumsInUse
      * @return <type>
      */
-    public static function ag_clearOldThumbs($imagesFolder, $thumbsFolder, $albumsInUse=false) {
+    public static function ag_clearOldThumbs($imagesFolder, $thumbsFolder, $albumsInUse=false)
+    {
 
         // Generate array of thumbs
         $targetFolder = $thumbsFolder;
@@ -255,7 +267,8 @@ class agHelper {
      * @param string $pathname The directory path.
      * @return boolean returns TRUE if exists or made or FALSE on failure.
      */
-    public static function ag_mkdir_recursive($pathname, $mode) {
+    public static function ag_mkdir_recursive($pathname, $mode)
+    {
         is_dir(dirname($pathname)) || agHelper::ag_mkdir_recursive(dirname($pathname), $mode);
         return is_dir($pathname) || @mkdir($pathname, $mode);
     }
@@ -265,14 +278,18 @@ class agHelper {
      * @param <type> $DeleteMe
      * @return <type>
      */
-    public static function ag_sureRemoveDir($dir, $DeleteMe) {
-        if (!$dh = @opendir($dir))
+    public static function ag_sureRemoveDir($dir, $DeleteMe)
+    {
+        if (!$dh = @opendir($dir)) {
             return;
+        }
         while (false !== ($obj = readdir($dh))) {
-            if ($obj == '.' || $obj == '..')
+            if ($obj == '.' || $obj == '..') {
                 continue;
-            if (!@unlink($dir . '/' . $obj))
+            }
+            if (!@unlink($dir . '/' . $obj)) {
                 agHelper::ag_sureRemoveDir($dir . '/' . $obj, true);
+            }
         }
 
         closedir($dh);
@@ -286,8 +303,9 @@ class agHelper {
      * @param <string> $arrange
      * @return <array> Sorted array of pictures
      */
-    public static function ag_imageArrayFromFolder($targetFolder) {
-        $images = Array();
+    public static function ag_imageArrayFromFolder($targetFolder)
+    {
+        $images = array();
         if (!agHelper::ag_exists($targetFolder)) {
             return null;
         }
@@ -301,7 +319,7 @@ class agHelper {
             }
         }
         closedir($dh);
-        return $images;        
+        return $images;
     }
     /**
      * Gets the atributes value by name, else returns false
@@ -310,7 +328,8 @@ class agHelper {
      * @param value $default
      * @return $default value if no presented
      */
-    public static function ag_getParams($attrib, $tag, $default) {
+    public static function ag_getParams($attrib, $tag, $default)
+    {
         //get attribute from html tag
         $re = '/' . preg_quote($attrib) . '=([\'"])?((?(1).+?|[^\s>]+))(?(1)\1)/is';
         if (preg_match($re, $tag, $match)) {
@@ -326,9 +345,10 @@ class agHelper {
      * @param int $new_w
      * @param int $new_h
      * @param string $autoSize
-     * @return type 
+     * @return type
      */
-    public static function ag_createThumb($original_file, $thumb_file, $new_w, $new_h, $autoSize) {
+    public static function ag_createThumb($original_file, $thumb_file, $new_w, $new_h, $autoSize)
+    {
 
         //GD check
         if (!function_exists('gd_info')) {
@@ -339,9 +359,9 @@ class agHelper {
         // Create src_img
         if (preg_match("/jpg|jpeg/i", $original_file)) {
             @$src_img = imagecreatefromjpeg($original_file);
-        } else if (preg_match("/png/i", $original_file)) {
+        } elseif (preg_match("/png/i", $original_file)) {
             @$src_img = imagecreatefrompng($original_file);
-        } else if (preg_match("/gif/i", $original_file)) {
+        } elseif (preg_match("/gif/i", $original_file)) {
             @$src_img = imagecreatefromgif($original_file);
         } else {
             return JText::sprintf('AG_UNSUPPORTED_IMAGE_TYPE_FOR_IMAGE', $original_file);
@@ -394,9 +414,9 @@ class agHelper {
 
         if (preg_match("/jpg|jpeg/i", $original_file)) {
             @imagejpeg($dst_img, $thumb_file);
-        } else if (preg_match("/png/i", $original_file)) {
+        } elseif (preg_match("/png/i", $original_file)) {
             @imagepng($dst_img, $thumb_file);
-        } else if (preg_match("/gif/i", $original_file)) {
+        } elseif (preg_match("/gif/i", $original_file)) {
             @imagegif($dst_img, $thumb_file);
         } else {
             return JText::sprintf('AG_COULD_NOT_CREATE_THUMBNAIL_FILE_FOR_IMAGE', $original_file);
@@ -408,7 +428,8 @@ class agHelper {
      * Creates blank HTML file
      * @param <string> $filename
      */
-    public static function ag_indexWrite($filename) {
+    public static function ag_indexWrite($filename)
+    {
         $handle = fopen($filename, "w") or die("");
         $contents = fwrite($handle, '<html><body bgcolor="#FFFFFF"></body></html>');
         fclose($handle);
@@ -416,9 +437,10 @@ class agHelper {
     /**
      * Parses OS name from $user_agent string
      * @param string $user_agent
-     * @return string $OsName 
+     * @return string $OsName
      */
-    public static function ag_get_os_($user_agent) {
+    public static function ag_get_os_($user_agent)
+    {
         $oses = array(
             'Windows 3.11' => 'Win16',
             'Windows 95' => '(Windows 95)|(Win95)|(Windows_95)',
@@ -438,8 +460,9 @@ class agHelper {
             'Search Bot' => '(nuhk)|(Googlebot)|(Yammybot)|(Openbot)|(Slurp\/cat)|(msnbot)|(ia_archiver)'
         );
         foreach ($oses as $os => $pattern) {
-            if (preg_match('/' . $pattern . '/', $user_agent))
+            if (preg_match('/' . $pattern . '/', $user_agent)) {
                 return $os;
+            }
         }
         return 'Unknown';
     }
@@ -448,7 +471,8 @@ class agHelper {
      * @param string $fileName
      * @return sting $fileNameNoExtension
      */
-    public static function ag_removExtension($fileName) {
+    public static function ag_removExtension($fileName)
+    {
         $ext = strrchr($fileName, '.');
         if ($ext !== false) {
             $fileName = substr($fileName, 0, -strlen($ext));
@@ -458,26 +482,29 @@ class agHelper {
     /**
      * Returns extension from filename
      * @param string $fileName
-     * @return string $extension 
+     * @return string $extension
      */
-    public static function ag_getExtension($fileName) {
+    public static function ag_getExtension($fileName)
+    {
         return substr(strrchr($fileName, '.'), 1);
     }
     /**
      * Wrapper for standard file_exists
      * @param string $fileName
-     * @return bool 
+     * @return bool
      */
-    public static function ag_exists($fileName) {
+    public static function ag_exists($fileName)
+    {
         return file_exists($fileName);
     }
     /**
      * Check for existance of the remote file
      * @param string $path
-     * @return bool  
+     * @return bool
      */
-    public static function ag_remote_exists($path) {
-        return (@fopen($path,"r")==true);   
+    public static function ag_remote_exists($path)
+    {
+        return (@fopen($path, "r")==true);
     }
     /**
      * Shrink string for display
@@ -486,12 +513,12 @@ class agHelper {
      * @param type $add
      * @return string
      */
-    public static function ag_shrinkString($string,$stringLength,$add=''){
-        if(strlen($string)>$stringLength){
-              $string = substr($string,0,$stringLength);
-              $string.="...";
+    public static function ag_shrinkString($string, $stringLength, $add='')
+    {
+        if (strlen($string)>$stringLength) {
+            $string = substr($string, 0, $stringLength);
+            $string.="...";
         }
         return $string;
     }
 }
-?>

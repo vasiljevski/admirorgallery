@@ -75,7 +75,7 @@ class plgContentAdmirorGallery extends JPlugin {
             $queryString = strip_tags($_SERVER['QUERY_STRING']);
             parse_str($queryString, $queryArray);
             
-            $basepath = $AG->sitePhysicalPath.$AG->staticParams['rootFolder'];
+            $basepath = $AG->sitePhysicalPath.$AG->params['rootFolder'];
             $realBase = realpath($basepath);
 
             $i=0;
