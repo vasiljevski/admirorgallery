@@ -27,7 +27,7 @@ class com_admirorgalleryInstallerScript {
      * @return void
      */
     function install($parent) {
-        $manifest = $parent->get("manifest");
+        $manifest = $parent->getManifest();
         $parent = $parent->getParent();
         $source = $parent->getPath("source");
 
@@ -61,7 +61,7 @@ class com_admirorgalleryInstallerScript {
                     $columnFolder='content'"
         );
 
-        $this->gallery_install_result = $db->query();
+        $this->gallery_install_result = $db->execute();
         // Enable plugins
         $db->setQuery(
                 "UPDATE
@@ -76,7 +76,7 @@ class com_admirorgalleryInstallerScript {
                     $columnFolder='editors-xtd'"
         );
 
-        $this->button_install_result = $db->query();
+        $this->button_install_result = $db->execute();
     }
 
     /**
