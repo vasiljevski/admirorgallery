@@ -1,23 +1,27 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     6.0.0
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
-// Import library dependencies
-jimport('joomla.event.plugin');
-jimport('joomla.plugin.plugin');
-jimport( 'joomla.filesystem.folder' );
-define('AG_VERSION', '5.2.0');
+
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Filesystem\Folder;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Version;
+use Joomla\CMS\Uri\Uri;
+
+define('AG_VERSION', '6.0.0');
 
 JLoader::register('agGallery', dirname(__FILE__) . '/admirorgallery/classes/agGallery.php');
 
-class plgContentAdmirorGallery extends JPlugin {
+class plgContentAdmirorGallery extends CMSPlugin {
 
     //Constructor
     function __construct(&$subject, $params) {
@@ -38,7 +42,7 @@ class plgContentAdmirorGallery extends JPlugin {
         if (!preg_match("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}|{ag[^}]*}(.*?){/ag}#s", $row->text)) {
             return;
         }
-        $doc = JFactory::getDocument();
+        $doc = Factory::getDocument();
         //check for PHP version, 5.0.0 and above are accepted
         if (strnatcmp(phpversion(), '5.0.0') <= 0) {
             $doc->addStyleSheet('plugins/content/admirorgallery/admirorgallery/AdmirorGallery.css');
@@ -54,13 +58,13 @@ class plgContentAdmirorGallery extends JPlugin {
 
         //Create galeries
         if (preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}#s", $row->text, $matches, PREG_PATTERN_ORDER) > 0) {
-            $AG = new agGallery($this->params, JURI::base(), JPATH_SITE, $doc);
+            $AG = new agGallery($this->params, Uri::base(), JPATH_SITE, $doc);
             //Load current language
-            JPlugin::loadLanguage('plg_content_admirorgallery', JPATH_ADMINISTRATOR);
+            $this->loadLanguage('plg_content_admirorgallery', JPATH_ADMINISTRATOR);
             // Version check
-            $version = new JVersion();
+            $version = new Version();
             if ($version->PRODUCT == "Joomla!" && ($version->RELEASE == "1.5")) {
-                $AG->addError(JText::_('AG_ADMIROR_GALLERY_PLUGIN_FUNCTIONS_ONLY_UNDER'));
+                $AG->addError(Text::_('AG_ADMIROR_GALLERY_PLUGIN_FUNCTIONS_ONLY_UNDER'));
             }
             //if any image is corrupted supresses recoverable error
             ini_set('gd.jpeg_ignore_warning', $AG->params['ignoreError']);
@@ -94,14 +98,14 @@ class plgContentAdmirorGallery extends JPlugin {
                 $AG->initGallery($match); // match = ;
                 // ERROR - Cannot find folder with images
                 if (!file_exists($AG->imagesFolderPhysicalPath)) {
-                    $AG->addError(JText::sprintf('AG_CANNOT_FIND_FOLDER_INSIDE_FOLDER', $AG->imagesFolderName, $AG->imagesFolderPhysicalPath));
+                    $AG->addError(Text::sprintf('AG_CANNOT_FIND_FOLDER_INSIDE_FOLDER', $AG->imagesFolderName, $AG->imagesFolderPhysicalPath));
                 }
                 //Create directory in thumbs for gallery
-                JFolder::create($AG->thumbsFolderPhysicalPath, 0755);
+                Folder::create($AG->thumbsFolderPhysicalPath, 0755);
                 if (is_writable($AG->thumbsFolderPhysicalPath))
                     $AG->generateThumbs();
                 else
-                    $AG->addError(JText::sprintf('AG_CANNOT_CREATE_THUMBS_PERMMISIONS_ERROR', $AG->thumbsFolderPhysicalPath));
+                    $AG->addError(Text::sprintf('AG_CANNOT_CREATE_THUMBS_PERMMISIONS_ERROR', $AG->thumbsFolderPhysicalPath));
                 include (dirname(__FILE__) . '/admirorgallery/templates/' . $AG->params['template'] . '/index.php');
 
                 $AG->clearOldThumbs();
@@ -169,7 +173,7 @@ class plgContentAdmirorGallery extends JPlugin {
             }
             $row->text .= '<br />'
                     . '<a href="http://www.admiror-design-studio.com" target="_blank">AdmirorGallery ' . AG_VERSION . '</a>,'
-                    . ' ' . JText::_("AG_AUTHORS") 
+                    . ' ' . Text::_("AG_AUTHORS") 
                     . ' <a href="http://www.vasiljevski.com/" target="_blank">Vasiljevski</a> '
                     . '& '
                     . '<a href="http://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.</div>';
@@ -179,4 +183,3 @@ class plgContentAdmirorGallery extends JPlugin {
 }
 
 //class plgContentadmirorGallery extends JPlugin
-?>
