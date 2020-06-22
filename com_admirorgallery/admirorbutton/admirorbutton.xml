@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="3.1" type="plugin" group="editors-xtd" method="upgrade">
+<extension type="plugin" group="editors-xtd" method="upgrade">
     <name>plg_editors-xtd_admirorbutton</name>
     <author>Igor Kekeljevic and Nikola Vasiljevski</author>
     <creationDate>January 2014</creationDate>
@@ -7,7 +7,7 @@
     <license>GNU/GPL</license>
     <authorEmail></authorEmail>
     <authorUrl>http://www.admiror-design-studio.com</authorUrl>
-    <version>5.1.2</version>
+    <version>6.0.0</version>
     <description></description>
     <files>
         <filename plugin="admirorbutton">admirorbutton.php</filename>
