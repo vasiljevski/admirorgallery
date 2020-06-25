@@ -10,6 +10,9 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+
 jimport('joomla.application.component.view');
 
 class AdmirorgalleryViewResourcemanager extends JViewLegacy {
@@ -27,13 +30,14 @@ class AdmirorgalleryViewResourcemanager extends JViewLegacy {
         jimport('joomla.filesystem.archive');
         jimport('joomla.html.pagination');
         jimport('joomla.filesystem.folder');
-        JHTML::_('behavior.tooltip');
+        //JHTML::_('behavior.tooltip');
         
-        $mainframe = JFactory::getApplication();
-        $option = JRequest::getCmd('option');
-        $this->ag_resource_type = JRequest::getVar('AG_resourceType'); // Current resource type
+        $mainframe = Factory::getApplication();
+        $jinput = $mainframe->input;
+        $option = $jinput->getCmd('option');
+        $this->ag_resource_type = $jinput->getVar('AG_resourceType'); // Current resource type
         
-        JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_' . strtoupper($this->ag_resource_type)), $this->ag_resource_type);
+        JToolBarHelper::title(Text::_('COM_ADMIRORGALLERY_' . strtoupper($this->ag_resource_type)), $this->ag_resource_type);
         
         // Loading JPagination vars
         $this->limitstart = $mainframe->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');

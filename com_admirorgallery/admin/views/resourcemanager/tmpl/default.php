@@ -23,7 +23,7 @@ if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
             <div class="module-title nav-header"> <?php echo JText::_('AG_VERSION'); ?> </div>
             <ul class="unstyled list-striped">
                 <?php
-                $ag_admirorgallery_xml = JFactory::getXML(JPATH_COMPONENT_ADMINISTRATOR . '/com_admirorgallery.xml');
+                $ag_admirorgallery_xml = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/com_admirorgallery.xml');
                 if ($ag_admirorgallery_xml) {
                     echo '<li>' . JText::_('COM_ADMIRORGALLERY_COMPONENT_VERSION') . '&nbsp;' . $ag_admirorgallery_xml->version . "</li>";
                     echo '<li>' . JText::_('COM_ADMIRORGALLERY_PLUGIN_VERSION') . '&nbsp;' . $ag_admirorgallery_xml->plugin_version . "</li>";
@@ -110,7 +110,7 @@ if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
                                     $ag_resourceManager_description = JText::_("AG_NO_DESCRITION");
 
                                     if (JFIle::exists(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type . '/' . $ag_resourceManager_id . '/details.xml')) {// N U
-                                        $ag_resourceManager_xml = JFactory::getXML(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type . '/' . $ag_resourceManager_id . '/details.xml');
+                                        $ag_resourceManager_xml = simplexml_load_file(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type . '/' . $ag_resourceManager_id . '/details.xml');
                                         $ag_resourceManager_name = $ag_resourceManager_xml->name;
                                         $ag_resourceManager_creationDate = $ag_resourceManager_xml->creationDate;
                                         $ag_resourceManager_author = $ag_resourceManager_xml->author;
