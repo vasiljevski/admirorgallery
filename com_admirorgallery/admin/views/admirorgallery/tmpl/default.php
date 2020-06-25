@@ -7,12 +7,15 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+
 defined('_JEXEC') or die('Restricted access');
 //Check if plugin is installed, othervise don't show view
 if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
     return;
 }
-$db = JFactory::getDBO();
+$db = Factory::getDBO();
 $query = "SELECT * FROM #__extensions WHERE (element = 'admirorgallery') AND (type = 'plugin')";
 $db->setQuery($query);
 $row = $db->loadAssoc();
@@ -37,19 +40,19 @@ $myparams->bind($values);
         <div id="sidebar" class="span2">
             <div class="sidebar-nav">
                 <div class="well well-small">
-                    <div class="module-title nav-header"><?php echo JText::_('COM_ADMIRORGALLERY_MENU'); ?></div>
+                    <div class="module-title nav-header"><?php echo Text::_('COM_ADMIRORGALLERY_MENU'); ?></div>
                     <?php echo $this->sidebar; ?>
                 </div>
             </div>
             <div class="well well-small">
-                <div class="module-title nav-header"> <?php echo JText::_('AG_VERSION'); ?> </div>
+                <div class="module-title nav-header"> <?php echo Text::_('AG_VERSION'); ?> </div>
                 <ul class="unstyled list-striped">
                     <?php
-                    $ag_admirorgallery_xml = JFactory::getXML(JPATH_COMPONENT_ADMINISTRATOR . '/com_admirorgallery.xml');
+                    $ag_admirorgallery_xml = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/com_admirorgallery.xml');
                     if ($ag_admirorgallery_xml) {
-                        echo '<li>' . JText::_('COM_ADMIRORGALLERY_COMPONENT_VERSION') . '&nbsp;' . $ag_admirorgallery_xml->version . "</li>";
-                        echo '<li>' . JText::_('COM_ADMIRORGALLERY_PLUGIN_VERSION') . '&nbsp;' . $ag_admirorgallery_xml->plugin_version . "</li>";
-                        echo '<li>' . JText::_('COM_ADMIRORGALLERY_BUTTON_VERSION') . '&nbsp;' . $ag_admirorgallery_xml->button_version . "</li>";
+                        echo '<li>' . Text::_('COM_ADMIRORGALLERY_COMPONENT_VERSION') . '&nbsp;' . $ag_admirorgallery_xml->version . "</li>";
+                        echo '<li>' . Text::_('COM_ADMIRORGALLERY_PLUGIN_VERSION') . '&nbsp;' . $ag_admirorgallery_xml->plugin_version . "</li>";
+                        echo '<li>' . Text::_('COM_ADMIRORGALLERY_BUTTON_VERSION') . '&nbsp;' . $ag_admirorgallery_xml->button_version . "</li>";
                     }
                     ?>
                 </ul>
@@ -63,7 +66,7 @@ $myparams->bind($values);
                 foreach ($fieldSets as $name => $fieldSet) :
                     $label = empty($fieldSet->label) ? 'COM_CONFIG_' . $name . '_FIELDSET_LABEL' : $fieldSet->label;
                     ?>
-                    <li><a href="#<?php echo $name; ?>" data-toggle="tab"><?php echo JText::_($label); ?></a></li>
+                    <li><a href="#<?php echo $name; ?>" data-toggle="tab"><?php echo Text::_($label); ?></a></li>
                     <?php
                 endforeach;
                 ?>
@@ -76,7 +79,7 @@ $myparams->bind($values);
                     <div class="tab-pane" id="<?php echo $name; ?>">
                         <?php
                         if (isset($fieldSet->description) && !empty($fieldSet->description)) :
-                            echo '<p class="tab-description">' . JText::_($fieldSet->description) . '</p>';
+                            echo '<p class="tab-description">' . Text::_($fieldSet->description) . '</p>';
                         endif;
                         foreach ($myparams->getFieldset($name) as $field):
                             ?>
@@ -101,7 +104,7 @@ $myparams->bind($values);
         </div>
         <div class="span5"> 
             <div class="well well-small">
-                <?php echo JText::_('COM_ADMIRORGALLERY_DESCRIPTION'); ?>
+                <?php echo Text::_('COM_ADMIRORGALLERY_DESCRIPTION'); ?>
             </div>
         </div>
     </div>

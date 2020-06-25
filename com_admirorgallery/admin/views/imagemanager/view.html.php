@@ -11,6 +11,8 @@
 defined('_JEXEC') or die('Restricted access');
 
 jimport('joomla.application.component.view');
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\LanguageHelper;
 
 class AdmirorgalleryViewImagemanager extends JViewLegacy {
 
@@ -26,10 +28,11 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
         jimport('joomla.language.language');
         jimport('joomla.filesystem.archive');
 
-        $this->ag_template_id = JRequest::getString('AG_template', 'default'); // Current template for AG Component
+        $jinput = Factory::getApplication()->input;
+        $this->ag_template_id = $jinput->getString('AG_template', 'default'); // Current template for AG Component
 
-        $ag_item_url = JRequest::getVar('AG_itemURL');
-        $this->ag_front_end = JRequest::getVar('ag_front_end'); // Current template for AG Component
+        $ag_item_url = $jinput->getVar('AG_itemURL');
+        $this->ag_front_end = $jinput->getVar('ag_front_end'); // Current template for AG Component
         // GET ROOT FOLDER
         $plugin = JPluginHelper::getPlugin('content', 'admirorgallery');
         $pluginParams = new JRegistry($plugin->params);
@@ -123,7 +126,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
         }
         $ag_site_languages.=$this->ag_render_caption("Default", "default", $ag_imgXML_caption_content);
 
-        $ag_lang_available = JLanguage::getKnownLanguages(JPATH_SITE);
+        $ag_lang_available = LanguageHelper::getKnownLanguages();
         if (!empty($ag_lang_available)) {
             foreach ($ag_lang_available as $ag_lang) {
                 $ag_imgXML_caption_content = "";
