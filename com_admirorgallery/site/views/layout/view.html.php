@@ -35,7 +35,7 @@ class AdmirorgalleryViewLayout extends JViewLegacy
 	$this->assign( 'popupEngine', $params->get( 'popupEngine' ) );
 	$this->assign( 'foregroundColor', $params->get( 'foregroundColor' ) );
 	$this->assign( 'backgroundColor', $params->get( 'backgroundColor' ) );
-	$this->assign( 'highliteColor', $params->get( 'highliteColor' ) );
+	$this->assign( 'highlightColor', $params->get( 'highlightColor' ) );
 	$this->assign( 'plainTextCaptions', $params->get( 'plainTextCaptions' ) );
 
         // Albums Support

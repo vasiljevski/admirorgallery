@@ -18,7 +18,7 @@ $template->appendContent('
 <style type="text/css">
 
     .AG_classic .ag_imageThumb {border-color:#' . $AG->params['foregroundColor'] . '}
-    .AG_classic .ag_imageThumb:hover {background-color:#' . $AG->params['highliteColor'] . '}
+    .AG_classic .ag_imageThumb:hover {background-color:#' . $AG->params['highlightColor'] . '}
 
 ' . $template->generatePaginationStyle() . '
 

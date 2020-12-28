@@ -111,7 +111,7 @@ class agTemplate
         
         $this->AG->getGalleryID() . ' a.AG_pagin_prev:hover, #AG_' .
         $this->AG->getGalleryID() . ' a.AG_pagin_next:hover {background-color:#' .
-        $this->AG->params['highliteColor'] . '}
+        $this->AG->params['highlightColor'] . '}
 #AG_' . $this->AG->getGalleryID() . ' div.AG_album_wrap h1, #AG_' .
         $this->AG->getGalleryID() . ' a.AG_pagin_link, #AG_' .
         $this->AG->getGalleryID() . ' a.AG_pagin_prev, #AG_' .
@@ -119,12 +119,11 @@ class agTemplate
         $this->AG->params['foregroundColor'].'}';
     }
 
-    public function render()
+    public function render(): string
     {
         $this->AG->loadCSS($this->template_root.$this->template_style);
         $this->AG->loadCSS($this->template_root.$this->pagination_style);
-        $content = $this->html;
-        $content .= $this->postContent();
-        return $content;
+        $this->postContent();
+        return $this->html;
     }
 }

@@ -13,16 +13,20 @@ class agHelper
 {
     /**
      * http://www.php.net/manual/en/function.natsort.php#45346
-     * @param <type> $array
-     * @return <type>
+     * @param $array
+     * @param $targetFolder
+     * @param $arrange
+     * @return array
+     *
+     * @since 5.0.0
      */
-    public static function array_sorting($array, $targetFolder, $arrange)
+    public static function array_sorting($array, $targetFolder, $arrange): array
     {
         $ag_array_data = array();
         // READS XML DATA AND GENERATES ARRAYS
         foreach ($array as $key => $value) {
-            // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
-            $ag_pathWithStripExt = $targetFolder . agHelper::ag_removExtension(basename($value));
+            // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
+            $ag_pathWithStripExt = $targetFolder . agHelper::ag_removeExtension(basename($value));
             $ag_XML_path = $ag_pathWithStripExt . ".xml";
             if (agHelper::ag_exists($ag_pathWithStripExt . ".XML")) {
                 $ag_XML_path = $ag_pathWithStripExt . ".XML";
@@ -92,13 +96,16 @@ class agHelper
         }
         return $array;
     }
+
     /**
-     *  TODO:Add description
-     * @param <type> $hex
-     * @param <type> $adjust
-     * @return <type>
+     *  Returns foreground color
+     * @param $hex
+     * @param $adjust
+     * @return string
+     *
+     * @since 5.0.0
      */
-    public static function ag_foregroundColor($hex, $adjust)
+    public static function ag_foregroundColor($hex, $adjust): string
     {
         $red = hexdec($hex[0] . $hex[1]);
         $green = hexdec($hex[2] . $hex[3]);
@@ -135,10 +142,12 @@ class agHelper
         . str_pad(dechex($green), 2, '0', 0)
         . str_pad(dechex($blue), 2, '0', 0);
     }
+
     /**
      * IMAGEINFO Last Update: 06.12.2008. Igor Kekeljevic, 2008.
      * @param <string> $imageURL
-     * @return $imageInfo array:"width","height","type","size"
+     * @since 5.0.0
+     * @return array|null $imageInfo array:"width","height","type","size"
      */
     public static function ag_imageInfo($imageURL)
     {
@@ -171,13 +180,19 @@ class agHelper
         "size" => filesize($imageURL)
             );
         }
+        return null;
     }
+
     /**
      * Rounds the file size for output
-     * @param <type> $size
-     * @return <type>
+     *
+     * @param $size
+     *
+     * @return string
+     *
+     * @since 5.0.0
      */
-    public static function ag_fileRoundSize($size)
+    public static function ag_fileRoundSize($size): string
     {
         $bytes = array('B', 'KB', 'MB', 'GB', 'TB');
         foreach ($bytes as $val) {
@@ -189,6 +204,7 @@ class agHelper
         }
         return round($size, 2) . " " . $val;
     }
+
     /**
      * Read's all folders in folder.
      * @param <string> $targetFolder
@@ -196,12 +212,12 @@ class agHelper
      */
     public static function ag_foldersArrayFromFolder($targetFolder)
     {
-        $returnValue = null;
         unset($folders);
         if (!file_exists($targetFolder)) {
-            return $returnValue;
+            return null;
         }
         $folders = array();
+        $returnValue = null;
         $dh = opendir($targetFolder);
         if ($dh) {
             while (($f = readdir($dh)) !== false) {
@@ -214,6 +230,7 @@ class agHelper
         closedir($dh);
         return $returnValue;
     }
+
     /**
      * Removes thumb folder
      * @param <type> $originalFolder
@@ -223,6 +240,9 @@ class agHelper
     {
         $origin = agHelper::ag_foldersArrayFromFolder($originalFolder);
         $thumbs = agHelper::ag_foldersArrayFromFolder($thumbFolder);
+        if ($thumbs === null) {
+            return; 
+        }
         $diffArray = array_diff($thumbs, $origin);
         if ($diffArray != null) {
             foreach ($diffArray as $diffFolder) {
@@ -230,23 +250,28 @@ class agHelper
             }
         }
     }
+
     /**
      * Removes old and unused thumbs
-     * @param <type> $imagesFolder
-     * @param <type> $thumbsFolder
-     * @param <type> $albumsInUse
-     * @return <type>
+     *
+     * @param string $imagesFolder
+     * @param string $thumbsFolder
+     * @param bool $albumsInUse
+     *
+     * @return void
+     *
+     * @since 5.0.0
      */
-    public static function ag_clearOldThumbs($imagesFolder, $thumbsFolder, $albumsInUse=false)
+    public static function ag_clearOldThumbs(string $imagesFolder, string $thumbsFolder, bool $albumsInUse=false): void
     {
 
         // Generate array of thumbs
         $targetFolder = $thumbsFolder;
-        $thumbs = agHelper::ag_imageArrayFromFolder($targetFolder, 0);
+        $thumbs = agHelper::ag_imageArrayFromFolder($targetFolder);
 
         // Generate array of images
         $targetFolder = $imagesFolder;
-        $images = agHelper::ag_imageArrayFromFolder($targetFolder, 0);
+        $images = agHelper::ag_imageArrayFromFolder($targetFolder);
 
         if (empty($images) && !$albumsInUse) {
             agHelper::ag_sureRemoveDir($thumbsFolder, 1);
@@ -262,23 +287,34 @@ class agHelper
             }
         }
     }
+
     /**
      * Makes directory, returns TRUE if exists or made
+     *
      * @param string $pathname The directory path.
+     * @param $mode
+     *
      * @return boolean returns TRUE if exists or made or FALSE on failure.
+     *
+     * @since 5.0.0
      */
-    public static function ag_mkdir_recursive($pathname, $mode)
+    public static function ag_mkdir_recursive(string $pathname, $mode): bool
     {
         is_dir(dirname($pathname)) || agHelper::ag_mkdir_recursive(dirname($pathname), $mode);
         return is_dir($pathname) || @mkdir($pathname, $mode);
     }
+
     /**
      * Removes dir or file
-     * @param <type> $dir
-     * @param <type> $DeleteMe
-     * @return <type>
+     *
+     * @param string $dir
+     * @param bool $DeleteMe
+     *
+     * @return void
+     *
+     * @since 5.0.0
      */
-    public static function ag_sureRemoveDir($dir, $DeleteMe)
+    public static function ag_sureRemoveDir(string $dir, bool $DeleteMe): void
     {
         if (!$dh = @opendir($dir)) {
             return;
@@ -297,18 +333,22 @@ class agHelper
             @rmdir($dir);
         }
     }
+
     /**
      * Read's all images from folder
-     * @param <string> $targetFolder
-     * @param <string> $arrange
-     * @return <array> Sorted array of pictures
+     *
+     * @param string $targetFolder
+     *
+     * @return array|null Sorted array of pictures
+     *
+     * @since 5.0.0
      */
-    public static function ag_imageArrayFromFolder($targetFolder)
+    public static function ag_imageArrayFromFolder(string $targetFolder): ?array
     {
-        $images = array();
         if (!agHelper::ag_exists($targetFolder)) {
             return null;
         }
+        $images = array();
         $dh = opendir($targetFolder);
         if ($dh) {
             $ag_ext_valid = array("jpg", "jpeg", "gif", "png"); // SET VALID IMAGE EXTENSION
@@ -321,14 +361,19 @@ class agHelper
         closedir($dh);
         return $images;
     }
+
     /**
-     * Gets the atributes value by name, else returns false
+     * Gets the attributes value by name, else returns false
+     *
      * @param string $attrib
      * @param string $tag
-     * @param value $default
-     * @return $default value if no presented
+     * @param $default
+     *
+     * @return string|$default value if no presented
+     *
+     * @since 5.0.0
      */
-    public static function ag_getParams($attrib, $tag, $default)
+    public static function ag_getParams(string $attrib, string $tag, $default)
     {
         //get attribute from html tag
         $re = '/' . preg_quote($attrib) . '=([\'"])?((?(1).+?|[^\s>]+))(?(1)\1)/is';
@@ -337,19 +382,22 @@ class agHelper
         }
         return $default;
     }
+
     /**
-     * Creates thumbnail from original images
-     * return $errorMessage if creation fails
+     * Creates thumbnail from original images return $errorMessage if creation fails
+     *
      * @param string $original_file
      * @param string $thumb_file
      * @param int $new_w
      * @param int $new_h
      * @param string $autoSize
-     * @return type
+     *
+     * @return string|null
+     *
+     * @since 5.0.0
      */
-    public static function ag_createThumb($original_file, $thumb_file, $new_w, $new_h, $autoSize)
+    public static function ag_createThumb(string $original_file,string $thumb_file,int $new_w,int $new_h,string $autoSize): ?string
     {
-
         //GD check
         if (!function_exists('gd_info')) {
             // ERROR - Invalid image
@@ -423,7 +471,9 @@ class agHelper
         }
         @imagedestroy($dst_img);
         @imagedestroy($src_img);
+        return null;
     }
+
     /**
      * Creates blank HTML file
      * @param <string> $filename
@@ -431,15 +481,22 @@ class agHelper
     public static function ag_indexWrite($filename)
     {
         $handle = fopen($filename, "w") or die("");
-        $contents = fwrite($handle, '<html><body bgcolor="#FFFFFF"></body></html>');
+        if(!fwrite($handle, '<html lang="en-US"><body></body></html>')) {
+            trigger_error("Index file cannot be created!");
+        }
         fclose($handle);
     }
+
     /**
      * Parses OS name from $user_agent string
+     *
      * @param string $user_agent
+     *
      * @return string $OsName
+     *
+     * @since 5.0.0
      */
-    public static function ag_get_os_($user_agent)
+    public static function ag_get_os_(string $user_agent): string
     {
         $oses = array(
             'Windows 3.11' => 'Win16',
@@ -466,12 +523,15 @@ class agHelper
         }
         return 'Unknown';
     }
+
     /**
      *  Removes the file extension
      * @param string $fileName
-     * @return sting $fileNameNoExtension
+     * @return false|string
+     *
+     * @since 5.0.0
      */
-    public static function ag_removExtension($fileName)
+    public static function ag_removeExtension(string $fileName)
     {
         $ext = strrchr($fileName, '.');
         if ($ext !== false) {
@@ -479,6 +539,7 @@ class agHelper
         }
         return $fileName;
     }
+
     /**
      * Returns extension from filename
      * @param string $fileName
@@ -488,6 +549,7 @@ class agHelper
     {
         return substr(strrchr($fileName, '.'), 1);
     }
+
     /**
      * Wrapper for standard file_exists
      * @param string $fileName
@@ -497,23 +559,33 @@ class agHelper
     {
         return file_exists($fileName);
     }
+
     /**
-     * Check for existance of the remote file
+     * Check for existence of the remote file
+     *
      * @param string $path
+     *
      * @return bool
+     *
+     * @since 5.0.0
      */
-    public static function ag_remote_exists($path)
+    public static function ag_remote_exists(string $path): bool
     {
         return (@fopen($path, "r")==true);
     }
+
     /**
      * Shrink string for display
-     * @param type $string
-     * @param type $stringLength
-     * @param type $add
+     *
+     * @param string $string
+     * @param string $stringLength
+     * @param string $add
+     *
      * @return string
+     *
+     * @since 5.0.0
      */
-    public static function ag_shrinkString($string, $stringLength, $add='')
+    public static function ag_shrinkString(string $string, string $stringLength, string $add='')
     {
         if (strlen($string)>$stringLength) {
             $string = substr($string, 0, $stringLength);

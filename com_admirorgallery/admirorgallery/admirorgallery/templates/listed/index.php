@@ -22,7 +22,7 @@ $template->appendContent($AG->albumParentLink);
 $template->appendContent('
 <style type="text/css">
 
-.AG_listed .ag_thumbTd a:hover{border-bottom:2px solid #' . $AG->params['highliteColor'] . ';}
+.AG_listed .ag_thumbTd a:hover{border-bottom:2px solid #' . $AG->params['highlightColor'] . ';}
 .AG_listed a .ag_imageThumb{background-color:#' . $AG->params['foregroundColor'] . ';}
 .AG_listed .ag_description, .AG_listed .ag_imageStat span{color:#' . $AG->params['foregroundColor'] . ';}
 

@@ -25,7 +25,7 @@ $ag_inlineParams.=' plainTextCaptions="'.$this->plainTextCaptions.'"';
 $ag_inlineParams.=' popupEngine="'.$this->popupEngine.'"';
 $ag_inlineParams.=' backgroundColor="'.$this->backgroundColor.'"';
 $ag_inlineParams.=' foregroundColor="'.$this->foregroundColor.'"';
-$ag_inlineParams.=' highliteColor="'.$this->highliteColor.'"';
+$ag_inlineParams.=' highlightColor="'.$this->highlightColor.'"';
 
 // Albums Support
 $ag_inlineParams.=' albumUse="'.$this->albumUse.'"';

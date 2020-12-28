@@ -145,12 +145,12 @@
                        required="1"
                        label="AG_GALLERY_FOREGROUND_COLOR" 
                        description="AG_GALLERY_FOREGROUND_COLOR_DESC" />     
-                <field name="highliteColor" 
+                <field name="highlightColor"
                        type="color" 
                        default="fea804"
                        required="1"
-                       label="AG_GALLERY_HIGHLITE_COLOR" 
-                       description="AG_GALLERY_HIGHLITE_COLOR_DESC" />
+                       label="AG_GALLERY_HIGHLIGHT_COLOR"
+                       description="AG_GALLERY_HIGHLIGHT_COLOR_DESC" />
                 <field name="spacer1" type="spacer" class="text"
                        label="PLG_CONTENT_ADMIRORGALLERY_FRAME_NOTICE"
 		/>

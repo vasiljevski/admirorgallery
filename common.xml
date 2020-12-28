@@ -69,7 +69,7 @@
     </target>
     <target name="_package">
         <zip destfile="${release}/${NAME}_${repository.version}.zip" 
-             basedir="${builddir}" 
+             basedir="${basedir}" 
              excludes=".git,
                         nbproject/**,
                         com_admirorgallery_ant.xml,

@@ -26,11 +26,21 @@ class agParams implements ArrayAccess {
 
     /**
      *  Reads inline parameter if any or sets default values
+     *
+     * @param string $match
+     *
+     * @since 5.0.0
      */
-    public function readInlineParams($match) {
+    public function readInlineParams(string $match) {
         $filter_params = substr($match, strpos($match, " "), strpos($match, "}") - strpos($match, " "));
         $key_value_pair = explode(' ', $filter_params);
         $params = array();
+        
+        //if there is less than one value, no params are added inline
+        if (count($key_value_pair) < 2) {
+            return;
+        }
+
         foreach ($key_value_pair as $value) {
             $split = explode("=", $value);
             $params[$split[0]] = $split[1];

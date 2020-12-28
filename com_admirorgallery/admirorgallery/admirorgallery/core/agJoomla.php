@@ -40,7 +40,11 @@ class agJoomla implements agCmsInterface
 
     public function AddToPathway(string $item, string $link): void
     {
-        JFactory::getApplication()->getPathway()->addItem($item, $link);
+        try {
+            JFactory::getApplication()->getPathway()->addItem($item, $link);
+        } catch (Exception $e) {
+            trigger_error($e);
+        }
     }
 
     public function GetFolders(string $path): array
@@ -50,7 +54,12 @@ class agJoomla implements agCmsInterface
 
     public function GetAlbumPath(string $key): ?string
     {
-        return JFactory::getApplication()->input->getPath($key);
+        try {
+            return JFactory::getApplication()->input->getPath($key);
+        } catch (Exception $e) {
+            trigger_error($e);
+        }
+        return null;
     }
 
     public function SetTitle(string $title): void
@@ -75,12 +84,21 @@ class agJoomla implements agCmsInterface
 
     public function GetActivePage(string $key): ?int
     {
-        return JFactory::getApplication()->input->getInt($key);
+        try {
+            return JFactory::getApplication()->input->getInt($key);
+        } catch (Exception $e) {
+            trigger_error($e);
+        }
+        return null;
     }
 
     public function BreadcrumbsNeeded(): bool
     {
-        $active = JFactory::getApplication()->getMenu()->getActive();
+        try {
+            $active = JFactory::getApplication()->getMenu()->getActive();
+        } catch (Exception $e) {
+            trigger_error($e);
+        }
         return (isset($active) && $active->query['view'] == 'layout');
     }
 
