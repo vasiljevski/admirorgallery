@@ -9,16 +9,19 @@
  */
 
 defined('_JEXEC') or die();
+
 class agHelper
 {
     /**
      * http://www.php.net/manual/en/function.natsort.php#45346
+     *
      * @param $array
      * @param $targetFolder
      * @param $arrange
+     *
      * @return array
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public static function array_sorting($array, $targetFolder, $arrange): array
     {
@@ -99,11 +102,13 @@ class agHelper
 
     /**
      *  Returns foreground color
+     *
      * @param $hex
      * @param $adjust
+     *
      * @return string
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public static function ag_foregroundColor($hex, $adjust): string
     {
@@ -145,11 +150,14 @@ class agHelper
 
     /**
      * IMAGEINFO Last Update: 06.12.2008. Igor Kekeljevic, 2008.
-     * @param <string> $imageURL
-     * @since 5.0.0
+     *
+     * @param $imageURL
+     *
      * @return array|null $imageInfo array:"width","height","type","size"
+     *
+     * @since 5.5.0
      */
-    public static function ag_imageInfo($imageURL)
+    public static function ag_imageInfo(string $imageURL): ?array
     {
         list($width, $height, $type, $attr) = getimagesize($imageURL);
 
@@ -190,7 +198,7 @@ class agHelper
      *
      * @return string
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public static function ag_fileRoundSize($size): string
     {
@@ -207,10 +215,14 @@ class agHelper
 
     /**
      * Read's all folders in folder.
-     * @param <string> $targetFolder
+     *
+     * @param string $targetFolder
+     *
      * @return array or null
+     *
+     * @since 5.5.0
      */
-    public static function ag_foldersArrayFromFolder($targetFolder)
+    public static function ag_foldersArrayFromFolder(string $targetFolder): ?array
     {
         unset($folders);
         if (!file_exists($targetFolder)) {
@@ -233,10 +245,13 @@ class agHelper
 
     /**
      * Removes thumb folder
-     * @param <type> $originalFolder
-     * @param <type> $thumbFolder
+     *
+     * @param string $originalFolder
+     * @param string $thumbFolder
+     *
+     * @since 5.5.0
      */
-    public static function ag_cleanThumbsFolder($originalFolder, $thumbFolder)
+    public static function ag_cleanThumbsFolder(string $originalFolder, string $thumbFolder)
     {
         $origin = agHelper::ag_foldersArrayFromFolder($originalFolder);
         $thumbs = agHelper::ag_foldersArrayFromFolder($thumbFolder);
@@ -260,7 +275,7 @@ class agHelper
      *
      * @return void
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public static function ag_clearOldThumbs(string $imagesFolder, string $thumbsFolder, bool $albumsInUse=false): void
     {
@@ -296,7 +311,7 @@ class agHelper
      *
      * @return boolean returns TRUE if exists or made or FALSE on failure.
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public static function ag_mkdir_recursive(string $pathname, $mode): bool
     {
@@ -312,7 +327,7 @@ class agHelper
      *
      * @return void
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public static function ag_sureRemoveDir(string $dir, bool $DeleteMe): void
     {
@@ -341,7 +356,7 @@ class agHelper
      *
      * @return array|null Sorted array of pictures
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public static function ag_imageArrayFromFolder(string $targetFolder): ?array
     {
@@ -371,9 +386,9 @@ class agHelper
      *
      * @return string|$default value if no presented
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
-    public static function ag_getParams(string $attrib, string $tag, $default)
+    public static function ag_getParams(string $attrib, string $tag, $default): string
     {
         //get attribute from html tag
         $re = '/' . preg_quote($attrib) . '=([\'"])?((?(1).+?|[^\s>]+))(?(1)\1)/is';
@@ -394,7 +409,7 @@ class agHelper
      *
      * @return string|null
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public static function ag_createThumb(string $original_file,string $thumb_file,int $new_w,int $new_h,string $autoSize): ?string
     {
@@ -476,12 +491,15 @@ class agHelper
 
     /**
      * Creates blank HTML file
-     * @param <string> $filename
+     *
+     * @param string $filename
+     *
+     * @since 5.5.0
      */
-    public static function ag_indexWrite($filename)
+    public static function ag_indexWrite(string $filename)
     {
         $handle = fopen($filename, "w") or die("");
-        if(!fwrite($handle, '<html lang="en-US"><body></body></html>')) {
+        if(!fwrite($handle, '')) {
             trigger_error("Index file cannot be created!");
         }
         fclose($handle);
@@ -494,7 +512,7 @@ class agHelper
      *
      * @return string $OsName
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public static function ag_get_os_(string $user_agent): string
     {
@@ -529,7 +547,7 @@ class agHelper
      * @param string $fileName
      * @return false|string
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public static function ag_removeExtension(string $fileName)
     {
@@ -542,20 +560,28 @@ class agHelper
 
     /**
      * Returns extension from filename
+     *
      * @param string $fileName
+     *
      * @return string $extension
+     *
+     * @since 5.5.0
      */
-    public static function ag_getExtension($fileName)
+    public static function ag_getExtension(string $fileName): string
     {
         return substr(strrchr($fileName, '.'), 1);
     }
 
     /**
      * Wrapper for standard file_exists
+     *
      * @param string $fileName
+     *
      * @return bool
+     *
+     * @since 5.5.0
      */
-    public static function ag_exists($fileName)
+    public static function ag_exists(string $fileName): bool
     {
         return file_exists($fileName);
     }
@@ -567,7 +593,7 @@ class agHelper
      *
      * @return bool
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public static function ag_remote_exists(string $path): bool
     {
@@ -583,9 +609,9 @@ class agHelper
      *
      * @return string
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
-    public static function ag_shrinkString(string $string, string $stringLength, string $add='')
+    public static function ag_shrinkString(string $string, string $stringLength, string $add=''): string
     {
         if (strlen($string)>$stringLength) {
             $string = substr($string, 0, $stringLength);

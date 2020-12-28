@@ -11,11 +11,12 @@
 defined('_JEXEC') or die();
 class agPopup
 {
-    public $customAttr='';
-    public $rel='';
-    public $className='';
-    public $jsInclude = '';
-    public $initCode='';
-    public $customPopupThumb='';
-    public $endCode='';
+    public string $customAttr='';
+    public string $rel='';
+    public string $className='';
+    public string $jsInclude = '';
+    public string $initCode='';
+    public string $customPopupThumb='';
+    public string $endCode='';
+    public string $customTag= '';
 }

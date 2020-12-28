@@ -36,14 +36,14 @@ foreach ($AG->images as $imageKey => $imageName) {
     $AG->getImageInfo($imageName);
 
     $template->appendContent('
-    <table border="0" cellspacing="0" cellpadding="0" width="100%" class="ag_item">
+    <table class="ag_item">
     <tbody>
     <tr><td class="ag_thumbTd">
     <span class="ag_thumb' . $AG->params['template'] . '">' .
             $AG->writePopupThumb($imageName). 
     '</span></td>
     <td class="ag_info">
-    <table border="0" cellspacing="0" cellpadding="0">
+    <table>
     <tbody>
     <tr><td class="ag_description">
     ' . $AG->writeDescription($imageName) . '
@@ -66,5 +66,5 @@ $template->addAlbumSupport();
 
 // Render HTML for this template
 $html = $template->render();
-?>
+
 

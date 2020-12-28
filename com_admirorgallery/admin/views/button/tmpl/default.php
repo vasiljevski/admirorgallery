@@ -64,6 +64,7 @@ $ag_init_itemURL = AdmirorGalleryHelper::getRootPath();
                 $label = !empty($fieldSet->label) ? $fieldSet->label : 'COM_PLUGINS_' . $name . '_FIELDSET_LABEL';
                 //echo JHtml::_('sliders.panel', JText::_($label), $name.'-options');
                 if (isset($fieldSet->description) && trim($fieldSet->description)) :
+                //TODO: Fix tip
                 //echo '<p class="tip">'.$this->escape(JText::_($fieldSet->description)).'</p>';
                 endif;
                 ?>

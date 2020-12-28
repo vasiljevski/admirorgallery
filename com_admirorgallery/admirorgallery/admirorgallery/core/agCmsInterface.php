@@ -8,11 +8,16 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
+/**
+ * CmsInterface
+ *
+ * @since 5.5.0
+ */
 interface agCmsInterface
 {
     public static function SecurityCheck(): void;
     public function LoadClass(): void;
-    public function GetActiveLanguageTag(string $path): string;
+    public function GetActiveLanguageTag(): string;
     //Context
     //Input
     //Document

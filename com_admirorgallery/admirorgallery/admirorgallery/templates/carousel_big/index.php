@@ -125,4 +125,4 @@ AG_jQuery(\'.jcarousel-control a[rel="1"]\').css({backgroundPosition:"left -20px
 $template->appendContent($AG->writePagination());
 
 $html = $template->render();
-?>
+

@@ -9,13 +9,14 @@
  */
 
 /**
- * Description of agParams
+ * Parameters class AG uses
  *
+ * @since 5.5.0
  */
 class agParams implements ArrayAccess {
 
-    private $staticParams = [];
-    private $params = [];
+    private array $staticParams = [];
+    private array $params;
 
     public function __construct($globalParams) {
         foreach ($globalParams as $key => $value) {
@@ -29,7 +30,7 @@ class agParams implements ArrayAccess {
      *
      * @param string $match
      *
-     * @since 5.0.0
+     * @since 5.5.0
      */
     public function readInlineParams(string $match) {
         $filter_params = substr($match, strpos($match, " "), strpos($match, "}") - strpos($match, " "));
@@ -52,6 +53,12 @@ class agParams implements ArrayAccess {
         }
     }
 
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     *
+     * @since 5.5.0
+     */
     public function offsetSet($offset, $value) {
         if (is_null($offset)) {
             $this->params[] = $value;
@@ -60,14 +67,34 @@ class agParams implements ArrayAccess {
         }
     }
 
-    public function offsetExists($offset) {
+    /**
+     * @param mixed $offset
+     *
+     * @return bool
+     *
+     * @since 5.5.0
+     */
+    public function offsetExists($offset): bool
+    {
         return isset($this->params[$offset]);
     }
 
+    /**
+     * @param mixed $offset
+     *
+     * @since 5.5.0
+     */
     public function offsetUnset($offset) {
         unset($this->params[$offset]);
     }
 
+    /**
+     * @param mixed $offset
+     *
+     * @return mixed|null
+     *
+     * @since 5.5.0
+     */
     public function offsetGet($offset) {
         return isset($this->params[$offset]) ? $this->params[$offset] : null;
     }

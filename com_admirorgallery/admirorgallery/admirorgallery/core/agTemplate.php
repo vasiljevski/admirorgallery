@@ -13,23 +13,23 @@
  * $ag - reference to the gallery instance
  * $albumSupport - true: enable album support, false: disable album support
  *
- * @since 5.0.0
+ * @since 5.5.0
  */
 class agTemplate
 {
 
     //Output HTML
-    public $html = '';
+    public string $html = '';
     //Gallery instance reference
-    public $AG;
+    public agGallery $AG;
     // Album support
-    public $album_support;
+    public bool $album_support;
     //Root folder of the template
-    public $template_root;
+    public string $template_root;
 
-    public $template_style;
-    public $pagination_style = 'pagination/pagination.css';
-    public $album_style = 'albums/albums.css';
+    public string $template_style;
+    public string $pagination_style = 'pagination/pagination.css';
+    public string $album_style = 'albums/albums.css';
 
     public function __construct($ag, $template = 'template.css')
     {
@@ -100,7 +100,7 @@ class agTemplate
         $this->html .= $content;
     }
     
-    public function generatePaginationStyle()
+    public function generatePaginationStyle(): string
     {
         return '/* PAGINATION AND ALBUM STYLE DEFINITIONS */
 #AG_' . $this->AG->getGalleryID() . ' a.AG_album_thumb, #AG_' .

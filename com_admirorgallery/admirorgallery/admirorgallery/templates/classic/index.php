@@ -29,7 +29,7 @@ $template->appendContent('
 $template->appendContent($AG->albumParentLink);
 
 $template->appendContent('
-  <table cellspacing="0" cellpadding="0" border="0">
+  <table>
     <tbody>
       <tr>
 	<td>');
@@ -60,4 +60,4 @@ $template->addAlbumSupport();
 
 // Render HTML for this template
 $html = $template->render();
-?>
+

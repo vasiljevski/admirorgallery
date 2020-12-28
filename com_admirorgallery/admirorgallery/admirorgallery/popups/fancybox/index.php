@@ -34,4 +34,3 @@ $this->popupEngine->endCode = '
         });
 </script>
 ';
-?>

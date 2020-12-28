@@ -23,4 +23,4 @@ $this->popupEngine->rel = 'pirobox[AdmirorGallery' . $this->getGalleryID() . ']'
 
 // Set CLASS attribute needed for Popup engine
 $this->popupEngine->className = 'pirobox_AdmirorGallery' . $this->getGalleryID();
-?>
+

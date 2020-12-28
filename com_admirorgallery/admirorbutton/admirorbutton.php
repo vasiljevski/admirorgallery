@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorbutton
  * @author      Igor Kekeljevic & Nikola Vasiljevski
@@ -8,29 +8,30 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 /**
- * Editor Image buton
+ * Editor Image button
  *
  * @package Editors-xtd
  * @since 1.5
  */
 class plgButtonAdmirorbutton extends JPlugin {
     protected $autoloadLanguage = true;
+
     /**
      * Constructor
      *
-     * For php4 compatability we must not use the __constructor as a constructor for plugins
+     * For php4 compatibility we must not use the __constructor as a constructor for plugins
      * because func_get_args ( void ) returns a copy of all passed arguments NOT references.
      * This causes problems with cross-referencing necessary for the observer design pattern.
      *
      * @param 	object $subject The object to observe
      * @param 	array  $config  An array that holds the plugin configuration
+     *
      * @since 1.5
      */
-    public function __construct(& $subject, $config) {
+    public function __construct(object &$subject, array $config) {
         parent::__construct($subject, $config);
         $this->loadLanguage('com_admirorgallery');
         $this->loadLanguage('plg_editors-xtd_admirorbutton');   
@@ -38,9 +39,15 @@ class plgButtonAdmirorbutton extends JPlugin {
 
     /**
      * Display the button
-     * @name 
+     *
+     * @param string name
+     *
+     * @return JObject
+     *
+     * @since 5.5.0
      */
-    function onDisplay($name) {
+    function onDisplay(string $name): JObject
+    {
         $doc = JFactory::getDocument();
         $doc->addStyleSheet(JURI::root() . 'administrator/components/com_admirorgallery/templates/default/css/add-trigger.css');
         $doc->addScriptDeclaration("            

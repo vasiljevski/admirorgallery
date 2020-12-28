@@ -63,4 +63,4 @@ $template->addAlbumSupport();
 
 // Render HTML for this template
 $html = $template->render();
-?>
+

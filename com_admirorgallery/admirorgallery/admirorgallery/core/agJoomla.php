@@ -18,7 +18,7 @@ jimport('joomla.filesystem.folder');
 class agJoomla implements agCmsInterface
 {
 
-    private $doc;
+    private ?JDocument $doc;
 
     function __construct($document)
     {
@@ -67,7 +67,7 @@ class agJoomla implements agCmsInterface
         JFactory::getDocument()->setTitle($title);
     }
 
-    public function GetActiveLanguageTag(string $path): string
+    public function GetActiveLanguageTag(): string
     {
         return strtolower(JFactory::getLanguage()->getTag());
     }

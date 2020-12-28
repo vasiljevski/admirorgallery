@@ -21,4 +21,3 @@ if (preg_match("/jpg|jpeg/i", $original_file)) {
 header('Content-Type: '.$mime);
 header('Content-Disposition: attachment; filename="'.basename($original_file).'"');
 readfile($original_file);
-?>

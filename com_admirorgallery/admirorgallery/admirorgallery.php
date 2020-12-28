@@ -26,11 +26,11 @@ class plgContentAdmirorGallery extends JPlugin {
         $this->loadLanguage();
     }
     
-    function onContentBeforeDisplay($context, &$row, &$params, $limitstart = 0) {
+    function onContentBeforeDisplay($context, $row, &$params, $limitstart = 0) {
         $this->onContentPrepare($context, $row, $params, $limitstart);
     }
 
-    function onContentPrepare($context, &$row, &$params, $limitstart = 0) {
+    function onContentPrepare($context, $row, &$params, $limitstart = 0) {
         $gd_exists = true;
         if (!isset($row->text)){
             return;
@@ -43,7 +43,8 @@ class plgContentAdmirorGallery extends JPlugin {
         if (strnatcmp(phpversion(), '5.0.0') <= 0) {
             $doc->addStyleSheet('plugins/content/admirorgallery/admirorgallery/AdmirorGallery.css');
             $php_version_error_html= '<div class="error">'. JText::_('AG_PHP_VERSION_MUST_BE_ABOVE_PHP5') . '</div>' . "\n";
-            if ((preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}#s", $row->text, $matches, PREG_PATTERN_ORDER) > 0) || (preg_match_all("#{AG[^}]*}(.*?){/AG}#s", $row->text, $matches, PREG_PATTERN_ORDER) > 0)) {
+            if ((preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}#s", $row->text, $matches) > 0)
+                || (preg_match_all("#{AG[^}]*}(.*?){/AG}#s", $row->text, $matches) > 0)) {
                 foreach ($matches[0] as $match) {
                     $galleryname = preg_replace("/{.+?}/", "", $match);
                     $row->text = preg_replace("#{AdmirorGallery[^}]*}" . $galleryname . "{/AdmirorGallery}|{AG[^}]*}" . $galleryname . "{/AG}#s", "<div style='clear:both'></div>" . $php_version_error_html, $row->text, 1);
@@ -52,22 +53,22 @@ class plgContentAdmirorGallery extends JPlugin {
             return;
         }
 
-        //Create galeries
-        if (preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}#s", $row->text, $matches, PREG_PATTERN_ORDER) > 0) {
+        //Create galleries
+        if (preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}#s", $row->text, $matches) > 0) {
             //TODO: Remove doc
             $AG = new agGallery($this->params, JURI::base(), JPATH_SITE, new agJoomla($doc));
             //Load current language
             JPlugin::loadLanguage('plg_content_admirorgallery', JPATH_ADMINISTRATOR);
             // Version check
             $version = new JVersion();
-            if ($version->PRODUCT == "Joomla!" && ($version->RELEASE == "1.5")) {
+            if ($version::PRODUCT == "Joomla!" && ($version::RELEASE == "1.5")) {
                 $AG->addError(JText::_('AG_ADMIROR_GALLERY_PLUGIN_FUNCTIONS_ONLY_UNDER'));
             }
-            //if any image is corrupted supresses recoverable error
+            //if any image is corrupted suppresses recoverable error
             ini_set('gd.jpeg_ignore_warning', $AG->params['ignoreError']);
             if ($AG->params['ignoreAllError'])
                 error_reporting('E_NOTICE');
-            //Joomla specific variables is passed as parametars for agGallery independce from specific CMS
+            //Joomla specific variables is passed as parameters for agGallery independent from specific CMS
             $AG->loadJS('AG_jQuery.js');
             $AG->articleID = $row->id;
 
@@ -179,5 +180,5 @@ class plgContentAdmirorGallery extends JPlugin {
 //onPrepareContent(&$row, &$params, $limitstart)
 }
 
-//class plgContentadmirorGallery extends JPlugin
-?>
+//class plgContentAdmirorGallery extends JPlugin
+

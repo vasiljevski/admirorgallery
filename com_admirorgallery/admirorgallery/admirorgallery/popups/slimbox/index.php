@@ -19,4 +19,3 @@ $this->loadCSS($this->currPopupRoot . 'css/slimbox2.css');
 
 // Set REL attribute needed for Popup engine
 $this->popupEngine->rel = 'lightbox[AdmirorGallery' . $this->getGalleryID() . ']';
-?>
