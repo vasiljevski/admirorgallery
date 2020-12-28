@@ -1,14 +1,13 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
  * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
@@ -19,9 +18,6 @@ jimport('joomla.filesystem.archive');
 
 class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController {
 
-    /**
-     * Constructor
-     */
     var $model = null;
 
     function __construct() {
@@ -36,7 +32,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController {
 
         $model = $this->getModel('imagemanager');
 
-        $AG_itemURL = JRequest::getVar('AG_itemURL');
+        $AG_itemURL = $this->input->getPath('AG_itemURL');
         if (is_dir(JPATH_SITE . $AG_itemURL)) {
 
             // FOLDER MODELS

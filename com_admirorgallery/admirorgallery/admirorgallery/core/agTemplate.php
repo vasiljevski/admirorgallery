@@ -12,6 +12,8 @@
  * Provides support for common template functions
  * $ag - reference to the gallery instance
  * $albumSupport - true: enable album support, false: disable album support
+ *
+ * @since 5.0.0
  */
 class agTemplate
 {

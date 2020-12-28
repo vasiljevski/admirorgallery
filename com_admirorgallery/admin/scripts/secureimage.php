@@ -7,7 +7,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die;
 
 class SecureImage
@@ -99,7 +98,7 @@ class SecureImage
           				{	
             					$position = ftell($handle);
             					$size = fread($handle, 2);
-            					$newsize = 256 * ord($size{0}) + ord($size{1});
+            					$newsize = 256 * ord($size[0]) + ord($size[1]);
             					$newpos = $position + $newsize;
             					fseek($handle, $newpos);
           				}

@@ -102,7 +102,7 @@ class plgContentAdmirorGallery extends JPlugin {
                 if (is_writable($AG->thumbsFolderPhysicalPath))
                     $AG->generateThumbs();
                 else
-                    $AG->addError(JText::sprintf('AG_CANNOT_CREATE_THUMBS_PERMMISIONS_ERROR', $AG->thumbsFolderPhysicalPath));
+                    $AG->addError(JText::sprintf('AG_CANNOT_CREATE_THUMBS_PERMISSIONS_ERROR', $AG->thumbsFolderPhysicalPath));
                 include (dirname(__FILE__) . '/admirorgallery/templates/' . $AG->params['template'] . '/index.php');
 
                 $AG->clearOldThumbs();

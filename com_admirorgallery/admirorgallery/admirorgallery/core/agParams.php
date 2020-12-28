@@ -43,7 +43,9 @@ class agParams implements ArrayAccess {
 
         foreach ($key_value_pair as $value) {
             $split = explode("=", $value);
-            $params[$split[0]] = $split[1];
+            if(count($split) > 1) {
+                $params[$split[0]] = $split[1];
+            }
         }
         foreach ($params as $key => $value) {
             $this->params[$key] = trim($value, '"');

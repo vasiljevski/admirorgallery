@@ -1,14 +1,14 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
  * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-defined('_JEXEC') or die('Restricted access');
-//Check if plugin is installed, othervise don't show view
+defined('_JEXEC') or die();
+//Check if plugin is installed, otherwise don't show view
 if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
     return;
 }
@@ -107,7 +107,7 @@ if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
                                     $ag_resourceManager_creationDate = JText::_("AG_UNDATED");
                                     $ag_resourceManager_author = JText::_("AG_UNKNOWN_AUTHOR");
                                     $ag_resourceManager_version = JText::_("AG_UNKNOWN_VERSION");
-                                    $ag_resourceManager_description = JText::_("AG_NO_DESCRITION");
+                                    $ag_resourceManager_description = JText::_("AG_NO_DESCRIPTION");
 
                                     if (JFIle::exists(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type . '/' . $ag_resourceManager_id . '/details.xml')) {// N U
                                         $ag_resourceManager_xml = JFactory::getXML(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type . '/' . $ag_resourceManager_id . '/details.xml');

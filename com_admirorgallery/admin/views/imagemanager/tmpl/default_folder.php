@@ -1,14 +1,13 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
  * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-/** ensure this file is being included by a parent file */
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 JLoader::register('agHelper', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'agHelper.php');
 

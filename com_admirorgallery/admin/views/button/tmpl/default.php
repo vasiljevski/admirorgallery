@@ -1,20 +1,18 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
  * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 jimport( 'joomla.filesystem.folder' );
-$AG_template = JRequest::getVar('AG_template'); // Current template for AG Component
-// GET ROOT FOLDER
-$plugin = JPluginHelper::getPlugin('content', 'admirorgallery');
-$pluginParams = new JRegistry($plugin->params);
-$ag_rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
-$ag_init_itemURL = $ag_rootFolder;
+
+$AG_template = AdmirorGalleryHelper::getCmd('AG_template', ''); // Current template for AG Component
+$ag_init_itemURL = AdmirorGalleryHelper::getRootPath();
+
 ?>
 <script type="text/javascript" src="<?php echo JURI::root() . 'plugins/content/admirorgallery/admirorgallery/AG_jQuery.js'; ?>"></script>
 <link rel="stylesheet" href="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $AG_template . '/css/add-trigger.css'; ?>" type="text/css" />

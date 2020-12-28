@@ -1,14 +1,14 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
  * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-defined('_JEXEC') or die('Restricted access');
-//Check if plugin is installed, othervise don't show view
+defined('_JEXEC') or die();
+//Check if plugin is installed, otherwise don't show view
 if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
     return;
 }
