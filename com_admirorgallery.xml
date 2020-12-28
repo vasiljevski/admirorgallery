@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extension type="component" version="2.5" method="upgrade">
     <name>COM_ADMIRORGALLERY</name>
-    <creationDate>Dec 16, 2018</creationDate>
+    <creationDate>Dec 26, 2020</creationDate>
     <author>Kekeljevic, Vasiljevski, Jongen</author>
     <authorEmail>Igor.Kekeljevic@gmail.com</authorEmail>
     <authorUrl>http://www.admiror-design-studio.com</authorUrl>
     <copyright>This extension in released under the GNU/GPL License - http://www.gnu.org/copyleft/gpl.html</copyright>
     <license>GNU/GPL</license>
-    <version>5.2.0</version>
-    <button_version>5.2.0</button_version>
-    <plugin_version>5.2.0</plugin_version>
+    <version>5.5.0</version>
+    <button_version>5.5.0</button_version>
+    <plugin_version>5.5.0</plugin_version>
     <description>COM_ADMIRORGALLERY_DESCRIPTION</description>
     <scriptfile>admirorgallery.scriptfile.php</scriptfile>
     <updateservers>
