@@ -8,12 +8,11 @@
  */
 
 defined('_JEXEC') or die();
- 
-jimport( 'joomla.application.component.model' );
+
+jimport('joomla.application.component.model');
 
 class AdmirorgalleryModelButton extends JModelLegacy
 {
-
 
 
 }

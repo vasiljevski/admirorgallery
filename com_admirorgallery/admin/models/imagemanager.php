@@ -13,19 +13,22 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.model');
 
 JLoader::register('agHelper', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'agHelper.php');
-JLoader::register('SecureImage', dirname(dirname(__FILE__)).DIRECTORY_SEPARATOR."scripts".DIRECTORY_SEPARATOR."secureimage.php");
+JLoader::register('SecureImage', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "scripts" . DIRECTORY_SEPARATOR . "secureimage.php");
 
-class AdmirorgalleryModelImagemanager extends JModelLegacy {
+class AdmirorgalleryModelImagemanager extends JModelLegacy
+{
 
-    public $webSafe = Array("/", " ", ":", ".", "+", "&");
+    public $webSafe = array("/", " ", ":", ".", "+", "&");
     public $ag_bookmark_path;
 
-    function __construct($config = array()) {
+    function __construct($config = array())
+    {
         $this->ag_bookmark_path = JPATH_SITE . '/administrator/components/com_admirorgallery/assets/bookmarks.xml';
         parent::__construct($config);
     }
 
-    function _save_bookmark($simple_xml_object, $value) {
+    function _save_bookmark($simple_xml_object, $value)
+    {
         if ($simple_xml_object->asXML($this->ag_bookmark_path)) {
             JFactory::getApplication()->enqueueMessage(JText::_("AG_BOOKMARK_CHANGES_SAVED") . "&nbsp;" . $value, 'message');
         } else {
@@ -33,7 +36,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         }
     }
 
-    function _saveXML($ag_itemURL, $ag_XML_path, $ag_XML_content) {
+    function _saveXML($ag_itemURL, $ag_XML_path, $ag_XML_content)
+    {
         if (!empty($ag_XML_content)) {
             $handle = fopen($ag_XML_path, "w") or die(JText::_("AG_CANNOT_WRITE_DESCRIPTION_FILE"));
             if (fwrite($handle, $ag_XML_content)) {
@@ -45,13 +49,14 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         }
     }
 
-    function _bookmarkRename($AG_originalPath, $AG_newPath) {
+    function _bookmarkRename($AG_originalPath, $AG_newPath)
+    {
         $ag_old_bookmark = $AG_originalPath . '/';
         $ag_new_bookmark = $AG_newPath . '/';
         $ag_bookmarks_xml = simplexml_load_file($this->ag_bookmark_path);
         // CHECK IF BOOKMARK ALREADY EXISTS
         if (isset($ag_bookmarks_xml->bookmark)) {
-            foreach ((array) $ag_bookmarks_xml->bookmark as $ag_bookmarks_key => $ag_bookmarks_value) {
+            foreach ((array)$ag_bookmarks_xml->bookmark as $ag_bookmarks_key => $ag_bookmarks_value) {
                 if ($ag_bookmarks_value == $ag_old_bookmark) {
                     $ag_bookmarks_value = $ag_new_bookmark;
                     $this->_save_bookmark($ag_bookmarks_xml, $ag_new_bookmark);
@@ -61,7 +66,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         }
     }
 
-    function _bookmarkRemove($AG_cbox_bookmarkRemove) {
+    function _bookmarkRemove($AG_cbox_bookmarkRemove)
+    {
         foreach ($AG_cbox_bookmarkRemove as $key => $AG_bookmark_ID) {
             $ag_bookmarks_xml = simplexml_load_file($this->ag_bookmark_path);
             if (isset($ag_bookmarks_xml->bookmark)) {
@@ -79,7 +85,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         }
     }
 
-    function _bookmarkAdd($AG_cbox_bookmarkAdd) {
+    function _bookmarkAdd($AG_cbox_bookmarkAdd)
+    {
         foreach ($AG_cbox_bookmarkAdd as $key => $value) {
             if (is_dir(JPATH_SITE . $value)) {
                 $ag_bookmarks_xml = simplexml_load_file($this->ag_bookmark_path);
@@ -106,7 +113,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         $this->_save_bookmark($ag_bookmarks_xml, '');
     }
 
-    function _cbox_priority($ag_preview_checked_array) {
+    function _cbox_priority($ag_preview_checked_array)
+    {
 
         foreach ($ag_preview_checked_array as $key => $value) {
 
@@ -136,7 +144,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
                         $file = fopen($ag_XML_path, "r");
                         $ag_XML_content = "";
                         while (!feof($file)) {
-                            $ag_XML_content.=fgetc($file);
+                            $ag_XML_content .= fgetc($file);
                         }
                         fclose($file);
                         $ag_XML_content = preg_replace("#<priority[^}]*>(.*?)</priority>#s", $ag_priority_new, $ag_XML_content);
@@ -155,7 +163,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         }
     }
 
-    function _set_visible($AG_cbox_selectItem, $ag_folderName, $AG_visible) {
+    function _set_visible($AG_cbox_selectItem, $ag_folderName, $AG_visible)
+    {
         foreach ($AG_cbox_selectItem as $key => $value) {
 
             $ag_itemURL = $value;
@@ -195,7 +204,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         }
     }
 
-    function _fileUpload($AG_itemURL, $file) {
+    function _fileUpload($AG_itemURL, $file)
+    {
         $config = JFactory::getConfig();
         $tmp_dest = $config->get('tmp_path');
         $ag_ext_valid = array("jpg", "jpeg", "gif", "png", "zip");
@@ -214,15 +224,14 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
                 if ($ag_file_ext == "zip") {
                     //
                     if (JArchive::extract($tmp_dest . DIRECTORY_SEPARATOR . $filename, $tmp_dest . DIRECTORY_SEPARATOR . 'AdmirorImageUpload' . DIRECTORY_SEPARATOR . JFile::stripExt($filename))) {
-                        $files = JFolder::files($tmp_dest . DIRECTORY_SEPARATOR . 'AdmirorImageUpload' . DIRECTORY_SEPARATOR . JFile::stripExt($filename),'.', true,true);
+                        $files = JFolder::files($tmp_dest . DIRECTORY_SEPARATOR . 'AdmirorImageUpload' . DIRECTORY_SEPARATOR . JFile::stripExt($filename), '.', true, true);
                         foreach ($files as $file_path) {
-                            $image=new SecureImage($file_path);
-                            if(!$image->CheckIt())
-                            {
+                            $image = new SecureImage($file_path);
+                            if (!$image->CheckIt()) {
                                 JFile::delete($file_path);
                             }
                         }
-                        JFolder::copy($tmp_dest . DIRECTORY_SEPARATOR . 'AdmirorImageUpload' . DIRECTORY_SEPARATOR . JFile::stripExt($filename),  JPATH_SITE . $AG_itemURL.JFile::stripExt($filename),'',true);
+                        JFolder::copy($tmp_dest . DIRECTORY_SEPARATOR . 'AdmirorImageUpload' . DIRECTORY_SEPARATOR . JFile::stripExt($filename), JPATH_SITE . $AG_itemURL . JFile::stripExt($filename), '', true);
                         JFile::delete($tmp_dest . DIRECTORY_SEPARATOR . $filename);
                         JFolder::delete($tmp_dest . DIRECTORY_SEPARATOR . 'AdmirorImageUpload' . DIRECTORY_SEPARATOR . JFile::stripExt($filename));
                         JFactory::getApplication()->enqueueMessage(JText::_('AG_ZIP_PACKAGE_IS_UPLOADED_AND_EXTRACTED') . "&nbsp;" . $filename, 'message');
@@ -234,7 +243,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
                     }
                 }
             } else {
-                $ag_error[] = Array();
+                $ag_error[] = array();
                 JFactory::getApplication()->enqueueMessage(JText::_('AG_CANNOT_UPLOAD_FILE') . "&nbsp;" . $filename, 'error');
             }
         } else {
@@ -242,7 +251,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         }
     }
 
-    function _addFolders($AG_itemURL, $AG_addFolders) {
+    function _addFolders($AG_itemURL, $AG_addFolders)
+    {
         foreach ($AG_addFolders as $key => $value) {
             if (!empty($value)) {
                 $newFolderName = $value;
@@ -267,7 +277,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
     }
 
     // COPY
-    function _copy($AG_cbox_selectItem, $AG_operations_targetFolder) {
+    function _copy($AG_cbox_selectItem, $AG_operations_targetFolder)
+    {
         foreach ($AG_cbox_selectItem as $key => $value) {
             // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
             $AG_folderName = dirname($value);
@@ -299,7 +310,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
     }
 
     // MOVE
-    function _move($AG_cbox_selectItem, $AG_operations_targetFolder) {
+    function _move($AG_cbox_selectItem, $AG_operations_targetFolder)
+    {
         foreach ($AG_cbox_selectItem as $key => $value) {
             // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
             $AG_folderName = dirname($value);
@@ -331,7 +343,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         }
     }
 
-    function _remove($AG_cbox_remove) {
+    function _remove($AG_cbox_remove)
+    {
         foreach ($AG_cbox_remove as $key => $value) {
             $AG_folderName = dirname($value);
             // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
@@ -364,7 +377,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         }
     }
 
-    function _rename($AG_itemURL, $AG_originalPath, $AG_newName) {
+    function _rename($AG_itemURL, $AG_originalPath, $AG_newName)
+    {
 
         $AG_originalName = basename($AG_originalPath);
         $AG_folderName = dirname($AG_originalPath);
@@ -416,7 +430,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
 
     // =================================== _FOLDER_DESC_CONTENT
     // It creates caption tags with its content. After that it checks if XML already exists. If is it replace captions, if not it creates a new XML
-    function _folder_desc_content($ag_itemURL, $AG_desc_content, $AG_desc_tags, $AG_folder_thumb) {
+    function _folder_desc_content($ag_itemURL, $AG_desc_content, $AG_desc_tags, $AG_folder_thumb)
+    {
         $ag_folderName = dirname($ag_itemURL);
 
         // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
@@ -428,7 +443,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
 
         // Set new Captions tag
         $ag_captions_new = "";
-        $ag_captions_new.="<captions>" . "\n";
+        $ag_captions_new .= "<captions>" . "\n";
         if (!empty($AG_desc_content)) {
             foreach ($AG_desc_content as $key => $value) {
                 if (!empty($value)) {
@@ -436,7 +451,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
                 }
             }
         }
-        $ag_captions_new.="</captions>";
+        $ag_captions_new .= "</captions>";
 
         // Set new Thumb tag
         $ag_thumb_new = "<thumb>" . $AG_folder_thumb . "</thumb>";
@@ -445,7 +460,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         if (file_exists($ag_XML_path)) {
             $file = fopen($ag_XML_path, "r");
             while (!feof($file)) {
-                $ag_XML_content.=fgetc($file);
+                $ag_XML_content .= fgetc($file);
             }
             fclose($file);
             if (preg_match("#<thumb[^}]*>(.*?)</thumb>#s", $ag_XML_content)) {
@@ -466,7 +481,8 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
         $this->_saveXML($ag_itemURL, $ag_XML_path, $ag_XML_content);
     }
 
-    function _desc_content($ag_itemURL, $AG_desc_content, $AG_desc_tags) {
+    function _desc_content($ag_itemURL, $AG_desc_content, $AG_desc_tags)
+    {
         $ag_folderName = dirname($ag_itemURL);
 
         // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
@@ -478,7 +494,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
 
         $ag_captions_new = "";
 
-        $ag_captions_new.="<captions>" . "\n";
+        $ag_captions_new .= "<captions>" . "\n";
         if (!empty($AG_desc_content)) {
             foreach ($AG_desc_content as $key => $value) {
                 if (!empty($value)) {
@@ -486,13 +502,13 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy {
                 }
             }
         }
-        $ag_captions_new.="</captions>";
+        $ag_captions_new .= "</captions>";
 
         $ag_XML_content = "";
         if (file_exists($ag_XML_path)) {
             $file = fopen($ag_XML_path, "r");
             while (!feof($file)) {
-                $ag_XML_content.=fgetc($file);
+                $ag_XML_content .= fgetc($file);
             }
             fclose($file);
             $ag_XML_content = preg_replace("#<captions[^}]*>(.*?)</captions>#s", $ag_captions_new, $ag_XML_content);

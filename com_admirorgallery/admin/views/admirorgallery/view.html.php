@@ -11,9 +11,11 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class AdmirorgalleryViewAdmirorgallery extends JViewLegacy {
+class AdmirorgalleryViewAdmirorgallery extends JViewLegacy
+{
 
-    function display($tpl = null) {
+    function display($tpl = null)
+    {
         JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_CONTROL_PANEL'), 'controlpanel');
         parent::display($tpl);
     }

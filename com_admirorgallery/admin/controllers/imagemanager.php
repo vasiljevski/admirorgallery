@@ -16,11 +16,13 @@ jimport('joomla.filesystem.folder');
 jimport('joomla.language.language');
 jimport('joomla.filesystem.archive');
 
-class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController {
+class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
+{
 
     var $model = null;
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
 
         // Register Extra tasks
@@ -28,7 +30,8 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController {
         $this->registerTask('AG_reset', 'AG_reset');
     }
 
-    function AG_apply() {
+    function AG_apply()
+    {
 
         $model = $this->getModel('imagemanager');
 
@@ -88,7 +91,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController {
 
             // RENAME
             $AG_rename = JRequest::getVar('AG_rename');
-            $webSafe = Array("/", " ", ":", ".", "+", "&");
+            $webSafe = array("/", " ", ":", ".", "+", "&");
             if (!empty($AG_rename)) {
                 foreach ($AG_rename as $ren_key => $ren_value) {
                     $AG_originalName = JFile::stripExt(basename($ren_key));
@@ -121,7 +124,8 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController {
         parent::display();
     }
 
-    function AG_reset() {
+    function AG_reset()
+    {
         parent::display();
     }
 

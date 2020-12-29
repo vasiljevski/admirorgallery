@@ -9,33 +9,33 @@
 
 defined('_JEXEC') or die();
 
-jimport( 'joomla.application.component.controller' );
+jimport('joomla.application.component.controller');
 
 class AdmirorgalleryControllerAdmirorgallery extends AdmirorgalleryController
 {
-	function __construct()
-	{
-		parent::__construct();
+    function __construct()
+    {
+        parent::__construct();
 
-		// Register Extra tasks
-		$this->registerTask( 'AG_apply', 'AG_apply' );
-		$this->registerTask( 'AG_reset', 'AG_reset' );
-	}
+        // Register Extra tasks
+        $this->registerTask('AG_apply', 'AG_apply');
+        $this->registerTask('AG_reset', 'AG_reset');
+    }
 
-	function AG_apply()
-	{
-	       $model = $this->getModel('admirorgallery');
+    function AG_apply()
+    {
+        $model = $this->getModel('admirorgallery');
 
-	       // UPDATE
-	       $model->_update();
+        // UPDATE
+        $model->_update();
 
-	       parent::display();
-	}
+        parent::display();
+    }
 
-	function AG_reset()
-	{
-	    parent::display();
-	}
+    function AG_reset()
+    {
+        parent::display();
+    }
 
 
 }

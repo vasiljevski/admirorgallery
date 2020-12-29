@@ -101,7 +101,7 @@ class agJoomla implements agCmsInterface
         return (isset($active) && $active->query['view'] == 'layout');
     }
 
-    public function Text(int $string_id): string
+    public function Text(string $string_id): string
     {
         return JText::_($string_id);
     }

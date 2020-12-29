@@ -11,11 +11,13 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
-class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController {
+class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController
+{
 
     var $model;
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
 
         // Register Extra tasks
@@ -26,7 +28,8 @@ class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController {
         $this->model = $this->getModel('resourcemanager');
     }
 
-    function ag_install() {
+    function ag_install()
+    {
         $file = JRequest::getVar('AG_fileUpload', null, 'files');
         if (isset($file) && !empty($file['name'])) {
             $this->model->_install($file);
@@ -36,7 +39,8 @@ class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController {
         parent::display();
     }
 
-    function ag_uninstall() {
+    function ag_uninstall()
+    {
         $ag_cidArray = JRequest::getVar('cid');
         if (!empty($ag_cidArray)) {
             $this->model->_uninstall($ag_cidArray);
@@ -44,7 +48,8 @@ class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController {
         parent::display();
     }
 
-    function ag_reset() {
+    function ag_reset()
+    {
         parent::display();
     }
 

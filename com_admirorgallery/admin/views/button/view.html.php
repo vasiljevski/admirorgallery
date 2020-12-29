@@ -8,14 +8,14 @@
  */
 
 defined('_JEXEC') or die();
- 
-jimport( 'joomla.application.component.view');
- 
+
+jimport('joomla.application.component.view');
+
 class AdmirorgalleryViewButton extends JViewLegacy
 {
 
     function display($tpl = null)
     {
-	  parent::display($tpl);
+        parent::display($tpl);
     }
 }

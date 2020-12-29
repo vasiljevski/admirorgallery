@@ -19,7 +19,7 @@ JLoader::register('agErrorHandler', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'a
 
 class agGallery
 {
-    private agCmsInterface $cms;
+    public agCmsInterface $cms;
     public agParams $params;
     public agPopup $popupEngine;
     public agErrorHandler $error_handle;
@@ -734,6 +734,16 @@ class agGallery
     public function readInlineParams()
     {
         $this->params->readInlineParams($this->match);
+    }
+
+    public function getText($string_id)
+    {
+        return $this->cms->Text($string_id);
+    }
+
+    public function getConcatText(int $string_id, $value)
+    {
+        return $this->cms->TextConcat($string_id, $value);
     }
 
     /**

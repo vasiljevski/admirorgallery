@@ -11,7 +11,8 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
-class AdmirorgalleryViewImagemanager extends JViewLegacy {
+class AdmirorgalleryViewImagemanager extends JViewLegacy
+{
 
     var $ag_template_id = 'default';
     var $ag_init_itemURL = '';
@@ -19,7 +20,8 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
     var $ag_rootFolder = '';
     var $ag_front_end = '';
 
-    function display($tpl = null) {
+    function display($tpl = null)
+    {
         jimport('joomla.filesystem.file');
         jimport('joomla.filesystem.folder');
         jimport('joomla.language.language');
@@ -52,28 +54,30 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
         parent::display($tpl);
     }
 
-    function ag_render_breadcrumb($ag_itemURL, $ag_rootFolder, $ag_folderName, $ag_fileName) {
+    function ag_render_breadcrumb($ag_itemURL, $ag_rootFolder, $ag_folderName, $ag_fileName)
+    {
         $ag_breadcrumb = '';
         $ag_breadcrumb_link = '';
         if ($ag_rootFolder != $ag_itemURL && !empty($ag_itemURL)) {
-            $ag_breadcrumb.='<a href="' . $ag_rootFolder . '" class="AG_folderLink AG_common_button"><span><span>' . substr($ag_rootFolder, 0, -1) . '</span></span></a>/';
-            $ag_breadcrumb_link.=$ag_rootFolder;
+            $ag_breadcrumb .= '<a href="' . $ag_rootFolder . '" class="AG_folderLink AG_common_button"><span><span>' . substr($ag_rootFolder, 0, -1) . '</span></span></a>/';
+            $ag_breadcrumb_link .= $ag_rootFolder;
             $ag_breadcrumb_cut = substr($ag_folderName, strlen($ag_rootFolder));
             $ag_breadcrumb_cut_array = explode("/", $ag_breadcrumb_cut);
             if (!empty($ag_breadcrumb_cut_array[0])) {
                 foreach ($ag_breadcrumb_cut_array as $cut_key => $cut_value) {
-                    $ag_breadcrumb_link.=$cut_value . '/';
-                    $ag_breadcrumb.='<a href="' . $ag_breadcrumb_link . '" class="AG_folderLink AG_common_button"><span><span>' . $cut_value . '</span></span></a>/';
+                    $ag_breadcrumb_link .= $cut_value . '/';
+                    $ag_breadcrumb .= '<a href="' . $ag_breadcrumb_link . '" class="AG_folderLink AG_common_button"><span><span>' . $cut_value . '</span></span></a>/';
                 }
             }
-            $ag_breadcrumb.=$ag_fileName;
+            $ag_breadcrumb .= $ag_fileName;
         } else {
-            $ag_breadcrumb.=$ag_rootFolder;
+            $ag_breadcrumb .= $ag_rootFolder;
         }
         return $ag_breadcrumb;
     }
-    
-    function ag_render_image_info($ag_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb) {
+
+    function ag_render_image_info($ag_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb)
+    {
         $return_value = '<div class="AG_margin_bottom AG_thumbAndInfo_wrapper">
                 <table cellspacing="0" cellpadding="0" border="0">
                     <tbody>
@@ -98,7 +102,8 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
         return $return_value;
     }
 
-    function ag_render_caption($ag_lang_name, $ag_lang_tag, $ag_lang_content) {
+    function ag_render_caption($ag_lang_name, $ag_lang_tag, $ag_lang_content)
+    {
         return '
 	<div class="AG_border_color AG_border_width AG_margin_bottom">
 	    ' . $ag_lang_name . ' / ' . $ag_lang_tag . '
@@ -107,9 +112,10 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
     ';
     }
 
-    function ag_render_captions($ag_imgXML_captions) {
+    function ag_render_captions($ag_imgXML_captions)
+    {
         $ag_site_languages = "";
-        $ag_matchCheck = Array("default");
+        $ag_matchCheck = array("default");
 
         // GET DEFAULT LABEL
         $ag_imgXML_caption_content = "";
@@ -120,7 +126,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
                 }
             }
         }
-        $ag_site_languages.=$this->ag_render_caption("Default", "default", $ag_imgXML_caption_content);
+        $ag_site_languages .= $this->ag_render_caption("Default", "default", $ag_imgXML_caption_content);
 
         $ag_lang_available = JLanguage::getKnownLanguages(JPATH_SITE);
         if (!empty($ag_lang_available)) {
@@ -134,7 +140,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
                         }
                     }
                 }
-                $ag_site_languages.= $this->ag_render_caption($ag_lang["name"], $ag_lang["tag"], $ag_imgXML_caption_content);
+                $ag_site_languages .= $this->ag_render_caption($ag_lang["name"], $ag_lang["tag"], $ag_imgXML_caption_content);
             }
         }
 
@@ -142,14 +148,15 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
             foreach ($ag_imgXML_captions->caption as $ag_imgXML_caption) {
                 $ag_imgXML_caption_attr = $ag_imgXML_caption->attributes()->lang;
                 if (!is_numeric(array_search(strtolower($ag_imgXML_caption_attr), $ag_matchCheck))) {
-                    $ag_site_languages.= $this->ag_render_caption($ag_imgXML_caption_attr, $ag_imgXML_caption_attr, $ag_imgXML_caption);
+                    $ag_site_languages .= $this->ag_render_caption($ag_imgXML_caption_attr, $ag_imgXML_caption_attr, $ag_imgXML_caption);
                 }
             }
         }
         return $ag_site_languages;
     }
 
-    function ag_render_file_footer() {
+    function ag_render_file_footer()
+    {
         return '<div style="clear:both" class="AG_margin_bottom"></div>
         <hr />
         <div  class="AG_legend">
@@ -167,7 +174,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
         <div>
         ';
     }
-    
+
     function ag_get_bookmark_path()
     {
         return $this->getModel('imagemanager')->ag_bookmark_path;

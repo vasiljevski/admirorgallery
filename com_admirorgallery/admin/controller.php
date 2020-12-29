@@ -22,12 +22,12 @@ class AdmirorgalleryController extends JControllerLegacy
                 JText::_('COM_PLUGIN_NOT_INSTALLED'), 'warning');
         }
         AdmirorGalleryHelper::addSubmenu(
-            $this->input->get('view', 'control_panel'),  $this->input->get('AG_resourceType', ''));
+            $this->input->get('view', 'control_panel'), $this->input->get('AG_resourceType', ''));
 
         $doc = JFactory::getDocument();
         $viewType = $doc->getType();
-        $viewName =  $this->input->get('view', $this->default_view);
-        $viewLayout =  $this->input->get('layout', 'default', 'string');
+        $viewName = $this->input->get('view', $this->default_view);
+        $viewLayout = $this->input->get('layout', 'default', 'string');
 
         $view = $this->getView($viewName, $viewType, '', array('base_path' => $this->basePath, 'layout' => $viewLayout));
 

@@ -37,6 +37,6 @@ interface agCmsInterface
     //public function GetActiveLanguage
     public function CreateFolder(string $path): bool;
     //HTMLOutput
-    public function Text(int $string_id): string;
+    public function Text(string $string_id): string;
     public function TextConcat(string $string_id, $value): string;
 }

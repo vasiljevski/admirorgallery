@@ -23,8 +23,9 @@ class agTemplate
     private bool $album_support; // Album support
     private string $template_root; //Root folder of the template
     private string $template_style;
-    private string $pagination_style = 'pagination/pagination.css';
-    private string $album_style = 'albums/albums.css';
+    private string $pagination_style;
+    private string $album_style;
+    private string $default_thumb;
 
     /**
      * agTemplate constructor.
@@ -34,12 +35,19 @@ class agTemplate
      *
      * @since 5.5.0
      */
-    public function __construct(agGallery $ag, string $template = 'template.css')
+    public function __construct(agGallery $ag,
+                                string $template = 'template.css',
+                                string $album_style = 'albums/albums.css',
+                                string $pagination_style = 'pagination/pagination.css',
+                                string $default_thumb = '../../albums/album.png')
     {
         $this->AG = $ag;
         $this->album_support = (bool)$ag->params['albumUse'];
         $this->template_root = $ag->currTemplateRoot;
-        $this->template_style = $template;
+        $this->template_style = $this->template_root.$template;
+        $this->album_style = $album_style;
+        $this->pagination_style = $pagination_style;
+        $this->default_thumb = $default_thumb;
     }
 
     /**
@@ -51,9 +59,9 @@ class agTemplate
     {
         // Support for Albums
         if (!empty($this->AG->folders) && $this->album_support) {
-            $this->AG->loadCSS($this->template_root.$this->album_style);
-            $this->html .= '<h1>' . JText::_('AG_ALBUMS') . '</h1>' . "\n";
-            $this->html .= $this->AG->writeFolderThumb("albums/album.png", $this->AG->params['thumbHeight']);
+            $this->AG->loadCSS($this->album_style);
+            $this->html .= '<h1>' . $this->AG->getText("AG_ALBUMS") . '</h1>' . "\n";
+            $this->html .= $this->AG->writeFolderThumb($this->default_thumb, $this->AG->params['thumbHeight']);
         }
     }
 
@@ -191,8 +199,8 @@ class agTemplate
      */
     public function render(): string
     {
-        $this->AG->loadCSS($this->template_root.$this->template_style);
-        $this->AG->loadCSS($this->template_root.$this->pagination_style);
+        $this->AG->loadCSS($this->template_style);
+        $this->AG->loadCSS($this->pagination_style);
         $this->postContent();
         return $this->html;
     }
