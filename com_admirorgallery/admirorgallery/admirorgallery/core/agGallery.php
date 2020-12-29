@@ -719,10 +719,9 @@ class agGallery
             $linkFolderName .= $albumName[$i] . '/';
             $linkFolderName = str_replace('//', '/', $linkFolderName);
             if ($albumName[$i] != '' && $i != 0) {
-                $this->events['name'] = $albumName[$i];
                 $link = 'Javascript: AG_form_submit_' . $this->articleID . '(' . $this->index . ',1,\'' . $linkFolderName . '\');';
-                $this->cms->SetTitle($this->events['name']);
-                $this->cms->AddToPathway($this->events['name'], $link);
+                $this->cms->SetTitle($albumName[$i]);
+                $this->cms->AddToPathway($albumName[$i], $link);
             }
         }
     }

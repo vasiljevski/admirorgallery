@@ -27,7 +27,7 @@ class agHelper
         // READS XML DATA AND GENERATES ARRAYS
         foreach ($array as $key => $value) {
             // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-            $ag_pathWithStripExt = $targetFolder . agHelper::ag_removeExtension(basename($value));
+            $ag_pathWithStripExt = $targetFolder . self::ag_removeExtension(basename($value));
             $ag_XML_path = $ag_pathWithStripExt . ".xml";
             if (file_exists($ag_pathWithStripExt . ".XML")) {
                 $ag_XML_path = $ag_pathWithStripExt . ".XML";
@@ -251,15 +251,15 @@ class agHelper
      */
     public static function ag_cleanThumbsFolder(string $originalFolder, string $thumbFolder)
     {
-        $origin = agHelper::ag_foldersArrayFromFolder($originalFolder);
-        $thumbs = agHelper::ag_foldersArrayFromFolder($thumbFolder);
+        $origin = self::ag_foldersArrayFromFolder($originalFolder);
+        $thumbs = self::ag_foldersArrayFromFolder($thumbFolder);
         if ($thumbs === null) {
             return; 
         }
         $diffArray = array_diff($thumbs, $origin);
         if ($diffArray != null) {
             foreach ($diffArray as $diffFolder) {
-                agHelper::ag_sureRemoveDir($thumbFolder . $diffFolder, true);
+                self::ag_sureRemoveDir($thumbFolder . $diffFolder, true);
             }
         }
     }
@@ -280,14 +280,14 @@ class agHelper
 
         // Generate array of thumbs
         $targetFolder = $thumbsFolder;
-        $thumbs = agHelper::ag_imageArrayFromFolder($targetFolder);
+        $thumbs = self::ag_imageArrayFromFolder($targetFolder);
 
         // Generate array of images
         $targetFolder = $imagesFolder;
-        $images = agHelper::ag_imageArrayFromFolder($targetFolder);
+        $images = self::ag_imageArrayFromFolder($targetFolder);
 
         if (empty($images) && !$albumsInUse) {
-            agHelper::ag_sureRemoveDir($thumbsFolder, 1);
+            self::ag_sureRemoveDir($thumbsFolder, 1);
             return;
         }
 
@@ -313,7 +313,7 @@ class agHelper
      */
     public static function ag_mkdir_recursive(string $pathname, $mode): bool
     {
-        is_dir(dirname($pathname)) || agHelper::ag_mkdir_recursive(dirname($pathname), $mode);
+        is_dir(dirname($pathname)) || self::ag_mkdir_recursive(dirname($pathname), $mode);
         return is_dir($pathname) || @mkdir($pathname, $mode);
     }
 
@@ -337,7 +337,7 @@ class agHelper
                 continue;
             }
             if (!@unlink($dir . '/' . $obj)) {
-                agHelper::ag_sureRemoveDir($dir . '/' . $obj, true);
+                self::ag_sureRemoveDir($dir . '/' . $obj, true);
             }
         }
 
@@ -366,7 +366,7 @@ class agHelper
         if ($dh) {
             $ag_ext_valid = array("jpg", "jpeg", "gif", "png"); // SET VALID IMAGE EXTENSION
             while (($f = readdir($dh)) !== false) {
-                if (is_numeric(array_search(strtolower(agHelper::ag_getExtension(basename($f))), $ag_ext_valid))) {
+                if (is_numeric(array_search(strtolower(self::ag_getExtension(basename($f))), $ag_ext_valid))) {
                     $images[] = $f;
                 }
             }
