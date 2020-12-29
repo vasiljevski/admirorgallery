@@ -7,14 +7,19 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// Check to ensure this file is included in Joomla!
-defined('_JEXEC') or die( 'Restricted access' );
+defined('_JEXEC') or die();
 
 jimport( 'joomla.application.component.controller' );
 jimport('joomla.html.parameter');
 
 class AdmirorgalleryController extends JControllerLegacy
 {
+    /**
+     * @param bool $cachable
+     * @param bool $urlparams
+     *
+     * @since 5.5.0
+     */
     function display($cachable = false, $urlparams = false)
     {
         parent::display();

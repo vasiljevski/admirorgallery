@@ -7,18 +7,14 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
-class AdmirorgalleryControllerLayout extends AdmirorgalleryController {
-
-    /**
-     * Constructor
-     */
-    function __construct() {
+class AdmirorgalleryControllerLayout extends AdmirorgalleryController
+{
+    function __construct()
+    {
         parent::__construct();
     }
-
 }

@@ -7,8 +7,7 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// No direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined('_JEXEC') or die();
 
 // OUTPUT
 // echo "POST: "."<br />"; print_r($_POST); echo "<hr />";

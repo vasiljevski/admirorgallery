@@ -7,7 +7,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
  
 jimport( 'joomla.application.component.model' );

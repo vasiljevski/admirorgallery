@@ -7,8 +7,7 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// no direct access
-defined( '_JEXEC' ) or die( 'Restricted access' );
+defined('_JEXEC') or die();
  
 jimport( 'joomla.application.component.view');
 
@@ -38,9 +37,9 @@ class AdmirorgalleryViewLayout extends JViewLegacy
 	$this->assign( 'highlightColor', $params->get( 'highlightColor' ) );
 	$this->assign( 'plainTextCaptions', $params->get( 'plainTextCaptions' ) );
 
-        // Albums Support
+    // Albums Support
 	$this->assign( 'albumUse', $params->get( 'albumUse' ) );
-        // Paginations Support
+    // Pagination Support
 	$this->assign( 'paginUse', $params->get( 'paginUse' ) );
 	$this->assign( 'paginImagesPerGallery', $params->get( 'paginImagesPerGallery' ) );
     

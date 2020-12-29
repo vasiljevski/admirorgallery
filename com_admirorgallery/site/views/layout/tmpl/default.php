@@ -7,8 +7,7 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// No direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 $ag_inlineParams='';
 $ag_inlineParams.=' template="'.$this->template.'"';
@@ -29,7 +28,7 @@ $ag_inlineParams.=' highlightColor="'.$this->highlightColor.'"';
 
 // Albums Support
 $ag_inlineParams.=' albumUse="'.$this->albumUse.'"';
-// Paginations Support
+// Pagination Support
 $ag_inlineParams.=' paginUse="'.$this->paginUse.'"';
 $ag_inlineParams.=' paginImagesPerGallery="'.$this->paginImagesPerGallery.'"';
 

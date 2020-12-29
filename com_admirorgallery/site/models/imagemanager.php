@@ -7,7 +7,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 require_once(JPATH_COMPONENT_ADMINISTRATOR.DIRECTORY_SEPARATOR.'models'.DIRECTORY_SEPARATOR.'imagemanager.php');

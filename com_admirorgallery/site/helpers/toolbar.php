@@ -7,15 +7,19 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 jimport('joomla.html.toolbar');
 
 class AdmirorgalleryHelperToolbar extends JObject
 {
-      public static function getToolbar() {
-
-
+    /**
+     *
+     * @return string
+     *
+     * @since 5.5.0
+     */
+    public static function getToolbar(): string
+      {
 	      $bar = new JToolBar( 'toolbar' );
 
 	      $bar->appendButton( 'Standard','unpublish','COM_ADMIRORGALLERY_RESET_DESC','AG_reset', false);
@@ -26,5 +30,3 @@ class AdmirorgalleryHelperToolbar extends JObject
       }
 
 }
-
-?>
