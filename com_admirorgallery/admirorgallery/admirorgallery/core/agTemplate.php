@@ -11,35 +11,43 @@
 /**
  * Provides support for common template functions
  * $ag - reference to the gallery instance
- * $albumSupport - true: enable album support, false: disable album support
+ * $template - template style file name
  *
  * @since 5.5.0
  */
+
 class agTemplate
 {
+    private string $html = ''; //Output HTML
+    private agGallery $AG; //Gallery instance reference
+    private bool $album_support; // Album support
+    private string $template_root; //Root folder of the template
+    private string $template_style;
+    private string $pagination_style = 'pagination/pagination.css';
+    private string $album_style = 'albums/albums.css';
 
-    //Output HTML
-    public string $html = '';
-    //Gallery instance reference
-    public agGallery $AG;
-    // Album support
-    public bool $album_support;
-    //Root folder of the template
-    public string $template_root;
-
-    public string $template_style;
-    public string $pagination_style = 'pagination/pagination.css';
-    public string $album_style = 'albums/albums.css';
-
-    public function __construct($ag, $template = 'template.css')
+    /**
+     * agTemplate constructor.
+     *
+     * @param agGallery $ag
+     * @param string $template
+     *
+     * @since 5.5.0
+     */
+    public function __construct(agGallery $ag, string $template = 'template.css')
     {
         $this->AG = $ag;
-        $this->album_support = $ag->params['albumUse'];
+        $this->album_support = (bool)$ag->params['albumUse'];
         $this->template_root = $ag->currTemplateRoot;
         $this->template_style = $template;
     }
 
-    public function addAlbumSupport()
+    /**
+     * Add album support
+     *
+     * @since 5.5.0
+     */
+    public function addAlbumSupport(): void
     {
         // Support for Albums
         if (!empty($this->AG->folders) && $this->album_support) {
@@ -49,57 +57,110 @@ class agTemplate
         }
     }
 
-    //Load CSS style file
-    public function loadStyle($cssFile)
+    /**
+     * Load CSS style file
+     *
+     * @param string $cssFile
+     *
+     * @since 5.5.0
+     */
+    public function loadStyle(string $cssFile): void
     {
         $this->AG->loadCSS($cssFile);
     }
 
-    //Load multiple CSS style files
-    public function loadStyles(array $cssFiles)
+    /**
+     * Load multiple CSS style files
+     *
+     * @param array $cssFiles
+     *
+     * @since 5.5.0
+     */
+    public function loadStyles(array $cssFiles): void
     {
         foreach ($cssFiles as $file) {
             $this->AG->loadCSS($file);
         }
     }
-    
-    //Load JavaScript file
-    public function loadScript($jsFile)
+
+    /**
+     * Load JavaScript file
+     *
+     * @param $jsFile
+     *
+     * @since 5.5.0
+     */
+    public function loadScript($jsFile): void
     {
         $this->AG->loadJS($jsFile);
     }
 
-    //Load multiple CSS style files
-    public function insertScript($script)
+    /**
+     * Load multiple CSS style files
+     *
+     * @param $script
+     *
+     * @since 5.5.0
+     */
+    public function insertScript($script): void
     {
         $this->AG->insertJSCode($script);
     }
-    
-    //Load multiple CSS style files
-    public function loadScripts(array $jsFiles)
+
+    /**
+     * Load multiple CSS style files
+     *
+     * @param array $jsFiles
+     *
+     * @since 5.5.0
+     */
+    public function loadScripts(array $jsFiles): void
     {
         foreach ($jsFiles as $file) {
             $this->AG->loadJS($file);
         }
     }
 
-    // Loads scripts needed for Popups, before gallery is created
-    public function preContent()
+    /**
+     * Loads scripts needed for Popups, before gallery is created
+     *
+     * @since 5.5.0
+     */
+    public function preContent(): void
     {
         $this->html.= $this->AG->initPopup();
     }
 
-    // Loads scripts needed for Popups, after gallery is created
-    public function postContent()
+    /**
+     * Loads scripts needed for Popups, after gallery is created
+     *
+     * @since 5.5.0
+     */
+    public function postContent(): void
     {
         $this->html.= $this->AG->endPopup();
     }
 
-    public function appendContent($content)
+    /**
+     * Append content
+     *
+     * @param string $content
+     *
+     *
+     * @since 5.5.0
+     */
+    public function appendContent(string $content): void
     {
         $this->html .= $content;
     }
-    
+
+    /**
+     * Generate pagination style
+     *
+     * @return string
+     *
+     * @since 5.5.0
+     */
     public function generatePaginationStyle(): string
     {
         return '/* PAGINATION AND ALBUM STYLE DEFINITIONS */
@@ -121,6 +182,13 @@ class agTemplate
         $this->AG->params['foregroundColor'].'}';
     }
 
+    /**
+     * Render HTML of the template
+     *
+     * @return string
+     *
+     * @since 5.5.0
+     */
     public function render(): string
     {
         $this->AG->loadCSS($this->template_root.$this->template_style);

@@ -8,8 +8,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-defined('_JEXEC') or die();
-
 class agHelper
 {
     /**
@@ -31,14 +29,14 @@ class agHelper
             // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
             $ag_pathWithStripExt = $targetFolder . agHelper::ag_removeExtension(basename($value));
             $ag_XML_path = $ag_pathWithStripExt . ".xml";
-            if (agHelper::ag_exists($ag_pathWithStripExt . ".XML")) {
+            if (file_exists($ag_pathWithStripExt . ".XML")) {
                 $ag_XML_path = $ag_pathWithStripExt . ".XML";
             }
             $ag_xml_value = array();
             $ag_xml_value["value"] = $value; // IMAGE NAME
             $ag_xml_value["priority"] = "none"; // DEFAULT PRIORITY
             $ag_xml_value["date"] = date("YmdHi", filemtime($targetFolder.$value)); // DEFAULT DATE
-            if (agHelper::ag_exists($ag_XML_path)) {
+            if (file_exists($ag_XML_path)) {
                 $ag_XML_xml = simplexml_load_file($ag_XML_path);
                 if (isset($ag_XML_xml)) {
                     if (isset($ag_XML_xml->visible)) {
@@ -110,7 +108,7 @@ class agHelper
      *
      * @since 5.5.0
      */
-    public static function ag_foregroundColor($hex, $adjust): string
+    public function ag_foregroundColor($hex, $adjust): string
     {
         $red = hexdec($hex[0] . $hex[1]);
         $green = hexdec($hex[2] . $hex[3]);
@@ -360,7 +358,7 @@ class agHelper
      */
     public static function ag_imageArrayFromFolder(string $targetFolder): ?array
     {
-        if (!agHelper::ag_exists($targetFolder)) {
+        if (!file_exists($targetFolder)) {
             return null;
         }
         $images = array();
@@ -378,27 +376,6 @@ class agHelper
     }
 
     /**
-     * Gets the attributes value by name, else returns false
-     *
-     * @param string $attrib
-     * @param string $tag
-     * @param $default
-     *
-     * @return string|$default value if no presented
-     *
-     * @since 5.5.0
-     */
-    public static function ag_getParams(string $attrib, string $tag, $default): string
-    {
-        //get attribute from html tag
-        $re = '/' . preg_quote($attrib) . '=([\'"])?((?(1).+?|[^\s>]+))(?(1)\1)/is';
-        if (preg_match($re, $tag, $match)) {
-            return urldecode($match[2]);
-        }
-        return $default;
-    }
-
-    /**
      * Creates thumbnail from original images return $errorMessage if creation fails
      *
      * @param string $original_file
@@ -407,16 +384,16 @@ class agHelper
      * @param int $new_h
      * @param string $autoSize
      *
-     * @return string|null
+     * @return int 0 if thumb was created or string_is of error message
      *
      * @since 5.5.0
      */
-    public static function ag_createThumb(string $original_file,string $thumb_file,int $new_w,int $new_h,string $autoSize): ?string
+    public static function ag_createThumb(string $original_file,string $thumb_file,int $new_w,int $new_h,string $autoSize): int
     {
         //GD check
         if (!function_exists('gd_info')) {
             // ERROR - Invalid image
-            return JText::_('AG_GD_SUPPORT_IS_NOT_ENABLED');
+            return 'AG_GD_SUPPORT_IS_NOT_ENABLED';
         }
 
         // Create src_img
@@ -427,7 +404,7 @@ class agHelper
         } elseif (preg_match("/gif/i", $original_file)) {
             @$src_img = imagecreatefromgif($original_file);
         } else {
-            return JText::sprintf('AG_UNSUPPORTED_IMAGE_TYPE_FOR_IMAGE', $original_file);
+            return 'AG_UNSUPPORTED_IMAGE_TYPE_FOR_IMAGE';
         }
 
         @$src_width = imageSX($src_img); //$src_width
@@ -482,11 +459,11 @@ class agHelper
         } elseif (preg_match("/gif/i", $original_file)) {
             @imagegif($dst_img, $thumb_file);
         } else {
-            return JText::sprintf('AG_COULD_NOT_CREATE_THUMBNAIL_FILE_FOR_IMAGE', $original_file);
+            return 'AG_COULD_NOT_CREATE_THUMBNAIL_FILE_FOR_IMAGE';
         }
         @imagedestroy($dst_img);
         @imagedestroy($src_img);
-        return null;
+        return 0;
     }
 
     /**
@@ -498,11 +475,8 @@ class agHelper
      */
     public static function ag_indexWrite(string $filename)
     {
-        $handle = fopen($filename, "w") or die("");
-        if(!fwrite($handle, '')) {
-            trigger_error("Index file cannot be created!");
-        }
-        fclose($handle);
+        if (!touch($filename))
+            trigger_error("index.html could not be created!");
     }
 
     /**
@@ -570,20 +544,6 @@ class agHelper
     public static function ag_getExtension(string $fileName): string
     {
         return substr(strrchr($fileName, '.'), 1);
-    }
-
-    /**
-     * Wrapper for standard file_exists
-     *
-     * @param string $fileName
-     *
-     * @return bool
-     *
-     * @since 5.5.0
-     */
-    public static function ag_exists(string $fileName): bool
-    {
-        return file_exists($fileName);
     }
 
     /**

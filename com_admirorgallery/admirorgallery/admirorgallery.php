@@ -12,10 +12,11 @@ defined('_JEXEC') or die();
 // Import library dependencies
 jimport('joomla.event.plugin');
 jimport('joomla.plugin.plugin');
-jimport( 'joomla.filesystem.folder' );
+jimport( 'joomla.filesystem.folder');
 define('AG_VERSION', '5.5.0');
 
-JLoader::register('agGallery', dirname(__FILE__) . '/admirorgallery/core/agGallery.php');
+JLoader::register('agGallery', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'admirorgallery/core/agGallery.php');
+JLoader::register('agJoomla', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'admirorgallery/core/agJoomla.php');
 
 class plgContentAdmirorGallery extends JPlugin {
 
@@ -61,7 +62,7 @@ class plgContentAdmirorGallery extends JPlugin {
             // Version check
             $version = new JVersion();
             if ($version::PRODUCT == "Joomla!" && ($version::RELEASE == "1.5")) {
-                $AG->addError(JText::_('AG_ADMIROR_GALLERY_PLUGIN_FUNCTIONS_ONLY_UNDER'));
+                $AG->error_handle->addError(JText::_('AG_ADMIROR_GALLERY_PLUGIN_FUNCTIONS_ONLY_UNDER'));
             }
             //if any image is corrupted suppresses recoverable error
             ini_set('gd.jpeg_ignore_warning', $AG->params['ignoreError']);
@@ -95,18 +96,18 @@ class plgContentAdmirorGallery extends JPlugin {
                 $AG->initGallery($match); // match = ;
                 // ERROR - Cannot find folder with images
                 if (!file_exists($AG->imagesFolderPhysicalPath)) {
-                    $AG->addError(JText::sprintf('AG_CANNOT_FIND_FOLDER_INSIDE_FOLDER', $AG->imagesFolderName, $AG->imagesFolderPhysicalPath));
+                    $AG->error_handle->addError(JText::sprintf('AG_CANNOT_FIND_FOLDER_INSIDE_FOLDER', $AG->imagesFolderName, $AG->imagesFolderPhysicalPath));
                 }
                 //Create directory in thumbs for gallery
                 JFolder::create($AG->thumbsFolderPhysicalPath, 0755);
                 if (is_writable($AG->thumbsFolderPhysicalPath))
-                    $AG->generateThumbs();
+                    $AG->create_gallery_thumbs();
                 else
-                    $AG->addError(JText::sprintf('AG_CANNOT_CREATE_THUMBS_PERMISSIONS_ERROR', $AG->thumbsFolderPhysicalPath));
+                    $AG->error_handle->addError(JText::sprintf('AG_CANNOT_CREATE_THUMBS_PERMISSIONS_ERROR', $AG->thumbsFolderPhysicalPath));
                 include (dirname(__FILE__) . '/admirorgallery/templates/' . $AG->params['template'] . '/index.php');
 
                 $AG->clearOldThumbs();
-                $row->text = $AG->writeErrors() . preg_replace("#{AdmirorGallery[^}]*}" . $AG->imagesFolderNameOriginal . "{/AdmirorGallery}|{AG[^}]*}" . $AG->imagesFolderNameOriginal . "{/AG}#s", "<div style='clear:both'></div>" . $html, $row->text, 1);
+                $row->text = $AG->error_handle->writeErrors() . preg_replace("#{AdmirorGallery[^}]*}" . $AG->imagesFolderNameOriginal . "{/AdmirorGallery}|{AG[^}]*}" . $AG->imagesFolderNameOriginal . "{/AG}#s", "<div style='clear:both'></div>" . $html, $row->text, 1);
             }// foreach($matches[0] as $match)
 
             $row->text .= '<script type="text/javascript">';

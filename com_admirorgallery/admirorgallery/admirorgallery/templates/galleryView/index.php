@@ -8,7 +8,6 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// Joomla security code
 defined('_JEXEC') or die();
 
 // Load CSS from current template folder

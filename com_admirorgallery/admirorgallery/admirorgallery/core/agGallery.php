@@ -8,17 +8,21 @@
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
+defined('_JEXEC') or die();
+
 JLoader::register('agHelper', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agHelper.php');
 JLoader::register('agPopup', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agPopup.php');
 JLoader::register('agCmsInterface', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agCmsInterface.php');
-JLoader::register('agJoomla', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agJoomla.php');
 JLoader::register('agTemplate', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agTemplate.php');
 JLoader::register('agParams', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agParams.php');
+JLoader::register('agErrorHandler', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agErrorHandler.php');
 
-agJoomla::SecurityCheck();
-
-class agGallery extends agHelper
+class agGallery
 {
+    private agCmsInterface $cms;
+    public agParams $params;
+    public agPopup $popupEngine;
+    public agErrorHandler $error_handle;
     public string $sitePath = '';
     public string $sitePhysicalPath = '';
     public string $thumbsFolderPath = ''; // Virtual path. Example: "http://www.mysite.com/plugin/content/admirorgallery/thumbs/"
@@ -28,10 +32,8 @@ class agGallery extends agHelper
     public string $imagesFolderPath = ''; // Virtual path. Example: "http://www.mysite.com/images/stories/food/"
     public ?array $images = array();
     public ?array $imageInfo = array(); //array:"width","height","type","size"
-    public agParams $params;
     public int $index = -1;
     public int $articleID = 0;
-    public agPopup $popupEngine;
     public string $currPopupRoot = '';
     public string $currTemplateRoot = '';
     public string $pluginPath = ''; // Virtual path. Example: "http://www.mysite.com/plugins/content/admirorgallery/"
@@ -43,9 +45,6 @@ class agGallery extends agHelper
     public string $albumParentLink = '';
     public ?array $folders;
     public string $imagesFolderNameOriginal;
-
-    private array $errors = array();
-    private agCmsInterface $cms;
     private array $descArray = array();
     private string $match = '';
     private string $DS = DIRECTORY_SEPARATOR;
@@ -128,7 +127,7 @@ class agGallery extends agHelper
      */
     public function getParameter(string $attrib, string $default): string
     {
-        return $this->ag_getParams($attrib, $this->match, $default);
+        return $this->params->getParamFromHTML($attrib, $this->match, $default);
     }
 
     /**
@@ -284,7 +283,7 @@ class agGallery extends agHelper
             }
         }
         if (!empty($thumb_file)) {
-            $this->Album_generateThumb($folderName, $thumb_file);
+            $this->create_album_thumb($folderName, $thumb_file);
             $thumb_file = 'thumbs/' . $this->imagesFolderName . '/' . $folderName . '/' . basename($thumb_file);
         } else {
             $thumb_file = $this->currTemplateRoot.$default_folder_img;
@@ -389,20 +388,6 @@ class agGallery extends agHelper
         return $this->popupEngine->endCode;
     }
 
-    /**
-     * Adds new error value to the error array
-     *
-     * @param $value
-     *
-     * @since 5.5.0
-     */
-    public function addError($value)
-    {
-        if ($value != '') {
-            $this->errors[] = $value;
-        }
-    }
-
     //**************************************************************************
     // END Template API functions                                             //
     //**************************************************************************
@@ -420,7 +405,7 @@ class agGallery extends agHelper
     {
         $this->match = $match;
         $this->readInlineParams();
-        $this->imagesFolderNameOriginal = preg_replace("/{.+?}/", "", $match);
+        $this->imagesFolderNameOriginal = (string) preg_replace("/{.+?}/", "", $match);
         $this->imagesFolderName = strip_tags($this->imagesFolderNameOriginal);
         // Pagination Support
         if ($this->params['paginUse'] || $this->params['albumUse']) {
@@ -481,7 +466,7 @@ class agGallery extends agHelper
      */
     public function cleanThumbsFolder()
     {
-        $this->ag_cleanThumbsFolder($this->imagesFolderPhysicalPath,
+        agHelper::ag_cleanThumbsFolder($this->imagesFolderPhysicalPath,
             $this->thumbsFolderPhysicalPath);
     }
 
@@ -492,7 +477,7 @@ class agGallery extends agHelper
      */
     public function clearOldThumbs()
     {
-        $this->ag_clearOldThumbs($this->imagesFolderPhysicalPath,
+        agHelper::ag_clearOldThumbs($this->imagesFolderPhysicalPath,
             $this->thumbsFolderPhysicalPath, $this->params['albumUse']);
     }
 
@@ -612,135 +597,108 @@ class agGallery extends agHelper
     }
 
     /**
-     * Generates thumbs, check for settings change and recreates thumbs if it needs to
+     * Generates image thumbs
      *
      * @since 5.5.0
      */
-    public function generateThumbs()
+    public function create_gallery_thumbs()
     {
         if (($this->params['thumbWidth'] == 0) || ($this->params['thumbHeight'] == 0)) {
-            $this->adderror($this->cms->Text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
+            $this->error_handle->adderror($this->cms->Text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
             return;
         }
         //Adds index.html to thumbs folder
-        if (!file_exists($this->thumbsFolderPhysicalPath . $this->DS . 'index.html')) {
-            $this->ag_indexWrite($this->thumbsFolderPhysicalPath . $this->DS . 'index.html');
-        }
+        agHelper::ag_indexWrite($this->thumbsFolderPhysicalPath . $this->DS . 'index.html');
+
         // Check for Changes
         if (!empty($this->images)) {
-            foreach ($this->images as $imagesKey => $imagesValue) {
-                $original_file = $this->imagesFolderPhysicalPath . $imagesValue;
-                $thumb_file = $this->thumbsFolderPhysicalPath . $imagesValue;
-                if (!file_exists($thumb_file)) {
-                    $this->addError(agHelper::ag_createThumb($this->imagesFolderPhysicalPath . $imagesValue, $thumb_file, $this->params['thumbWidth'], $this->params['thumbHeight'], $this->params['thumbAutoSize']));
-                } else {
-                    list($imagewidth, $imageheight) = getimagesize($thumb_file);
-                    switch ($this->params['thumbAutoSize']) {
-                        case "none":
-                            if ($imageheight != $this->params['thumbHeight'] || $imagewidth != $this->params['thumbWidth']) {
-                                $this->addError(agHelper::ag_createThumb($this->imagesFolderPhysicalPath . $imagesValue, $thumb_file, $this->params['thumbWidth'], $this->params['thumbHeight'], $this->params['thumbAutoSize']));
-                            }
-                            break;
-                        case "height":
-                            if ($imagewidth != $this->params['thumbWidth']) {
-                                $this->addError(agHelper::ag_createThumb($this->imagesFolderPhysicalPath . $imagesValue, $thumb_file, $this->params['thumbWidth'], $this->params['thumbHeight'], $this->params['thumbAutoSize']));
-                            }
-                            break;
-                        case "width":
-                            if ($imageheight != $this->params['thumbHeight']) {
-                                $this->addError(agHelper::ag_createThumb($this->imagesFolderPhysicalPath . $imagesValue, $thumb_file, $this->params['thumbWidth'], $this->params['thumbHeight'], $this->params['thumbAutoSize']));
-                            }
-                            break;
-                    }
-                }
-                // ERROR - Invalid image
-                if (!file_exists($thumb_file)) {
-                    $this->addError($this->cms->TextConcat("AG_CANNOT_READ_THUMBNAIL", $thumb_file));
-                }
+            foreach ($this->images as $imagesKey => $image) {
+                $original_file = $this->imagesFolderPhysicalPath . $image;
+                $thumb_file = $this->thumbsFolderPhysicalPath . $image;
+                $this->generate_thumb($original_file, $thumb_file);
             }
         }
     }
 
     /**
-     * Generates Album Thumbs
+     * Generates album thumbs
      *
-     * @param string $AG_parent_folder
-     * @param string $AG_img
+     * @param string $ag_parent_folder
+     * @param string $ag_img
      *
      * @since 5.5.0
      */
-    public function Album_generateThumb(string $AG_parent_folder, string $AG_img)
+    public function create_album_thumb(string $ag_parent_folder, string $ag_img)
     {
         if (($this->params['thumbWidth'] == 0) || ($this->params['thumbHeight'] == 0)) {
-            $this->adderror($this->cms->Text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
+            $this->error_handle->addError($this->cms->Text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
             return;
         }
-        $imagesFolderPhysicalPath = $this->imagesFolderPhysicalPath . $AG_parent_folder . $this->DS;
-        $thumbsFolderPhysicalPath = $this->thumbsFolderPhysicalPath . $AG_parent_folder . $this->DS;
+        $imagesFolderPhysicalPath = $this->imagesFolderPhysicalPath . $ag_parent_folder . $this->DS;
+        $thumbsFolderPhysicalPath = $this->thumbsFolderPhysicalPath . $ag_parent_folder . $this->DS;
         //Create directory in thumbs for gallery
         if (!file_exists($thumbsFolderPhysicalPath)) {
             //TODO:Handle return value
             $this->cms->CreateFolder($thumbsFolderPhysicalPath);
         }
         //Adds index.html to thumbs folder
-        if (!file_exists($thumbsFolderPhysicalPath . 'index.html')) {
-            $this->ag_indexWrite($thumbsFolderPhysicalPath . 'index.html');
-        }
-        $original_file = $imagesFolderPhysicalPath . $AG_img;
-        $thumb_file = $thumbsFolderPhysicalPath . $AG_img;
-        //TODO:Extract into function
+        agHelper::ag_indexWrite($thumbsFolderPhysicalPath . 'index.html');
+
+        $original_file = $imagesFolderPhysicalPath . $ag_img;
+        $thumb_file = $thumbsFolderPhysicalPath . $ag_img;
+        $this->generate_thumb($original_file, $thumb_file);
+    }
+
+    /**
+     * Generates and updates thumbnails according to settings
+     *
+     * @param string $original_file
+     * @param string $thumb_file
+     *
+     *
+     * @since 5.5.0
+     */
+    private function generate_thumb(string $original_file, string $thumb_file)
+    {
+        $create_thumb = false;
         if (!file_exists($thumb_file)) {
-            $this->addError(agHelper::ag_createThumb($original_file, $thumb_file, $this->params['thumbWidth'], $this->params['thumbHeight'], $this->params['thumbAutoSize']));
+            $create_thumb = true;
         } else {
-            list($imagewidth, $imageheight) = getimagesize($thumb_file);
+            list($width, $height) = getimagesize($thumb_file);
             switch ($this->params['thumbAutoSize']) {
                 case "none":
-                    if ($imageheight != $this->params['thumbHeight'] || $imagewidth != $this->params['thumbWidth']) {
-                        $this->addError(agHelper::ag_createThumb($original_file, $thumb_file, $this->params['thumbWidth'], $this->params['thumbHeight'], $this->params['thumbAutoSize']));
+                    if ($height != $this->params['thumbHeight'] || $width != $this->params['thumbWidth']) {
+                        $create_thumb = true;
                     }
                     break;
                 case "height":
-                    if ($imagewidth != $this->params['thumbWidth']) {
-                        $this->addError(agHelper::ag_createThumb($original_file, $thumb_file, $this->params['thumbWidth'], $this->params['thumbHeight'], $this->params['thumbAutoSize']));
+                    if ($width != $this->params['thumbWidth']) {
+                        $create_thumb = true;
                     }
                     break;
                 case "width":
-                    if ($imageheight != $this->params['thumbHeight']) {
-                        $this->addError(agHelper::ag_createThumb($original_file, $thumb_file, $this->params['thumbWidth'], $this->params['thumbHeight'], $this->params['thumbAutoSize']));
+                    if ($height != $this->params['thumbHeight']) {
+                        $create_thumb = true;
                     }
                     break;
+            }
+        }
+        if ($create_thumb) {
+            $result = agHelper::ag_createThumb(
+                $original_file,
+                $thumb_file,
+                $this->params['thumbWidth'],
+                $this->params['thumbHeight'],
+                $this->params['thumbAutoSize']
+            );
+            if ($result) {
+                $this->error_handle->addError($this->cms->TextConcat($result, $original_file));
             }
         }
         // ERROR - Invalid image
         if (!file_exists($thumb_file)) {
-            $this->addError($this->cms->TextConcat("AG_CANNOT_READ_THUMBNAIL", $thumb_file));
+            $this->error_handle->addError($this->cms->TextConcat("AG_CANNOT_READ_THUMBNAIL", $thumb_file));
         }
-    }
-
-    /**
-     * Returns error html
-     *
-     * @return string
-     *
-     * @since 5.5.0
-     */
-    public function writeErrors(): string
-    {
-        $errors = "";
-        $osVersion = isset($_SERVER['HTTP_USER_AGENT']) ? $this->ag_get_os_($_SERVER['HTTP_USER_AGENT']) : 'Unknown - no user agent';
-        $phpVersion = phpversion();
-        if (isset($this->errors)) {
-            foreach ($this->errors as $key => $value) {
-                $errors.='<div class="error">' . $value . ' <br/>
-                        Admiror Gallery: ' . AG_VERSION . '<br/>
-                        Server OS:' . $_SERVER['SERVER_SOFTWARE'] . '<br/>
-                        Client OS:' . $osVersion . '<br/>
-                        PHP:' . $phpVersion . '
-                        </div>' . "\n";
-            }
-            unset($this->errors);
-        }
-        return $errors;
     }
 
     /**
@@ -785,15 +743,16 @@ class agGallery extends agHelper
      * @param $globalParams
      * @param string $path
      * @param string $sitePhysicalPath
-     * @param $cms
+     * @param agCmsInterface $cms
      *
      * @since 5.5.0
      */
-    public function __construct($globalParams, string $path, string $sitePhysicalPath, $cms)
+    public function __construct($globalParams, string $path, string $sitePhysicalPath, agCmsInterface $cms)
     {
         $this->cms = $cms;
         $this->params = new agParams($globalParams);
         $this->popupEngine = new agPopup();
+        $this->error_handle = new agErrorHandler();
         if (substr($path, -1) == "/") {
             $path = substr($path, 0, -1);
         }

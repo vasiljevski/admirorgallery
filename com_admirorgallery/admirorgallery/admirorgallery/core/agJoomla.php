@@ -111,11 +111,6 @@ class agJoomla implements agCmsInterface
         return JText::sprintf($string_id, $value);
     }
 
-    public static function SecurityCheck(): void
-    {
-        defined('_JEXEC') or die();
-    }
-
     public function AddJsDeclaration(string $script): void
     {
         $this->doc->addScriptDeclaration($script);

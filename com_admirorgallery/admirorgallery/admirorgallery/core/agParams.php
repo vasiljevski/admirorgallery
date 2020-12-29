@@ -54,6 +54,27 @@ class agParams implements ArrayAccess {
     }
 
     /**
+     * Returns specific inline parameter if entered or returns default value
+     *
+     * @param string $attrib
+     * @param string $tag
+     * @param $default
+     *
+     * @return string|$default value if no presented
+     *
+     * @since 5.5.0
+     */
+    public static function getParamFromHTML(string $attrib, string $tag, $default): string
+    {
+        //get attribute from html tag
+        $re = '/' . preg_quote($attrib) . '=([\'"])?((?(1).+?|[^\s>]+))(?(1)\1)/is';
+        if (preg_match($re, $tag, $match)) {
+            return urldecode($match[2]);
+        }
+        return $default;
+    }
+
+    /**
      * @param mixed $offset
      * @param mixed $value
      *

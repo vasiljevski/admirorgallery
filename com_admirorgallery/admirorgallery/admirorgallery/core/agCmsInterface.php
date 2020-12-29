@@ -15,7 +15,6 @@
  */
 interface agCmsInterface
 {
-    public static function SecurityCheck(): void;
     public function LoadClass(): void;
     public function GetActiveLanguageTag(): string;
     //Context
