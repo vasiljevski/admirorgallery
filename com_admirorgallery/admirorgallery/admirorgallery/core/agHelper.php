@@ -192,13 +192,13 @@ class agHelper
     /**
      * Rounds the file size for output
      *
-     * @param $size
+     * @param int $size
      *
      * @return string
      *
      * @since 5.5.0
      */
-    public static function ag_fileRoundSize($size): string
+    public static function ag_fileRoundSize(int $size): string
     {
         $bytes = array('B', 'KB', 'MB', 'GB', 'TB');
         foreach ($bytes as $val) {
@@ -249,7 +249,7 @@ class agHelper
      *
      * @since 5.5.0
      */
-    public static function ag_cleanThumbsFolder(string $originalFolder, string $thumbFolder)
+    public static function ag_cleanThumbsFolder(string $originalFolder, string $thumbFolder): void
     {
         $origin = self::ag_foldersArrayFromFolder($originalFolder);
         $thumbs = self::ag_foldersArrayFromFolder($thumbFolder);
@@ -473,7 +473,7 @@ class agHelper
      *
      * @since 5.5.0
      */
-    public static function ag_indexWrite(string $filename)
+    public static function ag_indexWrite(string $filename): void
     {
         if (!touch($filename))
             trigger_error("index.html could not be created!");
@@ -571,11 +571,11 @@ class agHelper
      *
      * @since 5.5.0
      */
-    public static function ag_shrinkString(string $string, string $stringLength, string $add=''): string
+    public static function ag_shrinkString(string $string, string $stringLength, string $add='...'): string
     {
         if (strlen($string)>$stringLength) {
             $string = substr($string, 0, $stringLength);
-            $string.="...";
+            $string.=$add;
         }
         return $string;
     }
