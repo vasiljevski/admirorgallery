@@ -18,5 +18,4 @@ class agPopup
     public string $initCode='';
     public string $customPopupThumb='';
     public string $endCode='';
-    public string $customTag= '';
 }

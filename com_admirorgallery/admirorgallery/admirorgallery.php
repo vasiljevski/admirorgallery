@@ -55,8 +55,7 @@ class plgContentAdmirorGallery extends JPlugin {
 
         //Create galleries
         if (preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}#s", $row->text, $matches) > 0) {
-            //TODO: Remove doc
-            $AG = new agGallery($this->params, JURI::base(), JPATH_SITE, new agJoomla($doc));
+            $AG = new agGallery($this->params, JURI::base(), JPATH_SITE, new agJoomla());
             //Load current language
             JPlugin::loadLanguage('plg_content_admirorgallery', JPATH_ADMINISTRATOR);
             // Version check

@@ -21,40 +21,35 @@ class agGallery extends agHelper
 {
     public string $sitePath = '';
     public string $sitePhysicalPath = '';
-    // Virtual path. Example: "http://www.mysite.com/plugin/content/admirorgallery/thumbs/"
-    public string $thumbsFolderPath = '';
-    // Physical path on the server. Example: "E:\php\www\joomla/plugin/content/admirorgallery/thumbs/"
-    public string $thumbsFolderPhysicalPath = '';
-    // Gallery name. Example: food
-    public string $imagesFolderName = '';
-    // Physical path on the server. Example: "E:\php\www\joomla/plugin/content/"
-    public string $imagesFolderPhysicalPath = '';
-    // Virtual path. Example: "http://www.mysite.com/images/stories/food/"
-    public string $imagesFolderPath = '';
+    public string $thumbsFolderPath = ''; // Virtual path. Example: "http://www.mysite.com/plugin/content/admirorgallery/thumbs/"
+    public string $thumbsFolderPhysicalPath = ''; // Physical path on the server. Example: "E:\php\www\joomla/plugin/content/admirorgallery/thumbs/"
+    public string $imagesFolderName = ''; // Gallery name. Example: food
+    public string $imagesFolderPhysicalPath = ''; // Physical path on the server. Example: "E:\php\www\joomla/plugin/content/"
+    public string $imagesFolderPath = ''; // Virtual path. Example: "http://www.mysite.com/images/stories/food/"
     public ?array $images = array();
-    public ?array $imageInfo = array();
+    public ?array $imageInfo = array(); //array:"width","height","type","size"
     public agParams $params;
     public int $index = -1;
     public int $articleID = 0;
     public agPopup $popupEngine;
     public string $currPopupRoot = '';
     public string $currTemplateRoot = '';
-    // Virtual path. Example: "http://www.mysite.com/plugins/content/admirorgallery/"
-    public string $pluginPath = '';
+    public string $pluginPath = ''; // Virtual path. Example: "http://www.mysite.com/plugins/content/admirorgallery/"
     public bool $squareImage = false;
     public array$paginInitPages = array();
     public array $albumInitFolders = array();
     public int $paginImgTotal = 0;
     public int $numOfGal = 0;
     public string $albumParentLink = '';
+    public ?array $folders;
+    public string $imagesFolderNameOriginal;
+
     private array $errors = array();
     private agCmsInterface $cms;
     private array $descArray = array();
     private string $match = '';
     private string $DS = DIRECTORY_SEPARATOR;
     private string $plugin_path = '/plugins/content/admirorgallery/admirorgallery/';
-    public ?array $folders;
-    public string $imagesFolderNameOriginal;
 
     //**************************************************************************
     //Template API functions                                                  //
@@ -207,7 +202,7 @@ class agGallery extends agHelper
             $html = str_replace("{imageDescription}", htmlspecialchars($this->descArray[$image], ENT_QUOTES), $html);
             $html = str_replace("{className}", $this->popupEngine->className, $html);
             $html = str_replace("{rel}", $this->popupEngine->rel, $html);
-            $html = str_replace("{customAttr}", $this->popupEngine->customTag, $html);
+            $html = str_replace("{customAttr}", $this->popupEngine->customAttr, $html);
             $html = str_replace("{newImageTag}", $this->writeNewImageTag($image), $html);
             $html = str_replace("{thumbImagePath}", $this->sitePath .  $this->plugin_path . 'thumbs/' . $this->imagesFolderName . '/' . $image, $html);
         } else {
@@ -346,7 +341,7 @@ class agGallery extends agHelper
         $html = '';
         if (!empty($this->images)) {
             foreach ($this->images as $imagesKey => $imagesValue) {
-                $html.='<a href="' . $this->imagesFolderPath . $imagesValue . '" title="' . htmlspecialchars(strip_tags($this->descArray[$imagesValue])) . '" class="' . $this->popupEngine->className . '" rel="' . $this->popupEngine->rel . '" ' . $this->popupEngine->customTag . ' target="_blank">';
+                $html.='<a href="' . $this->imagesFolderPath . $imagesValue . '" title="' . htmlspecialchars(strip_tags($this->descArray[$imagesValue])) . '" class="' . $this->popupEngine->className . '" rel="' . $this->popupEngine->rel . '" ' . $this->popupEngine->customAttr . ' target="_blank">';
                 $html.=$this->writeNewImageTag($imagesValue);
                 $html.='<img src="' . $this->sitePath .  $this->plugin_path . 'thumbs/' . $this->imagesFolderName . '/' . $imagesValue . '
                         " alt="' . htmlspecialchars(strip_tags($this->descArray[$imagesValue])) . '" class="ag_imageThumb"></a>';

@@ -17,10 +17,9 @@ jimport('joomla.filesystem.folder');
 
 class agJoomla implements agCmsInterface
 {
-
     private ?JDocument $doc;
 
-    function __construct($document)
+    function __construct()
     {
         $this->doc = JFactory::getDocument();
     }
