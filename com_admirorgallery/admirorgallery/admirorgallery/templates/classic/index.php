@@ -17,14 +17,14 @@ $template->preContent();
 $template->appendContent('
 <style type="text/css">
 
-    .AG_classic .ag_imageThumb {border-color:#' . $AG->params['foregroundColor'] . '}
-    .AG_classic .ag_imageThumb:hover {background-color:#' . $AG->params['highlightColor'] . '}
+    .AG_classic .ag_imageThumb {border-color:' . $AG->params['foregroundColor'] . '}
+    .AG_classic .ag_imageThumb:hover {background-color:' . $AG->params['highlightColor'] . '}
 
 ' . $template->generatePaginationStyle() . '
 
 </style>
 <div id="AG_' . $AG->getGalleryID() .
-        '" class="ag_reseter AG_' . $AG->params['template'] . '">');
+    '" class="ag_reseter AG_' . $AG->params['template'] . '">');
 
 $template->appendContent($AG->albumParentLink);
 
