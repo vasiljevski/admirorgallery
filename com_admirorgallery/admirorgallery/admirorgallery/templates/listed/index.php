@@ -1,16 +1,14 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// Joomla security code
 defined('_JEXEC') or die();
-
 
 $template = new agTemplate($AG, 'listed');
 
@@ -22,7 +20,7 @@ $template->appendContent($AG->albumParentLink);
 $template->appendContent('
 <style type="text/css">
 
-.AG_listed .ag_thumbTd a:hover{border-bottom:2px solid #' . $AG->params['highliteColor'] . ';}
+.AG_listed .ag_thumbTd a:hover{border-bottom:2px solid #' . $AG->params['highlightColor'] . ';}
 .AG_listed a .ag_imageThumb{background-color:#' . $AG->params['foregroundColor'] . ';}
 .AG_listed .ag_description, .AG_listed .ag_imageStat span{color:#' . $AG->params['foregroundColor'] . ';}
 
@@ -36,14 +34,14 @@ foreach ($AG->images as $imageKey => $imageName) {
     $AG->getImageInfo($imageName);
 
     $template->appendContent('
-    <table border="0" cellspacing="0" cellpadding="0" width="100%" class="ag_item">
+    <table class="ag_item">
     <tbody>
     <tr><td class="ag_thumbTd">
     <span class="ag_thumb' . $AG->params['template'] . '">' .
             $AG->writePopupThumb($imageName). 
     '</span></td>
     <td class="ag_info">
-    <table border="0" cellspacing="0" cellpadding="0">
+    <table>
     <tbody>
     <tr><td class="ag_description">
     ' . $AG->writeDescription($imageName) . '
@@ -66,5 +64,5 @@ $template->addAlbumSupport();
 
 // Render HTML for this template
 $html = $template->render();
-?>
+
 

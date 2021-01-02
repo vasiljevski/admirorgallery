@@ -1,3 +1,8 @@
 /com_admirorgallery/nbproject/private/
 /nbproject/private/
 /nbproject
+.buildpath
+.project
+.settings/
+.idea
+.github

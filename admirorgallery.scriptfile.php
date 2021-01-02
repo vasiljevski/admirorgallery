@@ -1,30 +1,32 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// No direct access to this file
-defined('_JEXEC') or die('Restricted access');
-jimport('joomla.utilities.simplexml');
+defined('_JEXEC') or die();
 
 /**
  * Script file of Admiror Gallery component
+ *
+ * @since 5.5.0
  */
 class com_admirorgalleryInstallerScript {
 
-    var $gallery_install_result = 0;
-    var $button_install_result = 0;
-    var $gallery_uninstall_result = 0;
-    var $button_uninstall_result = 0;
+    private int $gallery_install_result = 0;
+    private int $button_install_result = 0;
 
     /**
-     * method to install the component
+     * Install the component
+     *
+     * @param $parent
      *
      * @return void
+     *
+     * @since 5.5.0
      */
     function install($parent) {
         $manifest = $parent->get("manifest");
@@ -61,7 +63,7 @@ class com_admirorgalleryInstallerScript {
                     $columnFolder='content'"
         );
 
-        $this->gallery_install_result = $db->query();
+        $this->gallery_install_result = $db->execute();
         // Enable plugins
         $db->setQuery(
                 "UPDATE
@@ -76,13 +78,17 @@ class com_admirorgalleryInstallerScript {
                     $columnFolder='editors-xtd'"
         );
 
-        $this->button_install_result = $db->query();
+        $this->button_install_result = $db->execute();
     }
 
     /**
-     * method to uninstall the component
+     * Uninstall the component
+     *
+     * @param $parent
      *
      * @return void
+     *
+     * @since 5.5.0
      */
     function uninstall($parent) {
 
@@ -107,7 +113,7 @@ class com_admirorgalleryInstallerScript {
 					$columnFolder='content'"
         );
         $admirorgallery_id = $db->loadResult();
-        $this->gallery_uninstall_result = $installer->uninstall('plugin', $admirorgallery_id);
+        $gallery_uninstall_result = $installer->uninstall('plugin', $admirorgallery_id);
         // Find AdmirorButton ID
         $db->setQuery(
                 "SELECT extension_id
@@ -121,10 +127,10 @@ class com_admirorgalleryInstallerScript {
 					$columnFolder='editors-xtd'"
         );
         $admirorbutton_id = $db->loadResult();
-        $this->button_uninstall_result = $installer->uninstall('plugin', $admirorbutton_id);
+        $button_uninstall_result = $installer->uninstall('plugin', $admirorbutton_id);
 
-        $gallery_status = ($this->gallery_uninstall_result) ? JText::_('Removed') : JText::_('Error');
-        $button_status = ($this->button_uninstall_result) ? JText::_('Removed') : JText::_('Error');
+        $gallery_status = ($gallery_uninstall_result) ? JText::_('Removed') : JText::_('Error');
+        $button_status = ($button_uninstall_result) ? JText::_('Removed') : JText::_('Error');
         $html = '<h2>Admiror Gallery ' . JText::_('Uninstall') . '</h2>
                 <table class="adminlist">
                         <thead>
@@ -164,9 +170,13 @@ class com_admirorgalleryInstallerScript {
     }
 
     /**
-     * method to update the component
+     * Update the component
+     *
+     * @param $parent
      *
      * @return void
+     *
+     * @since 5.5.0
      */
     function update($parent) {
         //On update we just call install, no special case for updating.
@@ -174,18 +184,28 @@ class com_admirorgalleryInstallerScript {
     }
 
     /**
-     * method to run before an install/update/uninstall method
+     * Run before an install/update/uninstall method
+     *
+     * @param $type
+     * @param $parent
      *
      * @return void
+     *
+     * @since 5.5.0
      */
     function preflight($type, $parent) {
         
     }
 
     /**
-     * method to run after an install/update/uninstall method
+     * Run after an install/update/uninstall method
+     *
+     * @param $type
+     * @param $parent
      *
      * @return void
+     *
+     * @since 5.5.0
      */
     function postflight($type, $parent) {
         // $parent is the class calling this method

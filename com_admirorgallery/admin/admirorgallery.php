@@ -1,21 +1,19 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 $ag_template = "default"; // Set template to default
 $jinput = JFactory::getApplication()->input;
 $resources_path = JURI::root() . 'administrator/components/com_admirorgallery/';
 
-if (!JFactory::getUser()->authorise('core.manage', 'com_admirorgallery'))
-{
+if (!JFactory::getUser()->authorise('core.manage', 'com_admirorgallery')) {
     throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 }
 
@@ -25,25 +23,25 @@ $jinput->set('AG_template', $ag_template);
 // Shared scripts for all views
 $doc = JFactory::getDocument();
 $doc->addScript(
-        JURI::root() . 'plugins/content/admirorgallery/admirorgallery/AG_jQuery.js');
+    JURI::root() . 'plugins/content/admirorgallery/admirorgallery/AG_jQuery.js');
 $doc->addScript(
-        $resources_path. 'scripts/jquery.hotkeys-0.7.9.min.js');
+    $resources_path . 'scripts/jquery.hotkeys-0.7.9.min.js');
 $doc->addStyleSheet(
-        $resources_path. 'templates/' . $ag_template . '/css/template.css');
+    $resources_path . 'templates/' . $ag_template . '/css/template.css');
 $doc->addStyleSheet(
-        $resources_path. 'templates/' . $ag_template . '/css/toolbar.css');
+    $resources_path . 'templates/' . $ag_template . '/css/toolbar.css');
 
 // Require the base controller
-require_once (JPATH_COMPONENT . DIRECTORY_SEPARATOR . 'controller.php');
+require_once(JPATH_COMPONENT . DIRECTORY_SEPARATOR . 'controller.php');
 
 // Require specific controller if requested
 $spec_controller = $jinput->get('controller');
 if ($spec_controller) {
-    $path = JPATH_COMPONENT . 
-            DIRECTORY_SEPARATOR . 
-            'controllers' . 
-            DIRECTORY_SEPARATOR . 
-            $spec_controller . '.php';
+    $path = JPATH_COMPONENT .
+        DIRECTORY_SEPARATOR .
+        'controllers' .
+        DIRECTORY_SEPARATOR .
+        $spec_controller . '.php';
     if (file_exists($path)) {
         require_once $path;
     } else {
@@ -53,6 +51,6 @@ if ($spec_controller) {
 
 // Create the controller
 $classname = 'AdmirorgalleryController' . $spec_controller;
-$controller = new $classname( );
+$controller = new $classname();
 $controller->execute($jinput->get('task'));
 $controller->redirect();

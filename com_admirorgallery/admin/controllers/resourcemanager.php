@@ -1,25 +1,23 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
-class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController {
+class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController
+{
 
-    /**
-     * Constructor
-     */
     var $model;
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
 
         // Register Extra tasks
@@ -30,7 +28,8 @@ class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController {
         $this->model = $this->getModel('resourcemanager');
     }
 
-    function ag_install() {
+    function ag_install()
+    {
         $file = JRequest::getVar('AG_fileUpload', null, 'files');
         if (isset($file) && !empty($file['name'])) {
             $this->model->_install($file);
@@ -40,7 +39,8 @@ class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController {
         parent::display();
     }
 
-    function ag_uninstall() {
+    function ag_uninstall()
+    {
         $ag_cidArray = JRequest::getVar('cid');
         if (!empty($ag_cidArray)) {
             $this->model->_uninstall($ag_cidArray);
@@ -48,7 +48,8 @@ class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController {
         parent::display();
     }
 
-    function ag_reset() {
+    function ag_reset()
+    {
         parent::display();
     }
 

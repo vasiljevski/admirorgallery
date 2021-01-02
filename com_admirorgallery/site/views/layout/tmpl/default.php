@@ -1,14 +1,13 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// No direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 $ag_inlineParams='';
 $ag_inlineParams.=' template="'.$this->template.'"';
@@ -25,11 +24,11 @@ $ag_inlineParams.=' plainTextCaptions="'.$this->plainTextCaptions.'"';
 $ag_inlineParams.=' popupEngine="'.$this->popupEngine.'"';
 $ag_inlineParams.=' backgroundColor="'.$this->backgroundColor.'"';
 $ag_inlineParams.=' foregroundColor="'.$this->foregroundColor.'"';
-$ag_inlineParams.=' highliteColor="'.$this->highliteColor.'"';
+$ag_inlineParams.=' highlightColor="'.$this->highlightColor.'"';
 
 // Albums Support
 $ag_inlineParams.=' albumUse="'.$this->albumUse.'"';
-// Paginations Support
+// Pagination Support
 $ag_inlineParams.=' paginUse="'.$this->paginUse.'"';
 $ag_inlineParams.=' paginImagesPerGallery="'.$this->paginImagesPerGallery.'"';
 

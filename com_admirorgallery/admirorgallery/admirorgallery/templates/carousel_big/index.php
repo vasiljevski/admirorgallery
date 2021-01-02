@@ -1,13 +1,13 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
-// Joomla security code
+
 defined('_JEXEC') or die('Restricted access');
 
 $template = new agTemplate($AG, 'jquery.jcarousel.css');
@@ -125,4 +125,4 @@ AG_jQuery(\'.jcarousel-control a[rel="1"]\').css({backgroundPosition:"left -20px
 $template->appendContent($AG->writePagination());
 
 $html = $template->render();
-?>
+

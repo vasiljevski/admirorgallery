@@ -5,7 +5,7 @@
     <creationDate>07/01/2014</creationDate>	
     <copyright>This extension in released under the GNU/GPL License - http://www.gnu.org/copyleft/gpl.html</copyright>
     <license>GNU/GPL</license>
-    <authorEmail></authorEmail>
+    <authorEmail/>
     <authorUrl>http://www.admiror-design-studio.com</authorUrl>
     <version>5.1.2</version>
     <description>plg_admirorgallery_xml_description</description>
@@ -145,12 +145,12 @@
                        required="1"
                        label="AG_GALLERY_FOREGROUND_COLOR" 
                        description="AG_GALLERY_FOREGROUND_COLOR_DESC" />     
-                <field name="highliteColor" 
+                <field name="highlightColor"
                        type="color" 
                        default="fea804"
                        required="1"
-                       label="AG_GALLERY_HIGHLITE_COLOR" 
-                       description="AG_GALLERY_HIGHLITE_COLOR_DESC" />
+                       label="AG_GALLERY_HIGHLIGHT_COLOR"
+                       description="AG_GALLERY_HIGHLIGHT_COLOR_DESC" />
                 <field name="spacer1" type="spacer" class="text"
                        label="PLG_CONTENT_ADMIRORGALLERY_FRAME_NOTICE"
 		/>

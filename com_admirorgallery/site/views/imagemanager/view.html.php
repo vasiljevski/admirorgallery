@@ -1,27 +1,27 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.folder');
 jimport('joomla.language.language');
 jimport('joomla.filesystem.archive');
-class AdmirorgalleryViewImagemanager extends JViewLegacy {
-   
-    var $ag_template_id = 'default';
-    var $ag_init_itemURL = '';
-    var $ag_starting_folder = '';
-    var $ag_rootFolder = '';
-    var $ag_front_end = '';
+
+class AdmirorgalleryViewImagemanager extends JViewLegacy
+{
+    var string $ag_template_id = 'default';
+    var string $ag_init_itemURL = '';
+    var string $ag_starting_folder = '';
+    var string $ag_rootFolder = '';
+    var string $ag_front_end = '';
     
     function display($tpl = null) {
         // Make sure you are logged in and have the necessary access
@@ -78,7 +78,8 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
         parent::display($tpl);
     }
 
-    function ag_render_breadcrumb($AG_itemURL, $ag_rootFolder, $ag_folderName, $ag_fileName) {
+    function ag_render_breadcrumb($AG_itemURL, $ag_rootFolder, $ag_folderName, $ag_fileName): string
+    {
         $ag_breadcrumb = '';
         $ag_breadcrumb_link = '';
         if ($ag_rootFolder != $AG_itemURL && !empty($AG_itemURL)) {
@@ -98,7 +99,8 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy {
         }
         return $ag_breadcrumb;
     }
-function ag_render_image_info($ag_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb) {
+    function ag_render_image_info($ag_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb): string
+    {
         $return_value = '<div class="AG_margin_bottom AG_thumbAndInfo_wrapper">
                 <table cellspacing="0" cellpadding="0" border="0">
                     <tbody>
@@ -123,7 +125,8 @@ function ag_render_image_info($ag_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb
         return $return_value;
     }
 
-    function ag_render_caption($ag_lang_name, $ag_lang_tag, $ag_lang_content) {
+    function ag_render_caption($ag_lang_name, $ag_lang_tag, $ag_lang_content): string
+    {
         return '
 	<div class="AG_border_color AG_border_width AG_margin_bottom">
 	    ' . $ag_lang_name . ' / ' . $ag_lang_tag . '
@@ -132,7 +135,8 @@ function ag_render_image_info($ag_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb
     ';
     }
 
-    function ag_render_captions($ag_imgXML_captions) {
+    function ag_render_captions($ag_imgXML_captions): string
+    {
         $ag_site_languages = "";
         $ag_matchCheck = Array("default");
 
@@ -174,7 +178,8 @@ function ag_render_image_info($ag_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb
         return $ag_site_languages;
     }
 
-    function ag_render_file_footer() {
+    function ag_render_file_footer(): string
+    {
         return '<div style="clear:both" class="AG_margin_bottom"></div>
         <hr />
         <div  class="AG_legend">

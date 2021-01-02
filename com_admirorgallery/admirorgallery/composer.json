@@ -1,0 +1,19 @@
+{
+  "name": "vendor_name/admirorgallery",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "nikol",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+    "phpunit/phpunit": "9.2.2"
+  },
+
+  "autoload": {
+    "psr-4": {"agGallery\\": "admirorgallery/core"}
+  }
+}

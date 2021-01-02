@@ -1,13 +1,12 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// Check to ensure this file is included in Joomla!
 defined('_JEXEC') or die();
 
 jimport('joomla.application.component.model');
@@ -17,9 +16,11 @@ jimport('joomla.filesystem.file');
 jimport('joomla.filesystem.archive');
 jimport('joomla.filesystem.folder');
 
-class AdmirorgalleryModelResourcemanager extends JModelLegacy {
+class AdmirorgalleryModelResourcemanager extends JModelLegacy
+{
 
-    function _install($file) {
+    function _install($file)
+    {
 
         $AG_resourceType = JRequest::getVar('AG_resourceType'); // Current resource type
         $config = JFactory::getConfig();
@@ -46,7 +47,7 @@ class AdmirorgalleryModelResourcemanager extends JModelLegacy {
 
                     // TEMPLATE DETAILS PARSING
                     if (JFIle::exists($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml')) {
-                        $ag_resourceManager_xml = & JFactory::getXML($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml');
+                        $ag_resourceManager_xml = JFactory::getXML($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml');
                         if (isset($ag_resourceManager_xml->type)) {
                             $ag_resourceManager_type = $ag_resourceManager_xml->type;
                         } else {
@@ -60,7 +61,7 @@ class AdmirorgalleryModelResourcemanager extends JModelLegacy {
                         return;
                     }
                     if (($ag_resourceManager_type) && ($ag_resourceManager_type == $resourceType)) {
-                        $result = JFolder::move($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType. DIRECTORY_SEPARATOR.JFile::stripExt($filename) , JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . $AG_resourceType.DIRECTORY_SEPARATOR.JFile::stripExt($filename));
+                        $result = JFolder::move($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename), JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename));
                         if ($result) {
                             JFactory::getApplication()->enqueueMessage(JText::_('AG_ZIP_PACKAGE_IS_INSTALLED') . "&nbsp;" . $filename, 'message');
                         } else {
@@ -79,7 +80,8 @@ class AdmirorgalleryModelResourcemanager extends JModelLegacy {
         }
     }
 
-    function _uninstall($ag_cidArray) {
+    function _uninstall($ag_cidArray)
+    {
         $AG_resourceType = JRequest::getVar('AG_resourceType'); // Current resource type
         foreach ($ag_cidArray as $ag_cidArrayKey => $ag_cidArrayValue) {
             if (!empty($ag_cidArrayValue)) {

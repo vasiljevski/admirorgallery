@@ -1,14 +1,13 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// no direct access
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 jimport('joomla.application.component.controller');
 
@@ -17,14 +16,13 @@ jimport('joomla.filesystem.folder');
 jimport('joomla.language.language');
 jimport('joomla.filesystem.archive');
 
-class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController {
+class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
+{
 
-    /**
-     * Constructor
-     */
     var $model = null;
 
-    function __construct() {
+    function __construct()
+    {
         parent::__construct();
 
         // Register Extra tasks
@@ -32,11 +30,12 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController {
         $this->registerTask('AG_reset', 'AG_reset');
     }
 
-    function AG_apply() {
+    function AG_apply()
+    {
 
         $model = $this->getModel('imagemanager');
 
-        $AG_itemURL = JRequest::getVar('AG_itemURL');
+        $AG_itemURL = $this->input->getPath('AG_itemURL');
         if (is_dir(JPATH_SITE . $AG_itemURL)) {
 
             // FOLDER MODELS
@@ -92,7 +91,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController {
 
             // RENAME
             $AG_rename = JRequest::getVar('AG_rename');
-            $webSafe = Array("/", " ", ":", ".", "+", "&");
+            $webSafe = array("/", " ", ":", ".", "+", "&");
             if (!empty($AG_rename)) {
                 foreach ($AG_rename as $ren_key => $ren_value) {
                     $AG_originalName = JFile::stripExt(basename($ren_key));
@@ -125,7 +124,8 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController {
         parent::display();
     }
 
-    function AG_reset() {
+    function AG_reset()
+    {
         parent::display();
     }
 

@@ -1,14 +1,14 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-defined('_JEXEC') or die('Restricted access');
-//Check if plugin is installed, othervise don't show view
+defined('_JEXEC') or die();
+//Check if plugin is installed, otherwise don't show view
 if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
     return;
 }
@@ -26,12 +26,12 @@ $myparams->bind($values);
 ?>
 
 <script type="text/javascript">
-    Joomla.submitbutton = function(task)
-    {
+    Joomla.submitbutton = function (task) {
         Joomla.submitform(task, document.getElementById('component-form'));
     }
 </script>
-<form action=" <?php echo JURI::getInstance()->toString(); ?>"  id="component-form" method="post" name="adminForm" autocomplete="off" class="form-validate form-horizontal">
+<form action=" <?php echo JURI::getInstance()->toString(); ?>" id="component-form" method="post" name="adminForm"
+      autocomplete="off" class="form-validate form-horizontal">
     <div class="row-fluid">
         <!-- Begin Sidebar -->
         <div id="sidebar" class="span2">
@@ -64,7 +64,7 @@ $myparams->bind($values);
                     $label = empty($fieldSet->label) ? 'COM_CONFIG_' . $name . '_FIELDSET_LABEL' : $fieldSet->label;
                     ?>
                     <li><a href="#<?php echo $name; ?>" data-toggle="tab"><?php echo JText::_($label); ?></a></li>
-                    <?php
+                <?php
                 endforeach;
                 ?>
             </ul>
@@ -90,27 +90,27 @@ $myparams->bind($values);
                                     <?php echo $field->input; ?>
                                 </div>
                             </div>
-                            <?php
+                        <?php
                         endforeach;
                         ?>
                     </div>
-                    <?php
+                <?php
                 endforeach;
                 ?>
             </div>
         </div>
-        <div class="span5"> 
+        <div class="span5">
             <div class="well well-small">
                 <?php echo JText::_('COM_ADMIRORGALLERY_DESCRIPTION'); ?>
             </div>
         </div>
     </div>
     <div>
-        <input type="hidden" name="pressbutton" value="" id="pressbutton" />
-        <input type="hidden" name="controller" value="admirorgallery" />
-        <input type="hidden" name="task" value="" />
-        <input type="hidden" name="option" value="com_admirorgallery" />
-        <input type="hidden" name="view" value="" />
+        <input type="hidden" name="pressbutton" value="" id="pressbutton"/>
+        <input type="hidden" name="controller" value="admirorgallery"/>
+        <input type="hidden" name="task" value=""/>
+        <input type="hidden" name="option" value="com_admirorgallery"/>
+        <input type="hidden" name="view" value=""/>
         <?php echo JHtml::_('form.token'); ?>
     </div>
 </form>

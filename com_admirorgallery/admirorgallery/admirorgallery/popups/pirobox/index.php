@@ -1,10 +1,10 @@
 <?php
 /**
- * @version     5.2.0
+ * @version     5.5.0
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2018 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -23,4 +23,4 @@ $this->popupEngine->rel = 'pirobox[AdmirorGallery' . $this->getGalleryID() . ']'
 
 // Set CLASS attribute needed for Popup engine
 $this->popupEngine->className = 'pirobox_AdmirorGallery' . $this->getGalleryID();
-?>
+
