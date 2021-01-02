@@ -27,7 +27,7 @@ if (!JFolder::create($thumbsFolderPhysicalPath, 0755)) {
 $ag_hasXML = "";
 $ag_hasThumb = "";
 
-// Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
+// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
 $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . '/' . JFile::stripExt(basename($ag_itemURL));
 $ag_imgXML_path = $ag_pathWithStripExt . ".XML";
 if (JFIle::exists($ag_pathWithStripExt . ".xml")) {
