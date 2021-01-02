@@ -135,7 +135,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
 
                 $ag_XML_priority = "";
                 if (file_exists($ag_XML_path)) {
-                    $ag_XML_xml = JFactory::getXML($ag_XML_path);
+                    $ag_XML_xml = simplexml_load_file($ag_XML_path);
                     $ag_XML_priority = $ag_XML_xml->priority;
                 }
 

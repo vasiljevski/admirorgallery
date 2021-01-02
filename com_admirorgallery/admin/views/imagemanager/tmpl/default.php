@@ -26,7 +26,7 @@ if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
             <div class="module-title nav-header"> <?php echo JText::_('AG_VERSION'); ?> </div>
             <ul class="unstyled list-striped">
                 <?php
-                $ag_admirorgallery_xml = JFactory::getXML(JPATH_COMPONENT_ADMINISTRATOR . '/com_admirorgallery.xml');
+                $ag_admirorgallery_xml = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/com_admirorgallery.xml');
                 if ($ag_admirorgallery_xml) {
                     echo '<li>' . JText::_('COM_ADMIRORGALLERY_COMPONENT_VERSION') . '&nbsp;' . $ag_admirorgallery_xml->version . "</li>";
                     echo '<li>' . JText::_('COM_ADMIRORGALLERY_PLUGIN_VERSION') . '&nbsp;' . $ag_admirorgallery_xml->plugin_version . "</li>";
