@@ -74,6 +74,9 @@
                         nbproject/**,
                         com_admirorgallery_ant.xml,
                         common.xml,
+                        com_admirorgallery/admirorgallery/vendor/**,
+                        com_admirorgallery/admirorgallery/admirorgallery/core/tests/**,
+                        com_admirorgallery/admirorgallery/composer.lock,
                         admiror_extensions/**"/>
     </target>
     <target name="buildcomponent" depends="_clean">
@@ -167,7 +170,10 @@
         <copy todir="${builddir}/${NAME}/admirorgallery" 
               overwrite="true" 
               verbose="${verbose}">
-            <fileset dir="${source}/plugins/content/admirorgallery" />
+            <fileset dir="${source}/plugins/content/admirorgallery">
+                <exclude name="vendor/**" />
+                <exclude name="composer.lock" />
+            </fileset>
         </copy>
         <delete includeemptydirs="true">
             <fileset dir="${builddir}/${NAME}/admirorgallery/admirorgallery/thumbs/" 

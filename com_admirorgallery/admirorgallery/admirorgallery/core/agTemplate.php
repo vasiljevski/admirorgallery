@@ -176,18 +176,16 @@ class agTemplate
         $this->AG->getGalleryID() . ' div.AG_album_wrap, #AG_' .
         $this->AG->getGalleryID() . ' a.AG_pagin_link, #AG_' .
         $this->AG->getGalleryID() . ' a.AG_pagin_prev, #AG_' .
-        $this->AG->getGalleryID() . ' a.AG_pagin_next {border-color:#' . $this->AG->params['foregroundColor'] . '}
+        $this->AG->getGalleryID() . ' a.AG_pagin_next {border-color:' . $this->AG->params['foregroundColor'] . '}
 #AG_' . $this->AG->getGalleryID() . ' a.AG_album_thumb:hover, #AG_' .
         $this->AG->getGalleryID() . ' a.AG_pagin_link:hover, #AG_' .
         
         $this->AG->getGalleryID() . ' a.AG_pagin_prev:hover, #AG_' .
-        $this->AG->getGalleryID() . ' a.AG_pagin_next:hover {background-color:#' .
-        $this->AG->params['highlightColor'] . '}
+        $this->AG->getGalleryID() . ' a.AG_pagin_next:hover {background-color:' . $this->AG->params['highlightColor'] . '}
 #AG_' . $this->AG->getGalleryID() . ' div.AG_album_wrap h1, #AG_' .
         $this->AG->getGalleryID() . ' a.AG_pagin_link, #AG_' .
         $this->AG->getGalleryID() . ' a.AG_pagin_prev, #AG_' .
-        $this->AG->getGalleryID() . ' a.AG_pagin_next{color:#' .
-        $this->AG->params['foregroundColor'].'}';
+        $this->AG->getGalleryID() . ' a.AG_pagin_next{color:' . $this->AG->params['foregroundColor'].'}';
     }
 
     /**

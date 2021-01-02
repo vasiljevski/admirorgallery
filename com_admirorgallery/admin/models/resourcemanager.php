@@ -47,7 +47,7 @@ class AdmirorgalleryModelResourcemanager extends JModelLegacy
 
                     // TEMPLATE DETAILS PARSING
                     if (JFIle::exists($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml')) {
-                        $ag_resourceManager_xml = JFactory::getXML($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml');
+                        $ag_resourceManager_xml = simplexml_load_file($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml');
                         if (isset($ag_resourceManager_xml->type)) {
                             $ag_resourceManager_type = $ag_resourceManager_xml->type;
                         } else {
