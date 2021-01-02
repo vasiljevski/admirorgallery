@@ -290,7 +290,7 @@ if (!empty($ag_images)) {
             $ag_hasXML = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasXML.png"  class="ag_hasXML" />';
             $ag_XML_xml = simplexml_load_file($ag_XML_path);
             if (isset($ag_XML_xml->priority)) {
-                $ag_XML_priority = $ag_XML_xml->document->priority;
+                $ag_XML_priority = $ag_XML_xml->priority;
             }
             if (isset($ag_XML_xml->visible)) {
                 if ((string)$ag_XML_xml->visible == "false") {
