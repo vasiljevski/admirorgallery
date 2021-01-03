@@ -99,7 +99,7 @@ $ag_preview_content .= '
 <br />
 ' . "\n";
 
-// Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
+// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
 $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . '/' . JFile::stripExt($ag_fileName);
 $ag_XML_path = $ag_pathWithStripExt . ".XML";
 if (JFIle::exists($ag_pathWithStripExt . ".xml")) {
@@ -139,7 +139,7 @@ if (!empty($ag_files)) {
     foreach ($ag_files as $key => $value) {
         $ag_folderName = $ag_itemURL;
         $ag_fileName = basename($value);
-        // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
+        // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
         $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . JFile::stripExt($ag_fileName);
         $ag_XML_path = $ag_pathWithStripExt . ".XML";
         if (JFIle::exists($ag_pathWithStripExt . ".xml")) {
@@ -178,7 +178,7 @@ if (!empty($ag_folders)) {
         $ag_hasXML = "";
         $ag_hasThumb = "";
 
-        // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
+        // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
         $ag_pathWithStripExt = JPATH_SITE . $ag_itemURL . JFile::stripExt(basename($value));
         $ag_XML_path = $ag_pathWithStripExt . ".xml";
         if (JFIle::exists($ag_pathWithStripExt . ".XML")) {
@@ -236,7 +236,7 @@ if (!empty($ag_files)) {
             $ag_folderName = $ag_itemURL;
             $ag_fileName = basename($value);
 
-            // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
+            // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
             $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . JFile::stripExt($ag_fileName);
             $ag_XML_path = $ag_pathWithStripExt . ".XML";
             if (JFIle::exists($ag_pathWithStripExt . ".xml")) {
@@ -277,7 +277,7 @@ if (!empty($ag_images)) {
         $ag_hasXML = "";
         $ag_hasThumb = "";
 
-        // Set Possible Description File Apsolute Path // Instant patch for upper and lower case...
+        // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
         $ag_pathWithStripExt = JPATH_SITE . $ag_itemURL . JFile::stripExt(basename($value));
         $ag_XML_path = $ag_pathWithStripExt . ".xml";
         if (JFIle::exists($ag_pathWithStripExt . ".XML")) {
