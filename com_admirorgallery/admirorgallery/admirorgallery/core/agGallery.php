@@ -516,7 +516,7 @@ class agGallery
                     }
 
                     if (file_exists($descriptionFileAbsolutePath)) {// Check is descriptions file exists
-                        $ag_imgXML_xml = new SimpleXMLElement($descriptionFileAbsolutePath);
+                        $ag_imgXML_xml = simplexml_load_file($descriptionFileAbsolutePath);
                         $ag_imgXML_captions = $ag_imgXML_xml->captions;
                         $langTag = $this->cms->GetActiveLanguageTag();
 
