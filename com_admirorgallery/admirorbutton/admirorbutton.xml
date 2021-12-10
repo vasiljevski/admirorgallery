@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension version="3.1" type="plugin" group="editors-xtd" method="upgrade">
+<extension type="plugin" group="editors-xtd" method="upgrade">
     <name>plg_editors-xtd_admirorbutton</name>
     <author>Igor Kekeljevic and Nikola Vasiljevski</author>
     <creationDate>January 2014</creationDate>
     <copyright>This extension in released under the GNU/GPL License - http://www.gnu.org/copyleft/gpl.html</copyright>
     <license>GNU/GPL</license>
-    <authorEmail/>
     <authorUrl>http://www.admiror-design-studio.com</authorUrl>
-    <version>5.1.2</version>
+    <version>6.0.0</version>
     <description/>
     <files>
         <filename plugin="admirorbutton">admirorbutton.php</filename>
@@ -16,6 +15,10 @@
     <languages folder="language">
             <language tag="en-GB">en-GB/en-GB.plg_editors-xtd_admirorbutton.ini</language>
             <language tag="en-GB">en-GB/en-GB.plg_editors-xtd_admirorbutton.sys.ini</language>
+            <language tag="de-DE">en-GB/de-DE.plg_editors-xtd_admirorbutton.ini</language>
+            <language tag="de-DE">de-DE/de-DE.plg_editors-xtd_admirorbutton.sys.ini</language>
+            <language tag="nl-NL">nl-NL/nl-NL.plg_editors-xtd_admirorbutton.ini</language>
+            <language tag="nl-NL">nl-NL/nl-NL.plg_editors-xtd_admirorbutton.sys.ini</language>
     </languages>
     <params />
 </extension>
