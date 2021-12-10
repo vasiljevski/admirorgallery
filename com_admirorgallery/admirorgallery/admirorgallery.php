@@ -1,51 +1,75 @@
 <?php
+
 /**
- * @version     5.5.0
+ * @version     6.0.0
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2020 http://www.admiror-design-studio.com All Rights Reserved.
+ * @copyright   Copyright (C) 2010 - 2021 http://www.admiror-design-studio.com All Rights Reserved.
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
-// Import library dependencies
-jimport('joomla.event.plugin');
-jimport('joomla.plugin.plugin');
-jimport( 'joomla.filesystem.folder');
-define('AG_VERSION', '5.5.0');
+
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Uri\Uri as JUri;
+use Joomla\CMS\Version;
+use Joomla\Filesystem\Folder;
+
+define('AG_VERSION', '6.0.0');
 
 JLoader::register('agGallery', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'admirorgallery/core/agGallery.php');
 JLoader::register('agJoomla', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'admirorgallery/core/agJoomla.php');
 
-class plgContentAdmirorGallery extends JPlugin {
+class plgContentAdmirorGallery extends CMSPlugin
+{
+
+    /**
+     * Application object
+     *
+     * @var    CMSApplicationInterface
+     * @since  4.0.0
+     */
+    protected $app;
 
     //Constructor
-    function __construct(&$subject, $params) {
+    function __construct(&$subject, $params)
+    {
         parent::__construct($subject, $params);
         // load current language
         $this->loadLanguage();
     }
-    
-    function onContentBeforeDisplay($context, $row, &$params, $limitstart = 0) {
+
+    function onContentBeforeDisplay($context, $row, &$params, $limitstart = 0)
+    {
         $this->onContentPrepare($context, $row, $params, $limitstart);
     }
 
-    function onContentPrepare($context, $row, &$params, $limitstart = 0) {
+    function onContentPrepare($context, $row, &$params, $limitstart = 0)
+    {
+        if ($context === 'com_finder.indexer') {
+            // skip plug-in activation when the content is being indexed
+            return false;
+        }
+
+        $app = Factory::getApplication();
         $gd_exists = true;
-        if (!isset($row->text)){
+        if (!isset($row->text)) {
             return;
         }
         if (!preg_match("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}|{ag[^}]*}(.*?){/ag}#s", $row->text)) {
             return;
         }
-        $doc = JFactory::getDocument();
+        $doc = $app->getInput();
         //check for PHP version, 5.0.0 and above are accepted
         if (strnatcmp(phpversion(), '5.0.0') <= 0) {
             $doc->addStyleSheet('plugins/content/admirorgallery/admirorgallery/AdmirorGallery.css');
-            $php_version_error_html= '<div class="error">'. JText::_('AG_PHP_VERSION_MUST_BE_ABOVE_PHP5') . '</div>' . "\n";
+            $php_version_error_html = '<div class="error">' . Text::_('AG_PHP_VERSION_MUST_BE_ABOVE_PHP5') . '</div>' . "\n";
             if ((preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}#s", $row->text, $matches) > 0)
-                || (preg_match_all("#{AG[^}]*}(.*?){/AG}#s", $row->text, $matches) > 0)) {
+                || (preg_match_all("#{AG[^}]*}(.*?){/AG}#s", $row->text, $matches) > 0)
+            ) {
                 foreach ($matches[0] as $match) {
                     $galleryname = preg_replace("/{.+?}/", "", $match);
                     $row->text = preg_replace("#{AdmirorGallery[^}]*}" . $galleryname . "{/AdmirorGallery}|{AG[^}]*}" . $galleryname . "{/AG}#s", "<div style='clear:both'></div>" . $php_version_error_html, $row->text, 1);
@@ -56,13 +80,12 @@ class plgContentAdmirorGallery extends JPlugin {
 
         //Create galleries
         if (preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}#s", $row->text, $matches) > 0) {
-            $AG = new agGallery($this->params, JURI::base(), JPATH_SITE, new agJoomla());
+            $AG = new agGallery($this->params, JUri::base(), JPATH_SITE, new agJoomla());
             //Load current language
-            JPlugin::loadLanguage('plg_content_admirorgallery', JPATH_ADMINISTRATOR);
+            CMSPlugin::loadLanguage('plg_content_admirorgallery', JPATH_ADMINISTRATOR);
             // Version check
-            $version = new JVersion();
-            if ($version::PRODUCT == "Joomla!" && ($version::RELEASE == "1.5")) {
-                $AG->error_handle->addError(JText::_('AG_ADMIROR_GALLERY_PLUGIN_FUNCTIONS_ONLY_UNDER'));
+            if (Version::PRODUCT == "Joomla!" && (Version::MAJOR_VERSION == "1.5")) {
+                $AG->error_handle->addError(Text::_('AG_ADMIROR_GALLERY_PLUGIN_FUNCTIONS_ONLY_UNDER'));
             }
             //if any image is corrupted suppresses recoverable error
             ini_set('gd.jpeg_ignore_warning', $AG->params['ignoreError']);
@@ -75,18 +98,17 @@ class plgContentAdmirorGallery extends JPlugin {
             $queryArray = null;
             $queryString = strip_tags($_SERVER['QUERY_STRING']);
             parse_str($queryString, $queryArray);
-            
-            $basepath = $AG->sitePhysicalPath.$AG->params['rootFolder'];
+
+            $basepath = $AG->sitePhysicalPath . $AG->params['rootFolder'];
             $realBase = realpath($basepath);
 
-            $i=0;
-            while(array_key_exists('AG_form_albumInitFolders_'.$i,$queryArray))
-            {
-                $userpath = $basepath . $queryArray['AG_form_albumInitFolders_'.$i];
+            $i = 0;
+            while (array_key_exists('AG_form_albumInitFolders_' . $i, $queryArray)) {
+                $userpath = $basepath . $queryArray['AG_form_albumInitFolders_' . $i];
                 $realUserPath = realpath($userpath);
 
                 if ($realUserPath === false || strpos($realUserPath, $realBase) !== 0) {
-                    header('Location: '.strip_tags($_SERVER['PHP_SELF']));
+                    header('Location: ' . strip_tags($_SERVER['PHP_SELF']));
                 }
                 $i++;
             }
@@ -96,27 +118,26 @@ class plgContentAdmirorGallery extends JPlugin {
                 $AG->initGallery($match); // match = ;
                 // ERROR - Cannot find folder with images
                 if (!file_exists($AG->imagesFolderPhysicalPath)) {
-                    $AG->error_handle->addError(JText::sprintf('AG_CANNOT_FIND_FOLDER_INSIDE_FOLDER', $AG->imagesFolderName, $AG->imagesFolderPhysicalPath));
+                    $AG->error_handle->addError(Text::sprintf('AG_CANNOT_FIND_FOLDER_INSIDE_FOLDER', $AG->imagesFolderName, $AG->imagesFolderPhysicalPath));
                 }
                 //Create directory in thumbs for gallery
-                JFolder::create($AG->thumbsFolderPhysicalPath, 0755);
+                Folder::create($AG->thumbsFolderPhysicalPath, 0755);
                 if (is_writable($AG->thumbsFolderPhysicalPath))
                     $AG->create_gallery_thumbs();
                 else
-                    $AG->error_handle->addError(JText::sprintf('AG_CANNOT_CREATE_THUMBS_PERMISSIONS_ERROR', $AG->thumbsFolderPhysicalPath));
-                include (dirname(__FILE__) . '/admirorgallery/templates/' . $AG->params['template'] . '/index.php');
+                    $AG->error_handle->addError(Text::sprintf('AG_CANNOT_CREATE_THUMBS_PERMISSIONS_ERROR', $AG->thumbsFolderPhysicalPath));
+                include(dirname(__FILE__) . '/admirorgallery/templates/' . $AG->params['template'] . '/index.php');
 
                 $AG->clearOldThumbs();
                 $row->text = $AG->error_handle->writeErrors() . preg_replace("#{AdmirorGallery[^}]*}" . $AG->imagesFolderNameOriginal . "{/AdmirorGallery}|{AG[^}]*}" . $AG->imagesFolderNameOriginal . "{/AG}#s", "<div style='clear:both'></div>" . $html, $row->text, 1);
-            }// foreach($matches[0] as $match)
+            } // foreach($matches[0] as $match)
 
             $row->text .= '<script type="text/javascript">';
-            
-            if(strpos($_SERVER['REQUEST_URI'],'AG_form_paginInitPages_') !== false)
-            {
+
+            if (strpos($_SERVER['REQUEST_URI'], 'AG_form_paginInitPages_') !== false) {
                 $row->text .= '
                     AG_jQuery(document).ready(function() {
-                        AG_jQuery(document).scrollTop(AG_jQuery("#AG_0'.$AG->articleID.'").offset().top);
+                        AG_jQuery(document).scrollTop(AG_jQuery("#AG_0' . $AG->articleID . '").offset().top);
                     });';
             }
 
@@ -170,15 +191,11 @@ class plgContentAdmirorGallery extends JPlugin {
                 $row->text .= '<div style="display:block; font-size:10px; overflow:hidden; height:1px; padding-top:1px;">';
             }
             $row->text .= '<br />'
-                    . '<a href="http://www.admiror-design-studio.com" target="_blank">AdmirorGallery ' . AG_VERSION . '</a>,'
-                    . ' ' . JText::_("AG_AUTHORS") 
-                    . ' <a href="http://www.vasiljevski.com/" target="_blank">Vasiljevski</a> '
-                    . '& '
-                    . '<a href="http://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.</div>';
-        }//if (preg_match_all("#{AdmirorGallery}(.*?){/AdmirorGallery}#s", $row->text, $matches, PREG_PATTERN_ORDER)>0)
-    }
-//onPrepareContent(&$row, &$params, $limitstart)
-}
-
-//class plgContentAdmirorGallery extends JPlugin
-
+                . '<a href="http://www.admiror-design-studio.com" target="_blank">AdmirorGallery ' . AG_VERSION . '</a>,'
+                . ' ' . Text::_("AG_AUTHORS")
+                . ' <a href="http://www.vasiljevski.com/" target="_blank">Vasiljevski</a> '
+                . '& '
+                . '<a href="http://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.</div>';
+        } //if (preg_match_all("#{AdmirorGallery}(.*?){/AdmirorGallery}#s", $row->text, $matches, PREG_PATTERN_ORDER)>0)
+    } //onPrepareContent(&$row, &$params, $limitstart)
+}//class plgContentAdmirorGallery extends JPlugin
