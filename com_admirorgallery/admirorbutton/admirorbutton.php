@@ -72,4 +72,3 @@ class plgButtonAdmirorbutton extends JPlugin {
         return $button;
     }
 }
-
