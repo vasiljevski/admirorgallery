@@ -10,7 +10,7 @@
 
 defined('_JEXEC') or die();
 
-$template = new agTemplate($AG, 'listed');
+$template = new agTemplate($AG, 'listed.css');
 
 $template->preContent();
 
