@@ -25,15 +25,6 @@ JLoader::register('agJoomla', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'admiror
 
 class plgContentAdmirorGallery extends CMSPlugin
 {
-
-    /**
-     * Application object
-     *
-     * @var    CMSApplicationInterface
-     * @since  4.0.0
-     */
-    protected $app;
-
     //Constructor
     function __construct(&$subject, $params)
     {
@@ -54,7 +45,6 @@ class plgContentAdmirorGallery extends CMSPlugin
             return false;
         }
 
-        $app = Factory::getApplication();
         $gd_exists = true;
         if (!isset($row->text)) {
             return;
@@ -62,7 +52,7 @@ class plgContentAdmirorGallery extends CMSPlugin
         if (!preg_match("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}|{ag[^}]*}(.*?){/ag}#s", $row->text)) {
             return;
         }
-        $doc = $app->getInput();
+        $doc = Factory::getDocument();
         //check for PHP version, 5.0.0 and above are accepted
         if (strnatcmp(phpversion(), '5.0.0') <= 0) {
             $doc->addStyleSheet('plugins/content/admirorgallery/admirorgallery/AdmirorGallery.css');

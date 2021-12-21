@@ -11,17 +11,17 @@
 <project name="AdmirorGallery" basedir="./../">
     <property environment="env"/>
     <!--WIN_32-->
-    <property name="source" value="C:\wamp64\www\joomla3923"/>
+    <!-- <property name="source" value="C:\wamp64\www\joomla3923"/>
     <property name="release" value="D:\webdev\php\projects\github\admiror_extensions\releases"/>
     <property name="builddir" value="D:\webdev\php\projects\github\admiror_extensions\temp\com_admirorgallery"/>
     <property name="verbose" value="false"/>
-    <property name="git_path" value="C:/Program Files/Git/bin/git"/>
+    <property name="git_path" value="C:/Program Files/Git/bin/git"/> -->
     <!--UNIX-->    
-<!--    <property name="source" value="/media/webserver/joomla396"/>
+    <property name="source" value="/home/ubuntu/www/html/joomla3"/>
     <property name="release" value="${basedir}/admiror_extensions/releases"/>
     <property name="builddir" value="${basedir}/admiror_extensions/temp"/>
     <property name="verbose" value="false"/>
-    <property name="git_path" value="/usr/bin/git"/>-->
+    <property name="git_path" value="/usr/bin/git"/>
     <!-- Get timestamp -->
     <tstamp>
         <format property="NOW" pattern="yyyyMMdd"/>
