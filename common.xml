@@ -19,7 +19,7 @@
     <!--UNIX-->    
     <property name="source" value="/home/ubuntu/www/html/joomla3"/>
     <property name="release" value="${basedir}/admiror_extensions/releases"/>
-    <property name="builddir" value="${basedir}/admiror_extensions/temp"/>
+    <property name="builddir" value="${basedir}"/>
     <property name="verbose" value="false"/>
     <property name="git_path" value="/usr/bin/git"/>
     <!-- Get timestamp -->
