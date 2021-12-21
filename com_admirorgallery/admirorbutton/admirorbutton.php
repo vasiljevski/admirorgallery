@@ -15,7 +15,7 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Object\CMSObject;
 use Joomla\CMS\Plugin\CMSPlugin;
-use Joomla\CMS\Uri\Uri as JUri;
+use Joomla\CMS\Uri\Uri;
 
 /**
  * Editor Image button
@@ -68,7 +68,7 @@ class plgButtonAdmirorbutton extends CMSPlugin
             || (count($user->getAuthorisedCategories($extension, 'core.edit')) > 0)
             || (count($user->getAuthorisedCategories($extension, 'core.edit.own')) > 0 && $author === $user->id)
         ) {
-            $doc->addStyleSheet(JUri::root() . 'administrator/components/com_admirorgallery/templates/default/css/add-trigger.css');
+            $doc->addStyleSheet(Uri::root() . 'administrator/components/com_admirorgallery/templates/default/css/add-trigger.css');
             $doc->addScriptDeclaration("            
             function insertTriggerCode(txt) {
                 if(!txt) return;

@@ -10,6 +10,8 @@
 defined('_JEXEC') or die();
 jimport('joomla.filesystem.folder');
 
+require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/admirorgallery.php';
+
 $AG_template = AdmirorGalleryHelper::getCmd('AG_template', ''); // Current template for AG Component
 $ag_init_itemURL = AdmirorGalleryHelper::getRootPath();
 
@@ -68,6 +70,7 @@ $ag_init_itemURL = AdmirorGalleryHelper::getRootPath();
 
             foreach ($fieldSets as $name => $fieldSet) :
                 $label = !empty($fieldSet->label) ? $fieldSet->label : 'COM_PLUGINS_' . $name . '_FIELDSET_LABEL';
+                //JHtml::_('bootstrap.tooltip', '.hasTooltip', array('placement' => 'bottom'));
                 //echo JHtml::_('sliders.panel', JText::_($label), $name.'-options');
                 if (isset($fieldSet->description) && trim($fieldSet->description)) :
                     //TODO: Fix tip
