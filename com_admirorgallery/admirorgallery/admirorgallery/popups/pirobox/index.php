@@ -1,6 +1,6 @@
 <?php
 /**
- * @version     5.5.0
+ * @version     6.0.0
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
