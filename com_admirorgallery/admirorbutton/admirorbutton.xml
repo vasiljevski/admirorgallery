@@ -2,6 +2,7 @@
 <extension type="plugin" group="editors-xtd" method="upgrade">
     <name>plg_editors-xtd_admirorbutton</name>
     <author>Igor Kekeljevic and Nikola Vasiljevski</author>
+    <authorEmail>vasiljevski@gmail.com</authorEmail>
     <creationDate>January 2014</creationDate>
     <copyright>This extension in released under the GNU/GPL License - http://www.gnu.org/copyleft/gpl.html</copyright>
     <license>GNU/GPL</license>
@@ -13,12 +14,11 @@
         <filename>index.html</filename>
     </files>
     <languages folder="language">
-            <language tag="en-GB">en-GB/en-GB.plg_editors-xtd_admirorbutton.ini</language>
-            <language tag="en-GB">en-GB/en-GB.plg_editors-xtd_admirorbutton.sys.ini</language>
-            <language tag="de-DE">en-GB/de-DE.plg_editors-xtd_admirorbutton.ini</language>
-            <language tag="de-DE">de-DE/de-DE.plg_editors-xtd_admirorbutton.sys.ini</language>
-            <language tag="nl-NL">nl-NL/nl-NL.plg_editors-xtd_admirorbutton.ini</language>
-            <language tag="nl-NL">nl-NL/nl-NL.plg_editors-xtd_admirorbutton.sys.ini</language>
+        <language tag="en-GB">en-GB/en-GB.plg_editors-xtd_admirorbutton.ini</language>
+        <language tag="en-GB">en-GB/en-GB.plg_editors-xtd_admirorbutton.sys.ini</language>
+        <language tag="de-DE">en-GB/de-DE.plg_editors-xtd_admirorbutton.ini</language>
+        <language tag="de-DE">de-DE/de-DE.plg_editors-xtd_admirorbutton.sys.ini</language>
+        <language tag="nl-NL">nl-NL/nl-NL.plg_editors-xtd_admirorbutton.ini</language>
+        <language tag="nl-NL">nl-NL/nl-NL.plg_editors-xtd_admirorbutton.sys.ini</language>
     </languages>
-    <params />
 </extension>
