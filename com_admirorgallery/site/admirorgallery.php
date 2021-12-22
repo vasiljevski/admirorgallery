@@ -9,13 +9,9 @@
 
 defined('_JEXEC') or die();
 
-// OUTPUT
-// echo "POST: "."<br />"; print_r($_POST); echo "<hr />";
-// echo "GET: "."<br />"; print_r($_GET); echo "<hr />";
-
 $AG_template = "default";// Set template to default
-JRequest::setVar( 'AG_template', $AG_template );
-JRequest::setVar( 'ag_front_end', 'true' );
+JFactory::getApplication()->input->post->set('AG_template', $AG_template);
+
 // Shared scripts for all views
 $doc = JFactory::getDocument();
 $doc->addScript(JURI::root().'plugins/content/admirorgallery/admirorgallery/AG_jQuery.js');
@@ -26,7 +22,7 @@ $doc->addStyleSheet(JURI::root().'administrator/components/com_admirorgallery/te
 require_once( JPATH_COMPONENT.DIRECTORY_SEPARATOR.'controller.php' );
  
 // Require specific controller if requested
-if($controller = JRequest::getWord('controller')) {
+if($controller = JFactory::getApplication()->input->post->get('controller')) {
      $path = JPATH_COMPONENT.DIRECTORY_SEPARATOR.'controllers'.DIRECTORY_SEPARATOR.$controller.'.php';
      if (file_exists($path)) {
 	  require_once $path;
@@ -40,7 +36,7 @@ $classname    = 'AdmirorgalleryController'.$controller;
 $controller   = new $classname( );
  
 // Perform the Request task
-$controller->execute( JRequest::getWord( 'task' ) );
+$controller->execute( JFactory::getApplication()->input->post->get( 'task' ) );
  
 // Redirect if set by the controller
 $controller->redirect();

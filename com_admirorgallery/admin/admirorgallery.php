@@ -9,6 +9,10 @@
 
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Uri\Uri as JURI;
+
 $ag_template = "default"; // Set template to default
 $jinput = JFactory::getApplication()->input;
 $resources_path = JURI::root() . 'administrator/components/com_admirorgallery/';
