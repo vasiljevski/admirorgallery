@@ -8,6 +8,10 @@
  */
 
 defined('_JEXEC') or die();
+
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Language\Text as JText;
+
 //Check if plugin is installed, otherwise don't show view
 if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
     return;

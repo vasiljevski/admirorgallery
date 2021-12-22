@@ -18,7 +18,7 @@ use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Uri\Uri;
 
 /**
- * Editor Image button
+ * Editor Admiror Gallery button
  *
  * @package Editors-xtd
  * @since 1.5
