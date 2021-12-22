@@ -11,6 +11,11 @@ defined('_JEXEC') or die();
 
 jimport('joomla.application.component.view');
 
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
+use Joomla\CMS\Filesystem\Folder as JFolder;
+
 class AdmirorgalleryViewResourcemanager extends JViewLegacy
 {
 
@@ -28,17 +33,17 @@ class AdmirorgalleryViewResourcemanager extends JViewLegacy
         jimport('joomla.filesystem.archive');
         jimport('joomla.html.pagination');
         jimport('joomla.filesystem.folder');
-        JHTML::_('behavior.tooltip');
 
-        $mainframe = JFactory::getApplication();
-        $option = JRequest::getCmd('option');
-        $this->ag_resource_type = JRequest::getVar('AG_resourceType'); // Current resource type
+        $app = JFactory::getApplication();
+        $jinput = $app->input;
+        $option = $jinput->getCmd('option');
+        $this->ag_resource_type = $jinput->getVar('AG_resourceType'); // Current resource type
 
         JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_' . strtoupper($this->ag_resource_type)), $this->ag_resource_type);
 
         // Loading JPagination vars
-        $this->limitstart = $mainframe->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
-        $this->limit = $mainframe->getUserStateFromRequest('global.list.limit', 'limit', $mainframe->getCfg('list_limit'), 'int');
+        $this->limitstart = $app->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
+        $this->limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'int');
 
         // Read folder depending on $AG_resourceType
         $this->ag_resourceManager_installed = JFolder::folders(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type); // N U
