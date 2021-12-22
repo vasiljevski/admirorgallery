@@ -2,6 +2,7 @@
 <extension type="plugin" group="content" method="upgrade">
     <name>PLG_CONTENT_ADMIRORGALLERY</name>
     <author>Igor Kekeljevic and Nikola Vasiljevski</author>
+    <authorEmail>vasiljevski@gmail.com</authorEmail>
     <creationDate>07/01/2014</creationDate>
     <copyright>This extension in released under the GNU/GPL License - http://www.gnu.org/copyleft/gpl.html</copyright>
     <license>GNU/GPL</license>
