@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
     var ag_init_itemURL = '<?php echo $this->ag_init_itemURL; ?>';
     var ag_init_itemType = '<?php echo $ag_init_itemType; ?>';
 
-    <?php if ($this->ag_front_end == 'true') { ?>
+    <?php if ($this->app->isClient('site')) { ?>
     Joomla.submitbutton = function (pressbutton) {
         AG_jQuery('input[name="task"]').val(pressbutton);
         AG_jQuery('form[id="adminForm"]').submit();
@@ -121,7 +121,7 @@ defined('_JEXEC') or die();
         AG_jQuery(".AG_folder_thumb").change(function () {
             AG_jQuery("#AG_folderSettings_status").val("edit");
         });
-        <?php if ($this->ag_front_end == 'true') { ?>
+        <?php if ($this->app->isClient('site')) { ?>
         // SET SHORCUTS
         AG_jQuery(document).bind("keydown", "ctrl+return", function () {
             submitbutton("AG_apply");
