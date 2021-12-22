@@ -10,7 +10,7 @@
 defined('_JEXEC') or die();
 
 $AG_template = "default";// Set template to default
-JFactory::getApplication()->input->post->set('AG_template', $AG_template);
+JFactory::getApplication()->input->post->setVar('AG_template', $AG_template);
 
 // Shared scripts for all views
 $doc = JFactory::getDocument();
@@ -22,7 +22,7 @@ $doc->addStyleSheet(JURI::root().'administrator/components/com_admirorgallery/te
 require_once( JPATH_COMPONENT.DIRECTORY_SEPARATOR.'controller.php' );
  
 // Require specific controller if requested
-if($controller = JFactory::getApplication()->input->post->get('controller')) {
+if($controller = JFactory::getApplication()->input->post->getWord('controller')) {
      $path = JPATH_COMPONENT.DIRECTORY_SEPARATOR.'controllers'.DIRECTORY_SEPARATOR.$controller.'.php';
      if (file_exists($path)) {
 	  require_once $path;
@@ -36,7 +36,7 @@ $classname    = 'AdmirorgalleryController'.$controller;
 $controller   = new $classname( );
  
 // Perform the Request task
-$controller->execute( JFactory::getApplication()->input->post->get( 'task' ) );
+$controller->execute( JFactory::getApplication()->input->post->getWord( 'task' ) );
  
 // Redirect if set by the controller
 $controller->redirect();
