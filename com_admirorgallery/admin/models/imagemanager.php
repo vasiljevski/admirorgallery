@@ -3,8 +3,8 @@
  * @version     6.0.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2021 http://www.admiror-design-studio.com All Rights Reserved.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
+ * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
@@ -13,7 +13,7 @@ defined('_JEXEC') or die();
 jimport('joomla.application.component.model');
 
 JLoader::register('agHelper', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'agHelper.php');
-JLoader::register('SecureImage', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . "scripts" . DIRECTORY_SEPARATOR . "secureimage.php");
+JLoader::register('SecureImage', dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . "scripts" . DIRECTORY_SEPARATOR . "secureimage.php");
 
 class AdmirorgalleryModelImagemanager extends JModelLegacy
 {
@@ -442,12 +442,11 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
         }
 
         // Set new Captions tag
-        $ag_captions_new = "";
-        $ag_captions_new .= "<captions>" . "\n";
+        $ag_captions_new = "<captions>" . "\n";
         if (!empty($AG_desc_content)) {
             foreach ($AG_desc_content as $key => $value) {
                 if (!empty($value)) {
-                    $ag_captions_new .= "\t" . '<caption lang="' . strtolower($AG_desc_tags[$key]) . '">' . htmlspecialchars($value, ENT_QUOTES, "UTF-8") . '</caption>' . "\n";
+                    $ag_captions_new .= "\t" . '<caption lang="' . strtolower($AG_desc_tags[$key]) . '">' . htmlspecialchars($value, ENT_QUOTES) . '</caption>' . "\n";
                 }
             }
         }
@@ -492,13 +491,11 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
             $ag_XML_path = $ag_pathWithStripExt . ".XML";
         }
 
-        $ag_captions_new = "";
-
-        $ag_captions_new .= "<captions>" . "\n";
+        $ag_captions_new = "<captions>" . "\n";
         if (!empty($AG_desc_content)) {
             foreach ($AG_desc_content as $key => $value) {
                 if (!empty($value)) {
-                    $ag_captions_new .= "\t" . '<caption lang="' . strtolower($AG_desc_tags[$key]) . '">' . htmlspecialchars($value, ENT_QUOTES, "UTF-8") . '</caption>' . "\n";
+                    $ag_captions_new .= "\t" . '<caption lang="' . strtolower($AG_desc_tags[$key]) . '">' . htmlspecialchars($value, ENT_QUOTES) . '</caption>' . "\n";
                 }
             }
         }

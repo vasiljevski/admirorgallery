@@ -4,14 +4,15 @@
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2021 http://www.admiror-design-studio.com All Rights Reserved.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
+ * @since       5.5.0
+ * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 class agHelper
 {
     /**
-     * http://www.php.net/manual/en/function.natsort.php#45346
+     * https://www.php.net/manual/en/function.natsort.php#45346
      *
      * @param $array
      * @param $targetFolder
@@ -38,7 +39,7 @@ class agHelper
             $ag_xml_value["date"] = date("YmdHi", filemtime($targetFolder.$value)); // DEFAULT DATE
             if (file_exists($ag_XML_path)) {
                 $ag_XML_xml = simplexml_load_file($ag_XML_path);
-                if (isset($ag_XML_xml)) {
+                if ($ag_XML_xml) {
                     if (isset($ag_XML_xml->visible)) {
                         if ((string)$ag_XML_xml->visible == 'false') {
                             continue; // SKIP HIDDEN IMAGES

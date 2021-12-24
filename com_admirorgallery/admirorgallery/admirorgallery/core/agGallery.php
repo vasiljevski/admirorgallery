@@ -4,8 +4,8 @@
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2021 http://www.admiror-design-studio.com All Rights Reserved.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
+ * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
@@ -25,18 +25,18 @@ class agGallery
     public agErrorHandler $error_handle;
     public string $sitePath = '';
     public string $sitePhysicalPath = '';
-    public string $thumbsFolderPath = ''; // Virtual path. Example: "http://www.mysite.com/plugin/content/admirorgallery/thumbs/"
+    public string $thumbsFolderPath = ''; // Virtual path. Example: "https://www.mysite.com/plugin/content/admirorgallery/thumbs/"
     public string $thumbsFolderPhysicalPath = ''; // Physical path on the server. Example: "E:\php\www\joomla/plugin/content/admirorgallery/thumbs/"
     public string $imagesFolderName = ''; // Gallery name. Example: food
     public string $imagesFolderPhysicalPath = ''; // Physical path on the server. Example: "E:\php\www\joomla/plugin/content/"
-    public string $imagesFolderPath = ''; // Virtual path. Example: "http://www.mysite.com/images/stories/food/"
+    public string $imagesFolderPath = ''; // Virtual path. Example: "https://www.mysite.com/images/stories/food/"
     public ?array $images = array();
     public ?array $imageInfo = array(); //array:"width","height","type","size"
     public int $index = -1;
     public int $articleID = 0;
     public string $currPopupRoot = '';
     public string $currTemplateRoot = '';
-    public string $pluginPath = ''; // Virtual path. Example: "http://www.mysite.com/plugins/content/admirorgallery/"
+    public string $pluginPath = ''; // Virtual path. Example: "https://www.mysite.com/plugins/content/admirorgallery/"
     public bool $squareImage = false;
     public array$paginInitPages = array();
     public array $albumInitFolders = array();
@@ -372,7 +372,7 @@ class agGallery
      */
     public function initPopup(): string
     {
-        require(dirname(dirname(__FILE__)). $this->DS . 'popups' . $this->DS . $this->params['popupEngine'] . $this->DS . 'index.php');
+        require(dirname(__FILE__, 2) . $this->DS . 'popups' . $this->DS . $this->params['popupEngine'] . $this->DS . 'index.php');
         return $this->popupEngine->initCode;
     }
 

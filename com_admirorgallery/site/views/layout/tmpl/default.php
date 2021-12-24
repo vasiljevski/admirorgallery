@@ -3,8 +3,8 @@
  * @version     6.0.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2021 http://www.admiror-design-studio.com All Rights Reserved.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
+ * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
@@ -24,7 +24,7 @@ foreach($params as $key => $value)
     $ag_inlineParams.=' '.$key .'="'.$value.'"';
 }
 
-$article = new \stdClass();
+$article = new stdClass();
 
 //Display page heading
 if($active->getParams()->get('show_page_heading'))
