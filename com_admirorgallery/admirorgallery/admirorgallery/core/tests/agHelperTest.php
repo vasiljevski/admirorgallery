@@ -74,7 +74,7 @@ class agHelperTest extends TestCase
     {
         $this->assertEquals(
             $expected,
-            agHelper::ag_shrinkString($given[0], $given[1], isset($given[2]) ? $given[2] : '...')
+            agHelper::ag_shrinkString($given[0], $given[1], $given[2] ?? '...')
         );
     }
 

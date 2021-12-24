@@ -3,8 +3,8 @@
  * @version     6.0.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2021 http://www.admiror-design-studio.com All Rights Reserved.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
+ * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die;
@@ -31,7 +31,7 @@ class AdmirorgalleryController extends JControllerLegacy
 
         $view = $this->getView($viewName, $viewType, '', array('base_path' => $this->basePath, 'layout' => $viewLayout));
 
-        JToolBarHelper::help("", false, "http://www.admiror-design-studio.com/admiror-joomla-extensions/admiror-gallery/user-manuals");
+        JToolBarHelper::help("", false, "https://www.admiror-design-studio.com/admiror-joomla-extensions/admiror-gallery/user-manuals");
 
         if (JFactory::getUser()->authorise('core.admin', 'com_admirorgallery')) {
             JToolbarHelper::preferences('com_admirorgallery');

@@ -1,5 +1,5 @@
 /*
- * AG_jQuery Easing v1.3 - http://gsgd.co.uk/sandbox/AG_jQuery/easing/
+ * AG_jQuery Easing v1.3 - https://gsgd.co.uk/sandbox/AG_jQuery/easing/
  *
  * Uses the built in easing capabilities added In AG_jQuery 1.1
  * to offer multiple easing options

@@ -1,9 +1,9 @@
 /**
 * Name: piroBox v.1.2.2
 * Date: May 2010
-* Autor: Diego Valobra (http://www.pirolab.it),(http://www.diegovalobra.com)
+* Autor: Diego Valobra (https://www.pirolab.it),(https://www.diegovalobra.com)
 * Version: 1.2.2
-* Licence: CC-BY-SA http://creativecommons.org/licenses/by-sa/2.5/it/
+* Licence: CC-BY-SA https://creativecommons.org/licenses/by-sa/2.5/it/
 **/
 
 (function($){$.fn.piroBox=function(opt){opt=AG_jQuery.extend({my_speed:null,close_speed:300,bg_alpha:0.5,close_all:'.piro_close,.piro_overlay',slideShow:null,slideSpeed:null},opt);function start_pirobox(){var corners='<tr>'+'<td colspan="3" class="pirobox_up"></td>'+'</tr>'+'<tr>'+'<td class="t_l"></td>'+'<td class="t_c"></td>'+'<td class="t_r"></td>'+'</tr>'+'<tr>'+'<td class="c_l"></td>'+'<td class="c_c"><span><span></span></span><div></div></td>'+'<td class="c_r"></td>'+'</tr>'+'<tr>'+'<td class="b_l"></td>'+'<td class="b_c"></td>'+'<td class="b_r"></td>'+'</tr>'+'<tr>'+'<td colspan="3" class="pirobox_down"></td>'+'</tr>';var window_height=$(document).height();var bg_overlay=$(AG_jQuery('<div class="piro_overlay"></div>').hide().css({'opacity':+opt.bg_alpha,'height':window_height+'px'}));var main_cont=$(AG_jQuery('<table class="pirobox_content" cellpadding="0" cellspacing="0"></table>'));var caption=$(AG_jQuery('<div class="pirobox_caption"></div>'));var piro_nav=$(AG_jQuery('<div class="piro_nav"></div>'));var piro_close=$(AG_jQuery('<a href="#close" class="piro_close" title="close"></a>'));var piro_play=$(AG_jQuery('<a href="#play" class="play" title="play slideshow"></a>'));var piro_stop=$(AG_jQuery('<a href="#stop" class="stop" title="stop slideshow"></a>'));var piro_prev=$(AG_jQuery('<a href="#prev" class="piro_prev" title="previous image"></a>'));var piro_next=$(AG_jQuery('<a href="#next" class="piro_next" title="next image"></a>'));$('body').append(bg_overlay).append(main_cont);main_cont.append(corners);$('.pirobox_up').append(piro_close);$('.pirobox_down').append(piro_nav);$('.pirobox_down').append(piro_play);piro_play.hide();$('.pirobox_down').append(piro_prev).append(piro_next);piro_nav.append(caption);var my_nav_w=piro_prev.width();main_cont.hide();var my_gall_classes=$("a[class^='pirobox']");var map=new Object();for(var i=0;i<my_gall_classes.length;i++){var it=$(my_gall_classes[i])

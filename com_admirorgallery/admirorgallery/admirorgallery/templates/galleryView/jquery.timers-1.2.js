@@ -1,7 +1,7 @@
 ﻿/**
  * AG_jQuery.timers - Timer abstractions for AG_jQuery
  * Written by Blair Mitchelmore (blair DOT mitchelmore AT gmail DOT com)
- * Licensed under the WTFPL (http://sam.zoy.org/wtfpl/).
+ * Licensed under the WTFPL (https://sam.zoy.org/wtfpl/).
  * Date: 2009/10/16
  *
  * @author Blair Mitchelmore

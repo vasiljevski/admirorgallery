@@ -4,8 +4,8 @@
     <creationDate>Dec 26, 2021</creationDate>
     <author>Kekeljevic, Vasiljevski, Jongen</author>
     <authorEmail>vasiljevski@gmail.com</authorEmail>
-    <authorUrl>http://www.admiror-design-studio.com</authorUrl>
-    <copyright>This extension in released under the GNU/GPL License - http://www.gnu.org/copyleft/gpl.html</copyright>
+    <authorUrl>https://www.admiror-design-studio.com</authorUrl>
+    <copyright>This extension in released under the GNU/GPL License - https://www.gnu.org/licenses/gpl-3.0.html</copyright>
     <license>GNU/GPL</license>
     <version>6.0.0</version>
     <button_version>6.0.0</button_version>
@@ -13,7 +13,7 @@
     <description>COM_ADMIRORGALLERY_DESCRIPTION</description>
     <scriptfile>admirorgallery.scriptfile.php</scriptfile>
     <updateservers>
-        <server type="extension" name="AdmirorGallery" priority="1">http://www.admiror-design-studio.com/releases/updates.xml</server>
+        <server type="extension" name="AdmirorGallery" priority="1">https://www.admiror-design-studio.com/releases/updates.xml</server>
     </updateservers>
     <files folder="com_admirorgallery/site">
         <folder>controllers</folder>

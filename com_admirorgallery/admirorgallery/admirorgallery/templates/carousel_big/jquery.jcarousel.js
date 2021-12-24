@@ -1,16 +1,16 @@
 /**
  * jCarousel - Riding carousels with AG_jQuery
- *   http://sorgalla.com/jcarousel/
+ *   https://sorgalla.com/jcarousel/
  *
- * Copyright (c) 2006 Jan Sorgalla (http://sorgalla.com)
+ * Copyright (c) 2006 Jan Sorgalla (https://sorgalla.com)
  * Dual licensed under the MIT (MIT-LICENSE.txt)
  * and GPL (GPL-LICENSE.txt) licenses.
  *
  * Built on top of the AG_jQuery library
- *   http://jquery.com
+ *   https://jquery.com
  *
  * Inspired by the "Carousel Component" by Bill Scott
- *   http://billwscott.com/carousel/
+ *   https://billwscott.com/carousel/
  */
 
 (function($) {

@@ -3,8 +3,8 @@
  * @version     6.0.0
  * @package     Admiror Gallery (component)
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2021 http://www.admiror-design-studio.com All Rights Reserved.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
+ * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
@@ -98,28 +98,27 @@ class AdmirorgalleryViewImagemanager extends BaseHtmlView
 
     function ag_render_image_info($ag_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb): string
     {
-        $return_value = '<div class="AG_margin_bottom AG_thumbAndInfo_wrapper">
-                <table cellspacing="0" cellpadding="0" border="0">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <a class="AG_item_link" href="' . substr(JURI::root(), 0, -1) . $ag_itemURL . '" title="' . $ag_itemURL . '" rel="lightbox[\'AG\']" target="_blank">
-                                    <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/assets/thumbs/' . basename($ag_itemURL) . '" alt="' . $ag_itemURL . '">
-                                </a>
-                            </td>
-                            <td class="AG_border_color AG_border_width" style="border-left-style:solid;">
-                                <div>' . JText::_("AG_IMG_WIDTH") . ': ' . $AG_imgInfo["width"] . 'px</div>
-                                <div>' . JText::_("AG_IMG_HEIGHT") . ': ' . $AG_imgInfo["height"] . 'px</div>
-                                <div>' . JText::_("AG_IMG_TYPE") . ': ' . $AG_imgInfo["type"] . '</div>
-                                <div>' . JText::_("AG_IMG_SIZE") . ': ' . $AG_imgInfo["size"] . '</div>
-                                <div>' . $ag_hasXML . $ag_hasThumb . '</div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>   
-                </div>
-                ';
-        return $return_value;
+	    return '<div class="AG_margin_bottom AG_thumbAndInfo_wrapper">
+	            <table>
+	                <tbody>
+	                    <tr>
+	                        <td>
+	                            <a class="AG_item_link" href="' . substr(JURI::root(), 0, -1) . $ag_itemURL . '" title="' . $ag_itemURL . '" rel="lightbox[\'AG\']" target="_blank">
+	                                <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/assets/thumbs/' . basename($ag_itemURL) . '" alt="' . $ag_itemURL . '">
+	                            </a>
+	                        </td>
+	                        <td class="AG_border_color AG_border_width" style="border-left-style:solid;">
+	                            <div>' . JText::_("AG_IMG_WIDTH") . ': ' . $AG_imgInfo["width"] . 'px</div>
+	                            <div>' . JText::_("AG_IMG_HEIGHT") . ': ' . $AG_imgInfo["height"] . 'px</div>
+	                            <div>' . JText::_("AG_IMG_TYPE") . ': ' . $AG_imgInfo["type"] . '</div>
+	                            <div>' . JText::_("AG_IMG_SIZE") . ': ' . $AG_imgInfo["size"] . '</div>
+	                            <div>' . $ag_hasXML . $ag_hasThumb . '</div>
+	                        </td>
+	                    </tr>
+	                </tbody>
+	            </table>   
+	            </div>
+	            ';
     }
 
     function ag_render_caption($ag_lang_name, $ag_lang_tag, $ag_lang_content): string

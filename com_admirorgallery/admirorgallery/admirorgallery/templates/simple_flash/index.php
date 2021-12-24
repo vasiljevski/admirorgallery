@@ -4,8 +4,8 @@
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2021 http://www.admiror-design-studio.com All Rights Reserved.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
+ * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
@@ -18,8 +18,7 @@ $template->loadScript($AG->currTemplateRoot . 'jquery.swfobject.1-1-1.min.js');
 $template->appendContent($AG->albumParentLink);
 
 // Generate XML string needed for Flash gallery
-$xmlGen = '';
-$xmlGen .= '<?xml version="1.0" encoding="utf-8"?>';
+$xmlGen = '<?xml version="1.0" encoding="utf-8"?>';
 $xmlGen .= '<photos>';
 foreach ($AG->images as $imageKey => $imageName) {
     $AG->getImageInfo($imageName);

@@ -5,8 +5,8 @@
  * @package     Admiror Gallery (plugin)
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
- * @copyright   Copyright (C) 2010 - 2021 http://www.admiror-design-studio.com All Rights Reserved.
- * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
+ * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
@@ -18,7 +18,7 @@ use Joomla\CMS\Uri\Uri as JUri;
 use Joomla\CMS\Version;
 use Joomla\Filesystem\Folder;
 
-define('AG_VERSION', '6.0.0');
+const AG_VERSION = '6.0.0';
 
 JLoader::register('agGallery', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'admirorgallery/core/agGallery.php');
 JLoader::register('agJoomla', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'admirorgallery/core/agJoomla.php');
@@ -38,7 +38,7 @@ class plgContentAdmirorGallery extends CMSPlugin
         $this->onContentPrepare($context, $row, $params, $limitstart);
     }
 
-    function onContentPrepare($context, &$row, &$params, $limitstart = 0)
+    function onContentPrepare($context, $row, &$params, $limitstart = 0)
     {
         if ($context === 'com_finder.indexer') {
             // skip plug-in activation when the content is being indexed
@@ -47,10 +47,10 @@ class plgContentAdmirorGallery extends CMSPlugin
 
         $gd_exists = true;
         if (!isset($row->text)) {
-            return;
+            return false;
         }
         if (!preg_match("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}|{ag[^}]*}(.*?){/ag}#s", $row->text)) {
-            return;
+            return false;
         }
         $doc = Factory::getDocument();
         //check for PHP version, 5.0.0 and above are accepted
@@ -65,7 +65,7 @@ class plgContentAdmirorGallery extends CMSPlugin
                     $row->text = preg_replace("#{AdmirorGallery[^}]*}" . $galleryname . "{/AdmirorGallery}|{AG[^}]*}" . $galleryname . "{/AG}#s", "<div style='clear:both'></div>" . $php_version_error_html, $row->text, 1);
                 }
             }
-            return;
+            return false;
         }
 
         //Create galleries
@@ -111,7 +111,7 @@ class plgContentAdmirorGallery extends CMSPlugin
                     $AG->error_handle->addError(Text::sprintf('AG_CANNOT_FIND_FOLDER_INSIDE_FOLDER', $AG->imagesFolderName, $AG->imagesFolderPhysicalPath));
                 }
                 //Create directory in thumbs for gallery
-                Folder::create($AG->thumbsFolderPhysicalPath, 0755);
+                Folder::create($AG->thumbsFolderPhysicalPath);
                 if (is_writable($AG->thumbsFolderPhysicalPath))
                     $AG->create_gallery_thumbs();
                 else
@@ -181,11 +181,11 @@ class plgContentAdmirorGallery extends CMSPlugin
                 $row->text .= '<div style="display:block; font-size:10px; overflow:hidden; height:1px; padding-top:1px;">';
             }
             $row->text .= '<br />'
-                . '<a href="http://www.admiror-design-studio.com" target="_blank">AdmirorGallery ' . AG_VERSION . '</a>,'
+                . '<a href="https://www.admiror-design-studio.com" target="_blank">AdmirorGallery ' . AG_VERSION . '</a>,'
                 . ' ' . Text::_("AG_AUTHORS")
-                . ' <a href="http://www.vasiljevski.com/" target="_blank">Vasiljevski</a> '
+                . ' <a href="https://www.vasiljevski.com/" target="_blank">Vasiljevski</a> '
                 . '& '
-                . '<a href="http://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.</div>';
+                . '<a href="https://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.</div>';
         } //if (preg_match_all("#{AdmirorGallery}(.*?){/AdmirorGallery}#s", $row->text, $matches, PREG_PATTERN_ORDER)>0)
     } //onPrepareContent(&$row, &$params, $limitstart)
 }//class plgContentAdmirorGallery extends CMSPlugin

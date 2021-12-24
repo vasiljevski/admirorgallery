@@ -1,8 +1,8 @@
-/*! Copyright (c) 2009 Brandon Aaron (http://brandonaaron.net)
- * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php)
- * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
- * Thanks to: http://adomas.org/javascript-mouse-wheel/ for some pointers.
- * Thanks to: Mathias Bank(http://www.mathias-bank.de) for a scope bug fix.
+/*! Copyright (c) 2009 Brandon Aaron (https://brandonaaron.net)
+ * Dual licensed under the MIT (https://www.opensource.org/licenses/mit-license.php)
+ * and GPL (https://www.opensource.org/licenses/gpl-license.php) licenses.
+ * Thanks to: https://adomas.org/javascript-mouse-wheel/ for some pointers.
+ * Thanks to: Mathias Bank(https://www.mathias-bank.de) for a scope bug fix.
  *
  * Version: 3.0.2
  * 

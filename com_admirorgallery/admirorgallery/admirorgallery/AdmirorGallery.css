@@ -2,7 +2,7 @@ div.error {
   background: #f7e5e5 url(error-icon.gif) no-repeat 8px 8px; 
   border-top: 2px solid #db9f9f; 
   border-bottom: 2px solid #db9f9f;
-  margin:10px 0px;
+  margin:10px 0;
   padding: 10px 10px 10px 40px;
   color: #551111;
 }
@@ -40,4 +40,4 @@ div.error a:hover{
 .ag_reseter dl,.ag_reseter dt,.ag_reseter dd,.ag_reseter ol,.ag_reseter ul,.ag_reseter li,
 .ag_reseter fieldset,.ag_reseter form,.ag_reseter label,.ag_reseter legend,
 .ag_reseter table,.ag_reseter caption,.ag_reseter tbody,.ag_reseter tfoot,.ag_reseter thead,.ag_reseter tr,.ag_reseter th,.ag_reseter td
-{ margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;border:none;border-spacing:0px;border-collapse:collapse;max-width:none !important;}
+{ margin:0;padding:0;border:0;outline:0;font-weight:inherit;font-style:inherit;font-size:100%;font-family:inherit;border:none;border-spacing:0;border-collapse:collapse;max-width:none !important;}
