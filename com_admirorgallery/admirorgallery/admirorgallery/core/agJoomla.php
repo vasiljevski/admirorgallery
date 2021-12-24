@@ -5,15 +5,18 @@
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
  * @copyright   Copyright (C) 2010 - 2017 https://www.admiror-design-studio.com All Rights Reserved.
+ * @since       5.5.0
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
+namespace Admiror\Plugin\Content\AdmirorGallery;
+
 defined('_JEXEC') or die();
 
-// Import library dependencies
-jimport('joomla.event.plugin');
-jimport('joomla.plugin.plugin');
-jimport('joomla.filesystem.folder');
+use Joomla\CMS\Document\Document as JDocument;
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Filesystem\Folder as JFolder;
+use Joomla\CMS\Language\Text as JText;
 
 class agJoomla implements agCmsInterface
 {

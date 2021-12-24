@@ -9,6 +9,8 @@
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
+namespace Admiror\Plugin\Content\AdmirorGallery;
+
 class agPopup
 {
     public string $customAttr='';

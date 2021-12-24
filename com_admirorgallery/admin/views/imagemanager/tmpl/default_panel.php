@@ -8,6 +8,11 @@
  */
 
 defined('_JEXEC') or die();
+
+use Admiror\Plugin\Content\AdmirorGallery\agHelper;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Uri\Uri as JURI;
+
 ?>
 <div class="AG_body_wrapper">
     <!--FORMAT SCREEN-->

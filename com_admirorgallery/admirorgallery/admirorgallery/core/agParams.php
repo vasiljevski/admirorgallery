@@ -5,10 +5,15 @@
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
+ * @since       5.5.0
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-/**
+namespace Admiror\Plugin\Content\AdmirorGallery;
+ 
+use \ArrayAccess;
+
+ /**
  * Parameters class AG uses
  *
  * @since 5.5.0

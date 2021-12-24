@@ -9,7 +9,12 @@
 
 defined('_JEXEC') or die();
 
-JLoader::register('agHelper', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'agHelper.php');
+use Admiror\Plugin\Content\AdmirorGallery\agHelper;
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Filesystem\File as JFile;
+use Joomla\CMS\Filesystem\Folder as JFolder;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Uri\Uri as JURI;
 
 $ag_itemURL = $this->ag_init_itemURL;
 
@@ -21,7 +26,7 @@ $ag_fileName = basename($ag_itemURL);
 $thumbsFolderPhysicalPath = JPATH_SITE . DIRECTORY_SEPARATOR . 'administrator' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_admirorgallery' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'thumbs';
 
 agHelper::ag_sureRemoveDir($thumbsFolderPhysicalPath, true);
-if (!JFolder::create($thumbsFolderPhysicalPath, 0755)) {
+if (!JFolder::create($thumbsFolderPhysicalPath)) {
     JFactory::getApplication()->enqueueMessage(JText::_("AG_CANNOT_CREATE_FOLDER") . "&nbsp;" . $newFolderName, 'error');
 }
 

@@ -5,17 +5,11 @@
  * @subpackage  admirorgallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
+ * @since       4.5.0
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-defined('_JEXEC') or die();
-
-JLoader::register('agHelper', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agHelper.php');
-JLoader::register('agPopup', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agPopup.php');
-JLoader::register('agCmsInterface', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agCmsInterface.php');
-JLoader::register('agTemplate', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agTemplate.php');
-JLoader::register('agParams', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agParams.php');
-JLoader::register('agErrorHandler', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'agErrorHandler.php');
+namespace Admiror\Plugin\Content\AdmirorGallery;
 
 class agGallery
 {
