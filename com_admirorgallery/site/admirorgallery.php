@@ -9,20 +9,19 @@
 
 defined('_JEXEC') or die();
 
-$AG_template = "default";// Set template to default
-JFactory::getApplication()->input->post->setVar('AG_template', $AG_template);
+use Joomla\CMS\Factory as JFactory;
 
-// Shared scripts for all views
-$doc = JFactory::getDocument();
-$doc->addScript(JURI::root().'plugins/content/admirorgallery/admirorgallery/AG_jQuery.js');
-$doc->addScript(JURI::root().'administrator/components/com_admirorgallery/scripts/jquery.hotkeys-0.7.9.min.js');
-$doc->addStyleSheet(JURI::root().'administrator/components/com_admirorgallery/templates/'.$AG_template.'/css/template.css');
-$doc->addStyleSheet(JURI::root().'administrator/components/com_admirorgallery/templates/'.$AG_template.'/css/toolbar.css');
+$AG_template = "default";// Set template to default
+$app = JFactory::getApplication();
+$post = $app->input->post;
+
+$post->set('AG_template', $AG_template);
+
 // Require the base controller
 require_once( JPATH_COMPONENT.DIRECTORY_SEPARATOR.'controller.php' );
  
 // Require specific controller if requested
-if($controller = JFactory::getApplication()->input->post->getWord('controller')) {
+if($controller == $post->getWord('controller')) {
      $path = JPATH_COMPONENT.DIRECTORY_SEPARATOR.'controllers'.DIRECTORY_SEPARATOR.$controller.'.php';
      if (file_exists($path)) {
 	  require_once $path;
@@ -36,7 +35,7 @@ $classname    = 'AdmirorgalleryController'.$controller;
 $controller   = new $classname( );
  
 // Perform the Request task
-$controller->execute( JFactory::getApplication()->input->post->getWord( 'task' ) );
+$controller->execute( $post->getWord( 'task' ) );
  
 // Redirect if set by the controller
 $controller->redirect();
