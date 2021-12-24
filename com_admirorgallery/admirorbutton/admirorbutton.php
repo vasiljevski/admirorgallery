@@ -80,7 +80,7 @@ class plgButtonAdmirorbutton extends JPlugin
 
 			$link = 'index.php?option=com_admirorgallery&amp;view=button&amp;tmpl=component&amp;e_name=' . $name;
 
-			$button          = new stdClass();
+			$button          = new JObject();
 			$button->modal   = true;
 			$button->link    = $link;
 			$button->text    = JText::_('COM_ADMIRORGALLERY');

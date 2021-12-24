@@ -17,11 +17,10 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri as JUri;
 use Joomla\CMS\Version;
 use Joomla\Filesystem\Folder;
+use Admiror\Plugin\Content\AdmirorGallery\agGallery;
+use Admiror\Plugin\Content\AdmirorGallery\agJoomla;
 
 const AG_VERSION = '6.0.0';
-
-JLoader::register('agGallery', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'admirorgallery/core/agGallery.php');
-JLoader::register('agJoomla', dirname(__FILE__) . DIRECTORY_SEPARATOR . 'admirorgallery/core/agJoomla.php');
 
 class plgContentAdmirorGallery extends CMSPlugin
 {

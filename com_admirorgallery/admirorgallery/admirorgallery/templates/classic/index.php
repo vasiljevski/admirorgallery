@@ -10,6 +10,8 @@
 
 defined('_JEXEC') or die();
 
+use Admiror\Plugin\Content\AdmirorGallery\agTemplate;
+
 $template = new agTemplate($AG);
 
 $template->preContent();

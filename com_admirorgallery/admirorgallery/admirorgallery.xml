@@ -9,6 +9,7 @@
     <authorUrl>https://www.admiror-design-studio.com</authorUrl>
     <version>6.0.0</version>
     <description>plg_admirorgallery_xml_description</description>
+    <namespace path="admirorgallery/core">Admiror\Plugin\Content\AdmirorGallery</namespace>
     <config>
         <fields name="params">
             <fieldset name="basic">
