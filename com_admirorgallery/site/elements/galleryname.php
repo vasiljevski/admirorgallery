@@ -22,8 +22,6 @@ class JFormFieldGalleryName extends JFormField {
      */
     protected function getInput(): string
     {
-        JHTML::_('behavior.modal');
-
         // Initialize some field attributes.
         $size = $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
         $maxLength = $this->element['maxlength'] ? ' maxlength="' . (int) $this->element['maxlength'] . '"' : '';
