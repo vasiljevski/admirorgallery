@@ -23,6 +23,7 @@ $item_url = AdmirorGalleryHelper::getRootPath();
 $path = JURI::root(true) . "/";
 
 $doc->addStyleSheet($path . 'administrator/components/com_admirorgallery/templates/' . $template . '/css/add-trigger.css');
+$doc->addScript($path . 'plugins/content/admirorgallery/admirorgallery/AG_jQuery.js');
 $doc->addScript($path . 'administrator/components/com_admirorgallery/scripts/ag_button.js');
 
 ?>
@@ -31,11 +32,11 @@ $doc->addScript($path . 'administrator/components/com_admirorgallery/scripts/ag_
 
         <div style="float: right">
             <button class="btn" type="button"
-                    onclick="AG_createTriggerCode('<?php echo JFactory::getApplication()->getInput()->get('e_name');?>');">
+                    onclick="AG_createTriggerCode('<?php echo JFactory::getApplication()->input->get('e_name');?>');">
                     <?php echo JText::_("AG_BUTTON_INSERT") ?>
             </button>
             <button class="btn" type="button"
-                    onclick="closeAdmirorButton('<?php echo JFactory::getApplication()->getInput()->get('e_name');?>');">
+                    onclick="closeAdmirorButton('<?php echo JFactory::getApplication()->input->get('e_name');?>');">
                     <?php echo JText::_("AG_BUTTON_CANCEL") ?>
             </button>
         </div>
