@@ -13,7 +13,6 @@ use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Form\Form as JForm;
 use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\Uri\Uri as JURI;
-Htm
 
 //Check if plugin is installed, otherwise don't show view
 if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
