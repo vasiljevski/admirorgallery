@@ -8,41 +8,49 @@
  */
 
 defined('_JEXEC') or die();
-jimport('joomla.filesystem.folder');
+
+use Joomla\CMS\Filesystem\Folder as JFolder;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Uri\Uri as JUri;
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Form\Form as JForm;
 
 require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/admirorgallery.php';
 
-$AG_template = AdmirorGalleryHelper::getCmd('AG_template', ''); // Current template for AG Component
-$ag_init_itemURL = AdmirorGalleryHelper::getRootPath();
+$doc = JFactory::getApplication()->getDocument();
+$template = AdmirorGalleryHelper::getCmd('AG_template', ''); // Current template for AG Component
+$item_url = AdmirorGalleryHelper::getRootPath();
+$path = JURI::root(true) . "/";
+
+$doc->addStyleSheet($path . 'administrator/components/com_admirorgallery/templates/' . $template . '/css/add-trigger.css');
+$doc->addScript($path . 'administrator/components/com_admirorgallery/scripts/ag_button.js');
 
 ?>
-<script type="text/javascript"
-        src="<?php echo JURI::root() . 'plugins/content/admirorgallery/admirorgallery/AG_jQuery.js'; ?>"></script>
-<link rel="stylesheet"
-      href="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $AG_template . '/css/add-trigger.css'; ?>"
-      type="text/css"/>
-
 <div style="display:block">
     <form action="index.php" id="AG_form" method="post" enctype="multipart/form-data">
 
         <div style="float: right">
             <button class="btn" type="button"
-                    onclick="AG_createTriggerCode();window.parent.SqueezeBox.close();"><?php echo JText::_("AG_BUTTON_INSERT") ?></button>
+                    onclick="AG_createTriggerCode('<?php echo JFactory::getApplication()->getInput()->get('e_name');?>');">
+                    <?php echo JText::_("AG_BUTTON_INSERT") ?>
+            </button>
             <button class="btn" type="button"
-                    onclick="window.parent.SqueezeBox.close();"><?php echo JText::_("AG_BUTTON_CANCEL") ?></button>
+                    onclick="closeAdmirorButton('<?php echo JFactory::getApplication()->getInput()->get('e_name');?>');">
+                    <?php echo JText::_("AG_BUTTON_CANCEL") ?>
+            </button>
         </div>
         <br style="clear:both;"/>
         <hr/>
         <h2><?php echo JText::_("AG_FOLDERS"); ?></h2>
         <?php echo JText::_("AG_SELECT_FOLDER"); ?>&nbsp;
-        <select name="AG_form_folderName">
+        <select name="ag_form_folder_name">
             <?php
-            $ag_folders = JFolder::listFolderTree(JPATH_SITE . $ag_init_itemURL, "");
-            $ag_init_itemURL_strlen = strlen($ag_init_itemURL);
-            if (!empty($ag_folders)) {
-                foreach ($ag_folders as $ag_folders_key => $ag_folders_value) {
-                    $ag_folderName = substr($ag_folders_value['relname'], $ag_init_itemURL_strlen);
-                    echo '<option value="' . $ag_folderName . '" />' . $ag_folderName;
+            $folders = JFolder::listFolderTree(JPATH_SITE . $item_url, "");
+            $item_url_strlen = strlen($item_url);
+            if (!empty($folders)) {
+                foreach ($folders as $folders_key => $folders_value) {
+                    $folder_name = substr($folders_value['relname'], $item_url_strlen);
+                    echo '<option value="' . $folder_name . '" />' . $folder_name;
                 }
             }
             ?>
@@ -51,9 +59,9 @@ $ag_init_itemURL = AdmirorGalleryHelper::getRootPath();
 
         <p></p>
         <hr/>
-        <h2><input type="CHECKBOX" id="AG_form_insertParams"
-                   name="AG_form_insertParams"/> <?php echo JText::_("AG_PARAMETERS"); ?></h2>
-        <div id="AG_form_params" style="display:none;">
+        <h2><input type="CHECKBOX" id="ag_form_insertParams"
+                   name="ag_form_insertParams"/> <?php echo JText::_("AG_PARAMETERS"); ?></h2>
+        <div id="ag_form_params" style="display:none;">
             <?php
             $db = JFactory::getDBO();
             $query = "SELECT * FROM #__extensions WHERE (element = 'admirorgallery') AND (type = 'plugin')";
@@ -95,44 +103,5 @@ $ag_init_itemURL = AdmirorGalleryHelper::getRootPath();
             <?php endforeach; ?>
 
         </div>
-        <script type="text/javascript">
-            AG_jQuery(document).ready(function () {
-
-                AG_jQuery(".ag_button_folderName").click(function (event) {
-                    event.preventDefault();
-                });
-
-                AG_jQuery('#AG_form_insertParams').change(function () {
-                    if (AG_jQuery('#AG_form_insertParams').attr('checked')) {
-                        AG_jQuery('#AG_form_params').fadeIn("slow");
-                    } else {
-                        AG_jQuery('#AG_form_params').fadeOut("slow");
-                    }
-                });
-
-            });
-
-            function AG_createTriggerCode() {
-
-                var AG_params = "";
-
-                var AG_fields = AG_jQuery(".paramlist_value input").serializeArray();
-                AG_jQuery.each(AG_fields, function (i, field) {
-                    AG_params += " " + field.name.substring(7, (field.name.length - 1)) + '="' + field.value + '"';
-                });
-                var AG_fields = AG_jQuery(".paramlist_value select").serializeArray();
-                AG_jQuery.each(AG_fields, function (i, field) {
-                    AG_params += " " + field.name.substring(7, (field.name.length - 1)) + '="' + field.value + '"';
-                });
-                if (AG_jQuery('#AG_form_insertParams').attr('checked')) {
-                    var AG_triggerCode = '{AG' + AG_params + '}' + AG_jQuery('select[name="AG_form_folderName"]').val() + '{/AG}';
-                } else {
-                    var AG_triggerCode = '{AG}' + AG_jQuery('select[name="AG_form_folderName"]').val() + '{/AG}';
-                }
-                window.parent.insertTriggerCode(AG_triggerCode);
-
-            }
-        </script>
-
     </form>
 </div>

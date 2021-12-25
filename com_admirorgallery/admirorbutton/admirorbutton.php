@@ -33,6 +33,14 @@ class plgButtonAdmirorbutton extends JPlugin
 	protected $autoloadLanguage = true;
 
 	/**
+	 * Application object.
+	 *
+	 * @var    \Joomla\CMS\Application\CMSApplication
+	 * @since  4.0.0
+	 */
+	protected $app;
+
+	/**
 	 * Display the button.
 	 *
 	 * @param   string   $name    The name of the button to display.
@@ -47,15 +55,13 @@ class plgButtonAdmirorbutton extends JPlugin
 	//function onDisplay(string $name): JObject
 	public function onDisplay($name, $asset, $author)
 	{
-		$app       = JFactory::getApplication();
 		$user      = JFactory::getUser();
-		$doc       = $app->getDocument();
-		$extension = $app->input->get('option');
+		$doc       = $this->app->getDocument();
+		$extension = $this->app->input->get('option');
 
 		// For categories, we check the extension (ex: component.section)
-		if ($extension === 'com_categories')
-		{
-			$parts     = explode('.', $app->input->get('extension', 'com_content'));
+		if ($extension === 'com_categories') {
+			$parts     = explode('.', $this->app->input->get('extension', 'com_content'));
 			$extension = $parts[0];
 		}
 
@@ -68,15 +74,8 @@ class plgButtonAdmirorbutton extends JPlugin
 			|| ($user->authorise('core.edit.own', $asset) && $author === $user->id)
 			|| (count($user->getAuthorisedCategories($extension, 'core.edit')) > 0)
 			|| (count($user->getAuthorisedCategories($extension, 'core.edit.own')) > 0 && $author === $user->id)
-		)
-		{
-			$doc->addStyleSheet(JURI::root() . 'administrator/components/com_admirorgallery/templates/default/css/add-trigger.css');
-			$doc->addScriptDeclaration("            
-            function insertTriggerCode(txt) {
-                if(!txt) return;
-                jInsertEditorText(txt, '" . $name . "');
-            }
-            ");
+		) {
+			$doc->addStyleSheet(JURI::root(true) . '/administrator/components/com_admirorgallery/templates/default/css/add-trigger.css');
 
 			$link = 'index.php?option=com_admirorgallery&amp;view=button&amp;tmpl=component&amp;e_name=' . $name;
 
