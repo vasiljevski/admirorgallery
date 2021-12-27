@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @version     6.0.0
  * @package     Admiror Gallery (component)
@@ -9,41 +10,44 @@
 
 defined('_JEXEC') or die();
 
-class JFormFieldGalleryName extends JFormField {
+use Joomla\CMS\Form\FormField as JFormField;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Router\Route as JRoute;
 
-    //var   $_name = 'galleryName'; 
-    public $type = 'galleryName';
+class JFormFieldGalleryName extends JFormField
+{
 
-    /**
-     *
-     * @return string
-     *
-     * @since 5.5.0
-     */
-    protected function getInput(): string
-    {
-        //JHtmlBootstrap::renderModal();
-        JHtml::_('bootstrap.modal');
-        // Initialize some field attributes.
-        $size = $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
-        $maxLength = $this->element['maxlength'] ? ' maxlength="' . (int) $this->element['maxlength'] . '"' : '';
-        $class = $this->element['class'] ? ' class="' . $this->element['class'] . '"' : '';
-        $readonly = ((string) $this->element['readonly'] == 'true') ? ' readonly="readonly"' : '';
-        $disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
+  //var   $_name = 'galleryName'; 
+  public $type = 'galleryName';
 
-        // Initialize JavaScript field attributes.
-        $onchange = $this->element['onchange'] ? ' onchange="' .  $this->element['onchange'] . '"' : '';
+  /**
+   *
+   * @return string
+   *
+   * @since 5.5.0
+   */
+  protected function getInput(): string
+  {
+    //JHtmlBootstrap::renderModal();
+    //JHtml::_('bootstrap.modal');
+    // Initialize some field attributes.
+    $size = $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
+    $maxLength = $this->element['maxlength'] ? ' maxlength="' . (int) $this->element['maxlength'] . '"' : '';
+    $class = $this->element['class'] ? ' class="' . $this->element['class'] . '"' : '';
+    $readonly = ((string) $this->element['readonly'] == 'true') ? ' readonly="readonly"' : '';
+    $disabled = ((string) $this->element['disabled'] == 'true') ? ' disabled="disabled"' : '';
 
-        $content = '<input type="text" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
-                . htmlspecialchars($this->value, ENT_COMPAT) . '"' . $class . $size . $disabled . $readonly . $onchange . $maxLength . '/>';
-        $link = JRoute::_('index.php?option=com_admirorgallery&amp;view=galleryname&amp;tmpl=component&amp;e_name=' . $this->name);
-        $content.= '
-	  <a href="' . $link . '" rel="{handler: \'iframe\', size: {x: 500, y: 400}}" class="modal" style="text-decoration:none;">
-		<button type="button" class="btn">' . JText::_('AG_SELECT_GALLERY') . '</button>
+    // Initialize JavaScript field attributes.
+    $onchange = $this->element['onchange'] ? ' onchange="' .  $this->element['onchange'] . '"' : '';
+
+    $content = '<input type="text" name="' . $this->name . '" id="' . $this->id . '"' . ' value="'
+      . htmlspecialchars($this->value, ENT_COMPAT) . '"' . $class . $size . $disabled . $readonly . $onchange . $maxLength . '/>';
+    $link = JRoute::_('index.php?option=com_admirorgallery&amp;view=galleryname&amp;tmpl=component&amp;e_name=' . $this->name);
+    $content .= '
+	  <a href="' . $link . '" rel="{handler: \'iframe\', size: {x: 500, y: 400}}" style="text-decoration:none;">
+		<button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">' . JText::_('AG_SELECT_GALLERY') . '</button>
 	  </a>
       ';
-
-        return $content;
-    }
-
+    return $content;
+  }
 }

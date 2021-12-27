@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @version     6.0.0
  * @package     Admiror Gallery (component)
@@ -12,27 +13,25 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory;
 use Joomla\CMS\Plugin\PluginHelper;
 
-PluginHelper::importPlugin( 'content' );
+PluginHelper::importPlugin('content');
 
 $app = Factory::getApplication();
 $active = $app->getMenu()->getActive();
 $params = $active->getParams();
 
-$ag_params='';
-foreach($params as $key => $value)
-{
-    $ag_inlineParams.=' '.$key .'="'.$value.'"';
+$ag_params = '';
+foreach ($params as $key => $value) {
+    $ag_inlineParams .= ' ' . $key . '="' . $value . '"';
 }
 
 $article = new stdClass();
 
 //Display page heading
-if($active->getParams()->get('show_page_heading'))
-{
-    $article->text = '<h1>'.$active->getParams()->get('page_title').'</h1>';
+if ($active->getParams()->get('show_page_heading')) {
+    $article->text = '<h1>' . $active->getParams()->get('page_title') . '</h1>';
 }
-$article->text .= '{AG '.$ag_params.' }'.$params->get('galleryName').'{/AG}';
+$article->text .= '{AG ' . $ag_params . ' }' . $params->get('galleryName') . '{/AG}';
 $article->id = $active->id;
 
-$app->triggerEvent('onContentPrepare', array ( &$context, &$article, & $params));
+$app->triggerEvent('onContentPrepare', array(&$context, &$article, &$params));
 echo $article->text;
