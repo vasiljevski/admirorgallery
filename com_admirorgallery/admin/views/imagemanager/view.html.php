@@ -47,6 +47,12 @@ class AdmirorgalleryViewImagemanager extends BaseHtmlView
             return;
         }
 
+        /**
+         * Backward compatibility with Joomla!3
+         * Load namespace
+        */
+        JLoader::registerNamespace('Admiror\\Plugin\\Content\\AdmirorGallery', JPATH_PLUGINS."/content/admirorgallery/admirorgallery/core/", false, false, 'psr4');
+
         $this->ag_template_id = $post->get('AG_template', 'default'); // Current template for AG Component
         $ag_item_url = $post->getVar('AG_itemURL');
 

@@ -22,6 +22,12 @@ use Admiror\Plugin\Content\AdmirorGallery\agJoomla;
 
 const AG_VERSION = '6.0.0';
 
+/**
+ * Backward compatibility with Joomla!3
+ * Load namespace
+*/
+JLoader::registerNamespace('Admiror\\Plugin\\Content\\AdmirorGallery', JPATH_PLUGINS."/content/admirorgallery/admirorgallery/core/", false, false, 'psr4');
+
 class plgContentAdmirorGallery extends CMSPlugin
 {
     //Constructor
