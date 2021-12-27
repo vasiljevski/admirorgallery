@@ -9,7 +9,8 @@
 
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.controller');
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Language\Text as JText;
 
 class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController
 {
@@ -30,7 +31,7 @@ class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController
 
     function ag_install()
     {
-        $file = JRequest::getVar('AG_fileUpload', null, 'files');
+        $file =  $this->input->getVar('AG_fileUpload', null, 'files');
         if (isset($file) && !empty($file['name'])) {
             $this->model->_install($file);
         } else {
@@ -41,7 +42,7 @@ class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController
 
     function ag_uninstall()
     {
-        $ag_cidArray = JRequest::getVar('cid');
+        $ag_cidArray =  $this->input->getVar('cid');
         if (!empty($ag_cidArray)) {
             $this->model->_uninstall($ag_cidArray);
         }

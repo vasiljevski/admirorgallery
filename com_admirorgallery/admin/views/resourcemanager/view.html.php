@@ -15,6 +15,7 @@ use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
 use Joomla\CMS\Filesystem\Folder as JFolder;
+use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
 
 class AdmirorgalleryViewResourcemanager extends JViewLegacy
 {

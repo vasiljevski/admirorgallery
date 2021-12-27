@@ -9,7 +9,9 @@
 
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.model');
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\MVC\Model\BaseDatabaseModel as JModelLegacy;
 
 class AdmirorgalleryModelAdmirorgallery extends JModelLegacy
 {
@@ -23,7 +25,7 @@ class AdmirorgalleryModelAdmirorgallery extends JModelLegacy
         $AG_DB_input = substr_replace($AG_DB_input, '}', -1, 1);
 
         $db = JFactory::getDBO();
-        $query = "UPDATE #__extensions SET params='" . $AG_DB_input . "' WHERE (element = 'admirorgallery') AND (type = 'plugin')"; // This change value
+        $query = "UPDATE #__extensions SET params='" . $AG_DB_input . "' WHERE (element = 'admirorgallery') AND (type = 'plugin')";
         $db->setQuery($query);
         if ($db->execute()) {
             JFactory::getApplication()->enqueueMessage(JText::_("AG_PARAMS_UPDATED"), 'message');

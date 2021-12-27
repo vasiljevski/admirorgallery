@@ -9,12 +9,12 @@
 
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.model');
-// Preloading joomla tools
-jimport('joomla.installer.helper');
-jimport('joomla.filesystem.file');
-jimport('joomla.filesystem.archive');
-jimport('joomla.filesystem.folder');
+use Joomla\CMS\MVC\Model\BaseDatabaseModel as JModelLegacy;
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Filesystem\File as JFile;
+use Joomla\CMS\Filesystem\Folder as JFolder;
+use Joomla\Archive\Archive as JArchive;
 
 class AdmirorgalleryModelResourcemanager extends JModelLegacy
 {
@@ -22,7 +22,7 @@ class AdmirorgalleryModelResourcemanager extends JModelLegacy
     function _install($file)
     {
 
-        $AG_resourceType = JRequest::getVar('AG_resourceType'); // Current resource type
+        $AG_resourceType = $this->input->getVar('AG_resourceType'); // Current resource type
         $config = JFactory::getConfig();
         $tmp_dest = $config->get('tmp_path');
         $resourceType = substr($AG_resourceType, 0, strlen($AG_resourceType) - 1);
@@ -46,7 +46,7 @@ class AdmirorgalleryModelResourcemanager extends JModelLegacy
                     }
 
                     // TEMPLATE DETAILS PARSING
-                    if (JFIle::exists($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml')) {
+                    if (JFile::exists($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml')) {
                         $ag_resourceManager_xml = simplexml_load_file($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml');
                         if (isset($ag_resourceManager_xml->type)) {
                             $ag_resourceManager_type = $ag_resourceManager_xml->type;
@@ -82,7 +82,7 @@ class AdmirorgalleryModelResourcemanager extends JModelLegacy
 
     function _uninstall($ag_cidArray)
     {
-        $AG_resourceType = JRequest::getVar('AG_resourceType'); // Current resource type
+        $AG_resourceType = $this->input->getVar('AG_resourceType'); // Current resource type
         foreach ($ag_cidArray as $ag_cidArrayKey => $ag_cidArrayValue) {
             if (!empty($ag_cidArrayValue)) {
                 if (JFolder::delete(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . $ag_cidArrayValue)) {

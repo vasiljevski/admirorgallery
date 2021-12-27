@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @version     6.0.0
  * @package     Admiror Gallery (component)
@@ -9,10 +10,8 @@
 
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.model');
+use Joomla\CMS\MVC\Model\BaseDatabaseModel as JModelLegacy;
 
 class AdmirorgalleryModelButton extends JModelLegacy
 {
-
-
 }

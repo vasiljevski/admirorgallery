@@ -15,9 +15,10 @@ use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\Plugin\PluginHelper as JPluginHelper;
 use Joomla\CMS\Uri\Uri as JURI;
 use Joomla\Registry\Registry as JRegistry;
-use Joomla\CMS\MVC\View\HtmlView as BaseHtmlView;
+use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
+use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
 
-class AdmirorgalleryViewImagemanager extends BaseHtmlView
+class AdmirorgalleryViewImagemanager extends JViewLegacy
 {
     var string $ag_template_id = 'default';
     var string $ag_init_itemURL = '';
