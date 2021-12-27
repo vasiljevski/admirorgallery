@@ -29,7 +29,7 @@ class JFormFieldGalleryName extends JFormField
   protected function getInput(): string
   {
     //JHtmlBootstrap::renderModal();
-    //JHtml::_('bootstrap.modal');
+    //JHTML::_('behavior.modal');
     // Initialize some field attributes.
     $size = $this->element['size'] ? ' size="' . (int) $this->element['size'] . '"' : '';
     $maxLength = $this->element['maxlength'] ? ' maxlength="' . (int) $this->element['maxlength'] . '"' : '';
@@ -45,7 +45,7 @@ class JFormFieldGalleryName extends JFormField
     $link = JRoute::_('index.php?option=com_admirorgallery&amp;view=galleryname&amp;tmpl=component&amp;e_name=' . $this->name);
     $content .= '
 	  <a href="' . $link . '" rel="{handler: \'iframe\', size: {x: 500, y: 400}}" style="text-decoration:none;">
-		<button type="button" class="btn btn-secondary"  data-bs-dismiss="modal">' . JText::_('AG_SELECT_GALLERY') . '</button>
+		<button type="button" class="btn btn-secondary">' . JText::_('AG_SELECT_GALLERY') . '</button>
 	  </a>
       ';
     return $content;

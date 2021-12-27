@@ -9,12 +9,7 @@
 
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.controller');
-
-jimport('joomla.filesystem.file');
-jimport('joomla.filesystem.folder');
-jimport('joomla.language.language');
-jimport('joomla.filesystem.archive');
+use Joomla\CMS\Filesystem\File as JFile;
 
 class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 {
@@ -40,34 +35,34 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 
             // FOLDER MODELS
             // BOOKMARK REMOVE
-            $AG_cbox_bookmarkRemove = JRequest::getVar('AG_cbox_bookmarkRemove');
+            $AG_cbox_bookmarkRemove = $this->input->getVar('AG_cbox_bookmarkRemove');
             if (!empty($AG_cbox_bookmarkRemove)) {
                 $model->_bookmarkRemove($AG_cbox_bookmarkRemove);
             }
 
             // PRIORITY
-            $AG_cbox_priority = JRequest::getVar('AG_cbox_priority');
+            $AG_cbox_priority = $this->input->getVar('AG_cbox_priority');
             if (!empty($AG_cbox_priority)) {
                 $model->_cbox_priority($AG_cbox_priority);
             }
 
             // UPLOAD
-            $file = JRequest::getVar('AG_fileUpload', null, 'files');
+            $file = $this->input->getVar('AG_fileUpload', null, 'files');
             if (isset($file) && !empty($file['name'])) {
                 $model->_fileUpload($AG_itemURL, $file);
             }
 
             // ADD FOLDERS
-            $AG_addFolders = JRequest::getVar('AG_addFolders');
+            $AG_addFolders = $this->input->getVar('AG_addFolders');
             if (!empty($AG_addFolders)) {
                 $model->_addFolders($AG_itemURL, $AG_addFolders);
             }
 
             // REMOVE // BOOKMARK ADD
-            $AG_cbox_selectItem = JRequest::getVar('AG_cbox_selectItem');
-            $AG_operations_targetFolder = JRequest::getVar('AG_operations_targetFolder');
+            $AG_cbox_selectItem = $this->input->getVar('AG_cbox_selectItem');
+            $AG_operations_targetFolder = $this->input->getVar('AG_operations_targetFolder');
             if (!empty($AG_cbox_selectItem)) {
-                switch (JRequest::getVar('AG_operations')) {
+                switch ($this->input->getVar('AG_operations')) {
                     case "move":
                         $model->_move($AG_cbox_selectItem, $AG_operations_targetFolder);
                         break;
@@ -90,7 +85,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
             }
 
             // RENAME
-            $AG_rename = JRequest::getVar('AG_rename');
+            $AG_rename = $this->input->getVar('AG_rename');
             $webSafe = array("/", " ", ":", ".", "+", "&");
             if (!empty($AG_rename)) {
                 foreach ($AG_rename as $ren_key => $ren_value) {
@@ -106,17 +101,17 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
             }
 
             // FOLDER DESCRIPTIONS
-            $AG_desc_content = JRequest::getVar('AG_desc_content', '', 'POST', 'ARRAY', 'JREQUEST_ALLOWHTML');
-            $AG_desc_tags = JRequest::getVar('AG_desc_tags');
-            $AG_folder_thumb = JRequest::getVar('AG_folder_thumb');
-            if (JRequest::getVar('AG_folderSettings_status') == "edit") {
+            $AG_desc_content =  $this->input->getVar('AG_desc_content', '', 'POST', 'ARRAY', 'JREQUEST_ALLOWHTML');
+            $AG_desc_tags =  $this->input->getVar('AG_desc_tags');
+            $AG_folder_thumb =  $this->input->getVar('AG_folder_thumb');
+            if ( $this->input->getVar('AG_folderSettings_status') == "edit") {
                 $model->_folder_desc_content($AG_itemURL, $AG_desc_content, $AG_desc_tags, $AG_folder_thumb);
             }
         } else {
             // FILE MODELS
             // FILE DESCRIPTIONS
-            $AG_desc_content = JRequest::getVar('AG_desc_content', '', 'POST', 'ARRAY', 'JREQUEST_ALLOWHTML');
-            $AG_desc_tags = JRequest::getVar('AG_desc_tags');
+            $AG_desc_content = $this->input->getVar('AG_desc_content', '', 'POST', 'ARRAY', 'JREQUEST_ALLOWHTML');
+            $AG_desc_tags =  $this->input->getVar('AG_desc_tags');
             if (!empty($AG_desc_content)) {
                 $model->_desc_content($AG_itemURL, $AG_desc_content, $AG_desc_tags);
             }

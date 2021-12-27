@@ -9,7 +9,7 @@
 
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.view');
+use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
 
 class AdmirorgalleryViewButton extends JViewLegacy
 {

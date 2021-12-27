@@ -9,7 +9,9 @@
 
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.view');
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
+use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
 
 class AdmirorgalleryViewAdmirorgallery extends JViewLegacy
 {

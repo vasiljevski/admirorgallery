@@ -9,6 +9,12 @@
 
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\HTML\Helpers\Sidebar as JHtmlSidebar;
+use Joomla\Registry\Registry as JRegistry;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Plugin\PluginHelper as JPluginHelper;
+
 /**
  * AdmirorGallery component helper.
  *

@@ -9,10 +9,13 @@
 
 defined('_JEXEC') or die();
 
-//Deprecated
-jimport('joomla.application.component.model');
+use Joomla\CMS\MVC\Model\BaseDatabaseModel as JModelLegacy;
+use Joomla\CMS\Factory as JFactory;
+use Joomla\CMS\Language\Text as JText;
+use Joomla\CMS\Filesystem\File as JFile;
+use Joomla\CMS\Filesystem\Folder as JFolder;
+use Joomla\Archive\Archive as JArchive;
 
-JLoader::register('agHelper', JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'agHelper.php');
 JLoader::register('SecureImage', dirname(__FILE__, 2) . DIRECTORY_SEPARATOR . "scripts" . DIRECTORY_SEPARATOR . "secureimage.php");
 
 class AdmirorgalleryModelImagemanager extends JModelLegacy
@@ -127,7 +130,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
                 // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
                 $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . '/' . JFile::stripExt(basename($ag_itemURL));
                 $ag_XML_path = $ag_pathWithStripExt . ".xml";
-                if (JFIle::exists($ag_pathWithStripExt . ".XML")) {
+                if (JFile::exists($ag_pathWithStripExt . ".XML")) {
                     $ag_XML_path = $ag_pathWithStripExt . ".XML";
                 }
 
@@ -172,7 +175,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
             // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
             $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . JFile::stripExt(basename($ag_itemURL));
             $ag_XML_path = $ag_pathWithStripExt . ".xml";
-            if (JFIle::exists($ag_pathWithStripExt . ".XML")) {
+            if (JFile::exists($ag_pathWithStripExt . ".XML")) {
                 $ag_XML_path = $ag_pathWithStripExt . ".XML";
             }
 
@@ -284,12 +287,12 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
             $AG_folderName = dirname($value);
             $AG_pathWithStripExt = JPATH_SITE . $AG_folderName . '/' . JFile::stripExt(basename($value));
             $ag_XML_path = $AG_pathWithStripExt . ".XML";
-            if (JFIle::exists($AG_pathWithStripExt . ".xml")) {
+            if (JFile::exists($AG_pathWithStripExt . ".xml")) {
                 $ag_XML_path = $AG_pathWithStripExt . ".xml";
             }
             if (is_dir(JPATH_SITE . DIRECTORY_SEPARATOR . $value)) {
                 if (JFolder::copy(JPATH_SITE . DIRECTORY_SEPARATOR . $value, JPATH_SITE . DIRECTORY_SEPARATOR . $AG_operations_targetFolder . DIRECTORY_SEPARATOR . basename($value))) {
-                    if (JFIle::exists($ag_XML_path)) {
+                    if (JFile::exists($ag_XML_path)) {
                         JFile::copy($ag_XML_path, JPATH_SITE . DIRECTORY_SEPARATOR . $AG_operations_targetFolder . DIRECTORY_SEPARATOR . basename($ag_XML_path));
                     }
                     JFactory::getApplication()->enqueueMessage(JText::_('AG_ITEM_COPIED') . "&nbsp;" . $value, 'message');
@@ -298,7 +301,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
                 }
             } else {
                 if (JFile::copy(JPATH_SITE . DIRECTORY_SEPARATOR . $value, JPATH_SITE . DIRECTORY_SEPARATOR . $AG_operations_targetFolder . DIRECTORY_SEPARATOR . basename($value))) {
-                    if (JFIle::exists($ag_XML_path)) {
+                    if (JFile::exists($ag_XML_path)) {
                         JFile::copy($ag_XML_path, JPATH_SITE . DIRECTORY_SEPARATOR . $AG_operations_targetFolder . DIRECTORY_SEPARATOR . basename($ag_XML_path));
                     }
                     JFactory::getApplication()->enqueueMessage(JText::_('AG_ITEM_COPIED') . "&nbsp;" . $value, 'message');
@@ -317,13 +320,13 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
             $AG_folderName = dirname($value);
             $AG_pathWithStripExt = JPATH_SITE . $AG_folderName . '/' . JFile::stripExt(basename($value));
             $ag_XML_path = $AG_pathWithStripExt . ".XML";
-            if (JFIle::exists($AG_pathWithStripExt . ".xml")) {
+            if (JFile::exists($AG_pathWithStripExt . ".xml")) {
                 $ag_XML_path = $AG_pathWithStripExt . ".xml";
             }
             if (is_dir(JPATH_SITE . DIRECTORY_SEPARATOR . $value)) {
                 if (JFolder::move(JPATH_SITE . DIRECTORY_SEPARATOR . $value, JPATH_SITE . DIRECTORY_SEPARATOR . $AG_operations_targetFolder . DIRECTORY_SEPARATOR . basename($value))) {
                     $this->_bookmarkRemove(array($value));
-                    if (JFIle::exists($ag_XML_path)) {
+                    if (JFile::exists($ag_XML_path)) {
                         JFile::move($ag_XML_path, JPATH_SITE . DIRECTORY_SEPARATOR . $AG_operations_targetFolder . DIRECTORY_SEPARATOR . basename($ag_XML_path));
                     }
                     JFactory::getApplication()->enqueueMessage(JText::_('AG_ITEM_MOVED') . "&nbsp;" . $value, 'message');
@@ -332,7 +335,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
                 }
             } else {
                 if (JFile::move(JPATH_SITE . DIRECTORY_SEPARATOR . $value, JPATH_SITE . DIRECTORY_SEPARATOR . $AG_operations_targetFolder . DIRECTORY_SEPARATOR . basename($value))) {
-                    if (JFIle::exists($ag_XML_path)) {
+                    if (JFile::exists($ag_XML_path)) {
                         JFile::move($ag_XML_path, JPATH_SITE . DIRECTORY_SEPARATOR . $AG_operations_targetFolder . DIRECTORY_SEPARATOR . basename($ag_XML_path));
                     }
                     JFactory::getApplication()->enqueueMessage(JText::_('AG_ITEM_MOVED') . "&nbsp;" . $value, 'message');
@@ -350,7 +353,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
             // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
             $AG_pathWithStripExt = JPATH_SITE . $AG_folderName . '/' . JFile::stripExt(basename($value));
             $ag_XML_path = $AG_pathWithStripExt . ".XML";
-            if (JFIle::exists($AG_pathWithStripExt . ".xml")) {
+            if (JFile::exists($AG_pathWithStripExt . ".xml")) {
                 $ag_XML_path = $AG_pathWithStripExt . ".xml";
             }
             // DELETE
@@ -391,7 +394,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
         // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
         $ag_pathWithStripExt = JPATH_SITE . $AG_folderName . DIRECTORY_SEPARATOR . JFile::stripExt($AG_originalName);
         $ag_XML_path = $ag_pathWithStripExt . ".XML";
-        if (JFIle::exists($ag_pathWithStripExt . ".xml")) {
+        if (JFile::exists($ag_pathWithStripExt . ".xml")) {
             $ag_XML_path = $ag_pathWithStripExt . ".xml";
         }
 
@@ -437,7 +440,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
         // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
         $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . DIRECTORY_SEPARATOR . JFile::stripExt(basename($ag_itemURL));
         $ag_XML_path = $ag_pathWithStripExt . ".xml";
-        if (JFIle::exists($ag_pathWithStripExt . ".XML")) {
+        if (JFile::exists($ag_pathWithStripExt . ".XML")) {
             $ag_XML_path = $ag_pathWithStripExt . ".XML";
         }
 
@@ -487,7 +490,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
         // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
         $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . DIRECTORY_SEPARATOR . JFile::stripExt(basename($ag_itemURL));
         $ag_XML_path = $ag_pathWithStripExt . ".xml";
-        if (JFIle::exists($ag_pathWithStripExt . ".XML")) {
+        if (JFile::exists($ag_pathWithStripExt . ".XML")) {
             $ag_XML_path = $ag_pathWithStripExt . ".XML";
         }
 
