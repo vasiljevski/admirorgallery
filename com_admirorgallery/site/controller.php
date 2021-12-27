@@ -9,8 +9,7 @@
 
 defined('_JEXEC') or die();
 
-jimport( 'joomla.application.component.controller' );
-jimport('joomla.html.parameter');
+use Joomla\CMS\MVC\Controller\BaseController as JControllerLegacy;
 
 class AdmirorgalleryController extends JControllerLegacy
 {
