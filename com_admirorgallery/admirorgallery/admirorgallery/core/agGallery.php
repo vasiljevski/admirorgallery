@@ -609,7 +609,7 @@ class agGallery
     public function create_gallery_thumbs()
     {
         $this->validateParams();
-
+        
         //Adds index.html to thumbs folder
         agHelper::ag_indexWrite($this->thumbsFolderPhysicalPath . $this->DS . 'index.html');
 
@@ -649,7 +649,6 @@ class agGallery
         $thumb_file = $thumbsFolderPhysicalPath . $ag_img;
         $this->generate_thumb($original_file, $thumb_file);
     }
-
     /**
      * Generates and updates thumbnails according to settings
      *

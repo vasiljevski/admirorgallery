@@ -25,7 +25,7 @@ class agJoomla implements agCmsInterface
     private ?JDocument $doc;
     private ?CMSApplication $app;
 
-    public function __construct()
+    function __construct()
     {
         try {
             $this->app = JFactory::getApplication();
