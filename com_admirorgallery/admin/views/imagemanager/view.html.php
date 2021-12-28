@@ -60,21 +60,25 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
         // GET ROOT FOLDER
         $plugin = JPluginHelper::getPlugin('content', 'admirorgallery');
         $pluginParams = new JRegistry($plugin->params);
+        
+        $rootFolder =  $pluginParams->get('rootFolder', '/images/sampledata/');
+        $galleryPath = $rootFolder;
+        if ($this->app->isClient('site')){
+            $galleryPath .= ($this->app->getParams()->get('galleryName') != "-1") ?: "";
+        }
+        
         $this->ag_rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
+        $this->ag_starting_folder = $this->ag_rootFolder;
+        $this->ag_init_itemURL = $this->ag_rootFolder;
+
+        // Check if we are in site
         if ($this->app->isClient('site')) {
-            $this->ag_starting_folder = $pluginParams->get('rootFolder', '/images/sampledata/') . $this->app->getParams()->get('galleryName') . '/';
-        } else {
-            $this->ag_starting_folder = $this->ag_rootFolder;
+            $this->ag_starting_folder = $galleryPath;
+            $this->ag_init_itemURL = $galleryPath;
         }
 
-        if (!empty($ag_item_url)) {
+        if (isset($ag_item_url)) {
             $this->ag_init_itemURL = $ag_item_url;
-        } else {
-            if ($this->app->isClient('site')) {
-                $this->ag_init_itemURL = $pluginParams->get('rootFolder', '/images/sampledata/') . $this->app->getParams()->get('galleryName') . '/';
-            } else {
-                $this->ag_init_itemURL = $this->ag_rootFolder;
-            }
         }
         JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_IMAGE_MANAGER'), 'imagemanager');
         
