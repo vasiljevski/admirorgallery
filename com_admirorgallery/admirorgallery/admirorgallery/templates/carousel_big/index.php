@@ -10,6 +10,8 @@
 
 defined('_JEXEC') or die();
 
+use Admiror\Plugin\Content\AdmirorGallery\agTemplate;
+
 $template = new agTemplate($AG, 'jquery.jcarousel.css');
 
 $template->loadScript($AG->currTemplateRoot . 'jquery.jcarousel.js');
@@ -32,8 +34,8 @@ foreach ($AG->images as $imagesKey => $imageValue) {
                 $imageValue .
             '" class="slide" '.
             'alt=""  '.
-            'style="width:' . $AG->params['frameWidth'] . 'px; '.
-            'height:' . $AG->params['frameHeight'] . 'px;"/>
+            'style="width:' . $AG->params['frame_width'] . 'px; '.
+            'height:' . $AG->params['frame_height'] . 'px;"/>
 </li>
 ');
 }
@@ -83,9 +85,9 @@ AG_jQuery(\'#AG_' . $AG->getGalleryID() . '\').jcarousel({
 
 		});
 
-AG_jQuery("#AG_' . $AG->getGalleryID() . ' .jcarousel-container-horizontal").css({width:"' . $AG->params['frameWidth'] . 'px"})
+AG_jQuery("#AG_' . $AG->getGalleryID() . ' .jcarousel-container-horizontal").css({width:"' . $AG->params['frame_width'] . 'px"})
 
-AG_jQuery("#AG_' . $AG->getGalleryID() . ' .jcarousel-clip-horizontal").css({width:"' . $AG->params['frameWidth'] . 'px"})
+AG_jQuery("#AG_' . $AG->getGalleryID() . ' .jcarousel-clip-horizontal").css({width:"' . $AG->params['frame_width'] . 'px"})
 
 AG_jQuery(\'.jcarousel-control a[rel="1"]\').css({backgroundPosition:"left -20px", cursor:"default"});
 
@@ -101,14 +103,14 @@ AG_jQuery(\'.jcarousel-control a[rel="1"]\').css({backgroundPosition:"left -20px
 #AG_' . $AG->getGalleryID() . ' .jcarousel-item,
 #AG_' . $AG->getGalleryID() . '
 {
-	width:' . $AG->params['frameWidth'] . 'px;
+	width:' . $AG->params['frame_width'] . 'px;
 }
 
 #AG_' . $AG->getGalleryID() . ' .jcarousel-list li,
 #AG_' . $AG->getGalleryID() . ' .jcarousel-item,
 #AG_' . $AG->getGalleryID() . ' .jcarousel-clip
 {
-	height:' . $AG->params['frameHeight'] . 'px;
+	height:' . $AG->params['frame_height'] . 'px;
 }
 #AG_' . $AG->getGalleryID() . ' ul,
 #AG_' . $AG->getGalleryID() . ' li

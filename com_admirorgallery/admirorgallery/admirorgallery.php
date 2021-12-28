@@ -75,7 +75,7 @@ class plgContentAdmirorGallery extends CMSPlugin
 
         //Create galleries
         if (preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}#s", $row->text, $matches) > 0) {
-            $AG = new agGallery($this->params, JUri::base(), JPATH_SITE, new agJoomla());
+            $AG = new agGallery($this->params, JUri::root(true), JPATH_SITE, new agJoomla());
             //Load current language
             CMSPlugin::loadLanguage('plg_content_admirorgallery', JPATH_ADMINISTRATOR);
             // Version check

@@ -10,6 +10,8 @@
 
 defined('_JEXEC') or die();
 
+use Admiror\Plugin\Content\AdmirorGallery\agTemplate;
+
 $template = new agTemplate($AG);
 
 // Load AG_jQuery Flash library from current template folder
@@ -35,8 +37,8 @@ $template->insertScript('
 AG_jQuery(function(){
 	AG_jQuery("#AG_' . $AG->getGalleryID() . '").flash({
 		swf: "' . $AG->pluginPath . $AG->currTemplateRoot . 'simple_flash_gallery.swf",
-		width: ' . $AG->params['frameWidth'] . ',
-		height: ' . $AG->params['frameHeight'] . ',
+		width: ' . $AG->params['frame_width'] . ',
+		height: ' . $AG->params['frame_height'] . ',
 		flashvars: {
 			xmlString:\'' . $xmlGen . '\',
 			thumbPercentage:' . $AG->getParameter("thumbPercentage", 30) . '
