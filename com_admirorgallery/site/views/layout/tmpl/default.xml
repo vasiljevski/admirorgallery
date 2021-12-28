@@ -11,7 +11,7 @@
         <!-- Basic options. -->
         <fieldset name="basic" label="COM_ADMIRORGALLERY_CONFIGURATION_BASIC">
 
-            <field name="galleryName" required="1" type="galleryName" directory="/images/sampledata/"
+            <field name="galleryName" required="1" type="galleryName" directory="/images/sampledata/" layout="joomla.form.field.list-fancy-select"
                 recursive = "1" hide_none="true" hide_default="true" label="AG_ENTER_GALLERY_NAME" description="AG_ENTER_GALLERY_NAME_DESC" size="40" />
             <field name="rootFolder" type="text" default="/images/sampledata/" required="1" label="AG_IMAGES_ROOT_FOLDER" description="AG_IMAGES_ROOT_FOLDER_DESC" />
             <field name="thumbWidth" type="text" filter="integer" default="200" required="1" label="AG_THUMBNAIL_WIDTH" description="AG_THUMBNAIL_WIDTH_DESC" />

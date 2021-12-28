@@ -18,7 +18,8 @@ class JFormFieldGalleryName extends JFormFieldFolderList
 {
   public function getOptions()
 	{
-		$this->directory = $this->form->getValue("params")->rootFolder;
-    return parent::getOptions();
+		$this->directory = (!empty($this->form->getValue("params")->rootFolder)) ? $this->form->getValue("params")->rootFolder : $this->directory;
+		return parent::getOptions();
 	}
 }
+
