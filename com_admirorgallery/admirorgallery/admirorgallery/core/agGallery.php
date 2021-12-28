@@ -591,16 +591,25 @@ class agGallery
     }
 
     /**
+     * Check if thumbnail parameters are set
+     * 
+     * @since 6.0.0
+     */
+    private function validateParams() {
+		if (($this->params['thumbWidth'] == 0) || ($this->params['thumbHeight'] == 0)) {
+			$this->error_handle->addError($this->cms->Text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
+			return;
+		}
+	}
+    /**
      * Generates image thumbs
      *
      * @since 5.5.0
      */
     public function create_gallery_thumbs()
     {
-        if (($this->params['thumbWidth'] == 0) || ($this->params['thumbHeight'] == 0)) {
-            $this->error_handle->adderror($this->cms->Text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
-            return;
-        }
+        $this->validateParams();
+
         //Adds index.html to thumbs folder
         agHelper::ag_indexWrite($this->thumbsFolderPhysicalPath . $this->DS . 'index.html');
 
@@ -624,10 +633,8 @@ class agGallery
      */
     public function create_album_thumb(string $ag_parent_folder, string $ag_img)
     {
-        if (($this->params['thumbWidth'] == 0) || ($this->params['thumbHeight'] == 0)) {
-            $this->error_handle->addError($this->cms->Text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
-            return;
-        }
+        $this->validateParams();
+
         $imagesFolderPhysicalPath = $this->imagesFolderPhysicalPath . $ag_parent_folder . $this->DS;
         $thumbsFolderPhysicalPath = $this->thumbsFolderPhysicalPath . $ag_parent_folder . $this->DS;
         //Create directory in thumbs for gallery
