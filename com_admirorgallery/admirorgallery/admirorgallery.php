@@ -121,6 +121,7 @@ class plgContentAdmirorGallery extends CMSPlugin
                     $AG->create_gallery_thumbs();
                 else
                     $AG->error_handle->addError(Text::sprintf('AG_CANNOT_CREATE_THUMBS_PERMISSIONS_ERROR', $AG->thumbsFolderPhysicalPath));
+                    
                 include(dirname(__FILE__) . '/admirorgallery/templates/' . $AG->params['template'] . '/index.php');
 
                 $AG->clearOldThumbs();

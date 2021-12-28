@@ -19,16 +19,15 @@ $this->loadJS($this->currPopupRoot.'js/jquery.mousewheel-3.0.4.pack.js');
 $this->loadCSS($this->currPopupRoot.'css/jquery.fancybox-1.3.4.css');
 
 // Set REL attribute needed for Popup engine
-$this->popupEngine->rel = 'fancybox[AdmirorGallery'.$this->getGalleryID().']';
+$this->popupEngine->customAttr = 'data-fancybox="AdmirorGallery'.$this->getGalleryID().'"';
 
 // Insert JavaScript code needed to be loaded after gallery is formed
 $this->popupEngine->endCode='
 <script type="text/javascript" charset="utf-8">
-        AG_jQuery("a[rel='.$this->popupEngine->rel.']").fancybox({
-		 \'transitionIn\' : \'elastic\',
-		 \'transitionOut\' : \'elastic\',
-		 \'easingIn\' : \'easeOutBack\',
-		 \'easingOut\' : \'easeInBack\'
-        });
+Fancybox.bind("[data-fancybox]", {
+	Image: {
+	  zoom: false,
+	},
+  });
 </script>
 ';
