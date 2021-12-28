@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @version     6.0.0
  * @package     Admiror Gallery (plugin)
@@ -13,6 +14,7 @@ namespace Admiror\Plugin\Content\AdmirorGallery;
 
 defined('_JEXEC') or die();
 
+use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Document\Document as JDocument;
 use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Filesystem\Folder as JFolder;
@@ -21,14 +23,21 @@ use Joomla\CMS\Language\Text as JText;
 class agJoomla implements agCmsInterface
 {
     private ?JDocument $doc;
+    private ?CMSApplication $app;
 
-    function __construct()
+    public function __construct()
     {
-        $this->doc = JFactory::getDocument();
+        try {
+            $this->app = JFactory::getApplication();
+            $this->doc = $this->app->getDocument();
+        } catch (\Exception $e) {
+            trigger_error($e, E_ERROR);
+        }
     }
 
     public function LoadClass(): void
-    {}
+    {
+    }
 
     public function AddJsFile(string $path): void
     {
@@ -42,11 +51,7 @@ class agJoomla implements agCmsInterface
 
     public function AddToPathway(string $item, string $link): void
     {
-        try {
-            JFactory::getApplication()->getPathway()->addItem($item, $link);
-        } catch (Exception $e) {
-            trigger_error($e);
-        }
+        $this->app->getPathway()->addItem($item, $link);
     }
 
     public function GetFolders(string $path): array
@@ -56,17 +61,12 @@ class agJoomla implements agCmsInterface
 
     public function GetAlbumPath(string $key): ?string
     {
-        try {
-            return JFactory::getApplication()->input->getPath($key);
-        } catch (Exception $e) {
-            trigger_error($e);
-        }
-        return null;
+        return $this->app->input->getPath($key);;
     }
 
     public function SetTitle(string $title): void
     {
-        JFactory::getDocument()->setTitle($title);
+        $this->doc->setTitle($title);
     }
 
     public function GetActiveLanguageTag(): string
@@ -86,21 +86,12 @@ class agJoomla implements agCmsInterface
 
     public function GetActivePage(string $key): ?int
     {
-        try {
-            return JFactory::getApplication()->input->getInt($key);
-        } catch (Exception $e) {
-            trigger_error($e);
-        }
-        return null;
+        return $this->app->input->getPath($key);;
     }
 
     public function BreadcrumbsNeeded(): bool
     {
-        try {
-            $active = JFactory::getApplication()->getMenu()->getActive();
-        } catch (Exception $e) {
-            trigger_error($e);
-        }
+        $active = $this->app->getMenu()->getActive();
         return (isset($active) && $active->query['view'] == 'layout');
     }
 
@@ -108,7 +99,7 @@ class agJoomla implements agCmsInterface
     {
         return JText::_($string_id);
     }
-    
+
     public function TextConcat(string $string_id, $value): string
     {
         return JText::sprintf($string_id, $value);
@@ -119,4 +110,3 @@ class agJoomla implements agCmsInterface
         $this->doc->addScriptDeclaration($script);
     }
 }
-
