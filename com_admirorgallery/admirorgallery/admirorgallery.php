@@ -38,7 +38,7 @@ class plgContentAdmirorGallery extends CMSPlugin
         $this->loadLanguage();
     }
 
-    function onContentBeforeDisplay($context, &$row, &$params, $limitstart = 0)
+    function onContentBeforeDisplay($context, $row, &$params, $limitstart = 0)
     {
         $this->onContentPrepare($context, $row, $params, $limitstart);
     }
@@ -192,5 +192,6 @@ class plgContentAdmirorGallery extends CMSPlugin
                 . '& '
                 . '<a href="https://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.</div>';
         } //if (preg_match_all("#{AdmirorGallery}(.*?){/AdmirorGallery}#s", $row->text, $matches, PREG_PATTERN_ORDER)>0)
+	    return true;
     } //onPrepareContent(&$row, &$params, $limitstart)
 }//class plgContentAdmirorGallery extends CMSPlugin

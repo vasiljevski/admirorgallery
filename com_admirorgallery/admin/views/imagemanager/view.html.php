@@ -25,6 +25,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
     var string $ag_starting_folder = '';
     var string $ag_rootFolder = '';
     var $app = null;
+	var string $thumbsPath = JPATH_SITE . DIRECTORY_SEPARATOR . 'administrator' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_admirorgallery' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'thumbs';
 
     function display($tpl = null) {
         // Make sure you are logged in and have the necessary access
