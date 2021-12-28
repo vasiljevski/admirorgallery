@@ -8,7 +8,7 @@
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 $template = new agTemplate($AG, 'jquery.jcarousel.css');
 
@@ -67,7 +67,7 @@ function mycarousel_initCallback(carousel)
       });
 
 
-			// Pause autoscrolling if the user moves with the cursor over the clip.
+			// Pause auto-scrolling if the user moves with the cursor over the clip.
 			carousel.clip.hover(function() {
 			carousel.stopAuto();
 			}, function() {

@@ -346,7 +346,7 @@
         },
 
         /**
-         * Returns a AG_jQuery object with list element for the given index.
+         * Returns an AG_jQuery object with list element for the given index.
          *
          * @name get
          * @type AG_jQuery

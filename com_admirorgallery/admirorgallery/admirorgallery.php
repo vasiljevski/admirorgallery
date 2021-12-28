@@ -86,7 +86,7 @@ class plgContentAdmirorGallery extends CMSPlugin
             ini_set('gd.jpeg_ignore_warning', $AG->params['ignoreError']);
             if ($AG->params['ignoreAllError'])
                 error_reporting('E_NOTICE');
-            //Joomla specific variables is passed as parameters for agGallery independent from specific CMS
+            //Joomla specific variables is passed as parameters for agGallery independent of specific CMS
             $AG->loadJS('AG_jQuery.js');
             $AG->articleID = $row->id;
 

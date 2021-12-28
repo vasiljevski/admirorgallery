@@ -45,7 +45,7 @@ AG_jQuery(function(){
 });
 ');
 
-// Add wrapper with unique ID name,used by AG_jQuery Flash library for embeding SWF file
+// Add wrapper with unique ID name,used by AG_jQuery Flash library for embedding SWF file
 $template->appendContent('
 <style type="text/css">
 '. $template->generatePaginationStyle().'

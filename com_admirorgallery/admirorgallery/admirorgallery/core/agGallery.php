@@ -74,7 +74,7 @@ class agGallery
     }
 
     /**
-     * Loads CSS file from the given path.
+     * Loads CSS files from the given path.
      *
      * @param string $path
      *
@@ -86,7 +86,7 @@ class agGallery
     }
 
     /**
-     * Loads JavaScript file from the given path.
+     * Loads JavaScript files from the given path.
      *
      * @param string $path
      *
@@ -547,7 +547,7 @@ class agGallery
     }
 
     /**
-     *  Loads images array, sorted as defined bu parameter.
+     *  Loads images array, sorted as defined by parameter.
      *
      * @since 5.5.0
      */
