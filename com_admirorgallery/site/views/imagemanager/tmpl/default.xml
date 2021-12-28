@@ -11,7 +11,7 @@
         <!-- Basic options. -->
         <fieldset name="basic">
 
-            <field name="galleryName" required="1" type="galleryName" directory="/images/sampledata/"
+            <field name="galleryName" required="1" type="galleryName" directory="/images/sampledata/" layout="joomla.form.field.list-fancy-select"
                 recursive = "1" hide_default="true" label="AG_ENTER_GALLERY_NAME" description="AG_ENTER_GALLERY_NAME_DESC" size="40" />
         </fieldset>
     </fields>
