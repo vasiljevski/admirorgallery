@@ -7,7 +7,7 @@
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-defined('_JEXEC') or die;
+defined('_JEXEC') or die();
 
 class SecureImage
 {
@@ -77,7 +77,7 @@ class SecureImage
                 imagepng($this->_image, $this->_file);
                 break;
             default:
-                die("Bir Terslik Var");
+                die("Something went wrong");
         }
     }
 

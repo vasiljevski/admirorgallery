@@ -74,7 +74,7 @@ class agGallery
     }
 
     /**
-     * Loads CSS file from the given path.
+     * Loads CSS files from the given path.
      *
      * @param string $path
      *
@@ -86,7 +86,7 @@ class agGallery
     }
 
     /**
-     * Loads JavaScript file from the given path.
+     * Loads JavaScript files from the given path.
      *
      * @param string $path
      *
@@ -411,7 +411,7 @@ class agGallery
                 $AG_form_paginInitPages_array = explode(",", $_GET['AG_form_paginInitPages_' . $this->articleID]);
                 $this->paginInitPages[$this->index] = strip_tags($AG_form_paginInitPages_array[$this->index]);
             }
-            $script = 'var paginInitPages_' . intval($this->articleID) . '="' . $initPages . '";';
+            $script = 'var paginInitPages_' . $this->articleID . '="' . $initPages . '";';
             
             $this->cms->AddJsDeclaration(strip_tags($script));
             // Album Support
@@ -547,7 +547,7 @@ class agGallery
     }
 
     /**
-     *  Loads images array, sorted as defined bu parameter.
+     *  Loads images array, sorted as defined by parameter.
      *
      * @since 5.5.0
      */
@@ -598,7 +598,6 @@ class agGallery
     private function validateParams() {
 		if (($this->params['thumbWidth'] == 0) || ($this->params['thumbHeight'] == 0)) {
 			$this->error_handle->addError($this->cms->Text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
-			return;
 		}
 	}
     /**

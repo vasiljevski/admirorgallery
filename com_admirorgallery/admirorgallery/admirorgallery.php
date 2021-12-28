@@ -38,7 +38,7 @@ class plgContentAdmirorGallery extends CMSPlugin
         $this->loadLanguage();
     }
 
-    function onContentBeforeDisplay($context, &$row, &$params, $limitstart = 0)
+    function onContentBeforeDisplay($context, $row, &$params, $limitstart = 0)
     {
         $this->onContentPrepare($context, $row, $params, $limitstart);
     }
@@ -75,7 +75,7 @@ class plgContentAdmirorGallery extends CMSPlugin
 
         //Create galleries
         if (preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}#s", $row->text, $matches) > 0) {
-            $AG = new agGallery($this->params, JUri::base(), JPATH_SITE, new agJoomla());
+            $AG = new agGallery($this->params, JUri::root(true), JPATH_SITE, new agJoomla());
             //Load current language
             CMSPlugin::loadLanguage('plg_content_admirorgallery', JPATH_ADMINISTRATOR);
             // Version check
@@ -86,7 +86,7 @@ class plgContentAdmirorGallery extends CMSPlugin
             ini_set('gd.jpeg_ignore_warning', $AG->params['ignoreError']);
             if ($AG->params['ignoreAllError'])
                 error_reporting('E_NOTICE');
-            //Joomla specific variables is passed as parameters for agGallery independent from specific CMS
+            //Joomla specific variables is passed as parameters for agGallery independent of specific CMS
             $AG->loadJS('AG_jQuery.js');
             $AG->articleID = $row->id;
 
@@ -192,5 +192,6 @@ class plgContentAdmirorGallery extends CMSPlugin
                 . '& '
                 . '<a href="https://www.admiror-design-studio.com" target="_blank">Kekeljevic</a>.</div>';
         } //if (preg_match_all("#{AdmirorGallery}(.*?){/AdmirorGallery}#s", $row->text, $matches, PREG_PATTERN_ORDER)>0)
+	    return true;
     } //onPrepareContent(&$row, &$params, $limitstart)
 }//class plgContentAdmirorGallery extends CMSPlugin

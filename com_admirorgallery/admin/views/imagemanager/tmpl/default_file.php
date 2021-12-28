@@ -16,16 +16,12 @@ use Joomla\CMS\Filesystem\Folder as JFolder;
 use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\Uri\Uri as JURI;
 
-$ag_itemURL = $this->ag_init_itemURL;
+$ag_folderName = dirname($this->ag_init_itemURL);
+$ag_fileName = basename($this->ag_init_itemURL);
+$AG_imgInfo = agHelper::ag_imageInfo(JPATH_SITE . $this->ag_init_itemURL);
 
-$ag_folderName = dirname($ag_itemURL);
-$ag_fileName = basename($ag_itemURL);
-$AG_imgInfo = agHelper::ag_imageInfo(JPATH_SITE . $ag_itemURL);
-
-$thumbsFolderPhysicalPath = JPATH_SITE . DIRECTORY_SEPARATOR . 'administrator' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_admirorgallery' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'thumbs';
-
-agHelper::ag_sureRemoveDir($thumbsFolderPhysicalPath, true);
-if (!JFolder::create($thumbsFolderPhysicalPath)) {
+agHelper::ag_sureRemoveDir($this->thumbsPath, true);
+if (!JFolder::create($this->thumbsPath)) {
     JFactory::getApplication()->enqueueMessage(JText::_("AG_CANNOT_CREATE_FOLDER") . "&nbsp;" . $newFolderName, 'error');
 }
 
@@ -33,7 +29,7 @@ $ag_hasXML = "";
 $ag_hasThumb = "";
 
 // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-$ag_pathWithStripExt = JPATH_SITE . $ag_folderName . '/' . JFile::stripExt(basename($ag_itemURL));
+$ag_pathWithStripExt = JPATH_SITE . $ag_folderName . '/' . JFile::stripExt(basename($this->ag_init_itemURL));
 $ag_imgXML_path = $ag_pathWithStripExt . ".XML";
 if (JFIle::exists($ag_pathWithStripExt . ".xml")) {
     $ag_imgXML_path = $ag_pathWithStripExt . ".xml";
@@ -83,14 +79,14 @@ $ag_preview_content .= '<hr />';
 $ag_preview_content .= '
 <h1>' . JText::_('AG_IMAGE_DETAILS_FOR_FILE') . '</h1>
 <div class="AG_border_color AG_border_width AG_margin_bottom AG_breadcrumbs_wrapper">
-' . $this->ag_render_breadcrumb($ag_itemURL, $this->ag_starting_folder, $ag_folderName, $ag_fileName) . '
+' . $this->ag_render_breadcrumb($this->ag_init_itemURL, $this->ag_starting_folder, $ag_folderName, $ag_fileName) . '
 </div>
 ';
 
-agHelper::ag_createThumb(JPATH_SITE . $ag_itemURL, $thumbsFolderPhysicalPath . DIRECTORY_SEPARATOR . basename($ag_itemURL), 145, 80, "none");
+agHelper::ag_createThumb(JPATH_SITE . $this->ag_init_itemURL, $this->thumbsPath . DIRECTORY_SEPARATOR . basename($this->ag_init_itemURL), 145, 80, "none");
 
 //Image and image details
-$ag_preview_content .= $this->ag_render_image_info($ag_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb);
+$ag_preview_content .= $this->ag_render_image_info($this->ag_init_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb);
 
 require_once(JPATH_ROOT . DIRECTORY_SEPARATOR . 'administrator' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_admirorgallery' . DIRECTORY_SEPARATOR . 'slimbox' . DIRECTORY_SEPARATOR . 'index.php');
 

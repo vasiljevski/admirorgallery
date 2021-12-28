@@ -8,8 +8,7 @@
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-// Joomla security code
-defined('_JEXEC') or die('Restricted access');
+defined('_JEXEC') or die();
 
 // Load JavaScript from current popup folder
 $this->loadJS($this->currPopupRoot . 'js/slimbox2.js');

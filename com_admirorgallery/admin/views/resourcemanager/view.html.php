@@ -9,13 +9,11 @@
 
 defined('_JEXEC') or die();
 
-jimport('joomla.application.component.view');
-
 use Joomla\CMS\Factory as JFactory;
-use Joomla\CMS\Language\Text as JText;
-use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
 use Joomla\CMS\Filesystem\Folder as JFolder;
+use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
+use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
 
 class AdmirorgalleryViewResourcemanager extends JViewLegacy
 {
@@ -27,14 +25,6 @@ class AdmirorgalleryViewResourcemanager extends JViewLegacy
 
     function display($tpl = null)
     {
-
-        // Preloading joomla tools
-        jimport('joomla.installer.helper');
-        jimport('joomla.filesystem.file');
-        jimport('joomla.filesystem.archive');
-        jimport('joomla.html.pagination');
-        jimport('joomla.filesystem.folder');
-
         $app = JFactory::getApplication();
         $jinput = $app->input;
         $option = $jinput->getCmd('option');

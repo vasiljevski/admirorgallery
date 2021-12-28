@@ -10,9 +10,4 @@
 defined('_JEXEC') or die();
 
 class AdmirorgalleryControllerLayout extends AdmirorgalleryController
-{
-    function __construct()
-    {
-        parent::__construct();
-    }
-}
+{}

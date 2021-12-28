@@ -15,17 +15,26 @@ use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\Uri\Uri as JURI;
 
 $ag_template = "default"; // Set template to default
-$input = JFactory::getApplication()->input;
+try
+{
+	$app = JFactory::getApplication();
+	$input  = $app->input;
+	$user = JFactory::getUser();
+	$is_admin = $app->isClient('administrator');
+}
+catch (Exception $e)
+{
+	trigger_error($e, E_ERROR);
+	return;
+}
 
-if (JFactory::getApplication()->isClient('administrator')) {
-    if (!JFactory::getUser()->authorise('core.manage', 'com_admirorgallery')) {
-        throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
-    }
+if ($is_admin && !$user->authorise('core.manage', 'com_admirorgallery')) {
+    throw new JAccessExceptionNotallowed(JText::_('JERROR_ALERTNOAUTHOR'), 403);
 }
 
 $input->set('AG_template', $ag_template);
 
-if (JFactory::getApplication()->isClient('administrator')) {
+if ($is_admin) {
     $resources_path = JURI::root(true) . '/administrator/components/com_admirorgallery/';
 
     // Shared scripts for all views

@@ -12,15 +12,4 @@ defined('_JEXEC') or die();
 use Joomla\CMS\MVC\Controller\BaseController as JControllerLegacy;
 
 class AdmirorgalleryController extends JControllerLegacy
-{
-    /**
-     * @param bool $cachable
-     * @param bool $urlparams
-     *
-     * @since 5.5.0
-     */
-    function display($cachable = false, $urlparams = false)
-    {
-        parent::display();
-    }
-}
+{}

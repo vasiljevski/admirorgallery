@@ -61,7 +61,7 @@ class agJoomla implements agCmsInterface
 
     public function GetAlbumPath(string $key): ?string
     {
-        return $this->app->input->getPath($key);;
+        return $this->app->input->getPath($key);
     }
 
     public function SetTitle(string $title): void
@@ -76,7 +76,7 @@ class agJoomla implements agCmsInterface
 
     public function CreateFolder(string $path): bool
     {
-        return JFolder::create($path, 0755);
+        return JFolder::create($path);
     }
 
     public function AddCss(string $path): void
@@ -86,7 +86,7 @@ class agJoomla implements agCmsInterface
 
     public function GetActivePage(string $key): ?int
     {
-        return $this->app->input->getPath($key);;
+        return $this->app->input->getPath($key);
     }
 
     public function BreadcrumbsNeeded(): bool

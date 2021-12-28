@@ -122,7 +122,7 @@ defined('_JEXEC') or die();
             AG_jQuery("#AG_folderSettings_status").val("edit");
         });
         <?php if ($this->app->isClient('site')) { ?>
-        // SET SHORCUTS
+        // SET SHORTCUTS
         AG_jQuery(document).bind("keydown", "ctrl+return", function () {
             submitbutton("AG_apply");
             return false;

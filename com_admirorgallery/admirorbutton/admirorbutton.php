@@ -33,14 +33,6 @@ class plgButtonAdmirorbutton extends JPlugin
 	protected $autoloadLanguage = true;
 
 	/**
-	 * Application object.
-	 *
-	 * @var    \Joomla\CMS\Application\CMSApplication
-	 * @since  4.0.0
-	 */
-	protected $app;
-
-	/**
 	 * Display the button.
 	 *
 	 * @param   string   $name    The name of the button to display.
@@ -55,6 +47,7 @@ class plgButtonAdmirorbutton extends JPlugin
 	//function onDisplay(string $name): JObject
 	public function onDisplay($name, $asset, $author)
 	{
+		$this->app = JFactory::getApplication();
 		$user      = JFactory::getUser();
 		$doc       = $this->app->getDocument();
 		$extension = $this->app->input->get('option');
