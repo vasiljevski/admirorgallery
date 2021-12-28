@@ -65,10 +65,11 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
         $rootFolder =  $pluginParams->get('rootFolder', '/images/sampledata/');
         $galleryPath = $rootFolder;
         if ($this->app->isClient('site')){
-            $galleryPath .= ($this->app->getParams()->get('galleryName') != "-1") ?: "";
+            $galleryPath .= ($this->app->getParams()->get('galleryName') != "-1") ? $this->app->getParams()->get('galleryName'). "/" : "";
         }
         
         $this->ag_rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
+
         $this->ag_starting_folder = $this->ag_rootFolder;
         $this->ag_init_itemURL = $this->ag_rootFolder;
 
