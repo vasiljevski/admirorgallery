@@ -10,7 +10,7 @@
 
 defined('_JEXEC') or die();
 
-use Admiror\Plugin\Content\AdmirorGallery\agHelper;
+use Admiror\Plugin\Content\AdmirorGallery\Helper;
 use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Filesystem\File as JFile;
 use Joomla\CMS\Filesystem\Folder as JFolder;
@@ -22,7 +22,7 @@ $ag_XML_thumb = "";
 $ag_folderName = dirname($this->ag_init_itemURL);
 $ag_fileName = basename($this->ag_init_itemURL);
 
-agHelper::ag_sureRemoveDir($this->thumbsPath, true);
+Helper::ag_sureRemoveDir($this->thumbsPath, true);
 if (!JFolder::create($this->thumbsPath)) {
     JFactory::getApplication()->enqueueMessage(JText::_("AG_CANNOT_CREATE_FOLDER") . "&nbsp;" . $newFolderName, 'error');
 }
@@ -306,7 +306,7 @@ if (!empty($ag_images)) {
         }
 
 
-        agHelper::ag_createThumb(JPATH_SITE . $this->ag_init_itemURL . $value, $this->thumbsPath . DIRECTORY_SEPARATOR . $value, 145, 80, "none");
+        Helper::ag_createThumb(JPATH_SITE . $this->ag_init_itemURL . $value, $this->thumbsPath . DIRECTORY_SEPARATOR . $value, 145, 80, "none");
 
         $AG_thumb_checked = "";
         if ($ag_XML_thumb == $value) {

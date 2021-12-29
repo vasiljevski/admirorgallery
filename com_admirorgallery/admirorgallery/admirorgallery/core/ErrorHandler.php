@@ -49,7 +49,7 @@ class ErrorHandler
 	public function writeErrors(): string
 	{
 		$errors = "";
-		$osVersion = isset($_SERVER['HTTP_USER_AGENT']) ? agHelper::ag_get_os_($_SERVER['HTTP_USER_AGENT']) : 'Unknown - no user agent';
+		$osVersion = isset($_SERVER['HTTP_USER_AGENT']) ? Helper::getOsName($_SERVER['HTTP_USER_AGENT']) : 'Unknown - no user agent';
 		$phpVersion = phpversion();
 
 		if (isset($this->errors))

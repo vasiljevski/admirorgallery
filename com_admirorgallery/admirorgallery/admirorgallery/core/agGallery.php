@@ -87,8 +87,8 @@ class agGallery
 	 */
 	public function getImageInfo(string $imageName): void
 	{
-		$this->imageInfo = agHelper::ag_imageInfo($this->imagesFolderPhysicalPath . $this->DS . $imageName);
-		$this->imageInfo["size"] = agHelper::ag_fileRoundSize($this->imageInfo["size"]);
+		$this->imageInfo = Helper::imageInfo($this->imagesFolderPhysicalPath . $this->DS . $imageName);
+		$this->imageInfo["size"] = Helper::roundFileSize($this->imageInfo["size"]);
 	}
 
 	/**
@@ -302,47 +302,47 @@ class agGallery
 	{
 		// Get Thumb URL value
 		// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-		$ag_pathWithStripExt = $this->imagesFolderPhysicalPath . $folderName;
-		$ag_XML_path = $ag_pathWithStripExt . ".XML";
+		$pathWithStripExt = $this->imagesFolderPhysicalPath . $folderName;
+		$xmlPath = $pathWithStripExt . ".XML";
 
-		if (file_exists($ag_pathWithStripExt . ".xml"))
+		if (file_exists($pathWithStripExt . ".xml"))
 		{
-			$ag_XML_path = $ag_pathWithStripExt . ".xml";
+			$xmlPath = $pathWithStripExt . ".xml";
 		}
 
-		if (file_exists($ag_XML_path))
+		if (file_exists($xmlPath))
 		{
 			// Check is descriptions file exists
-			$ag_XML_xml = simplexml_load_file($ag_XML_path);
+			$xmlObject = simplexml_load_file($xmlPath);
 
-			if (isset($ag_XML_xml->thumb))
+			if (isset($xmlObject->thumb))
 			{
-				$thumb_file = (string) $ag_XML_xml->thumb;
+				$thumbFile = (string) $xmlObject->thumb;
 			}
 		}
 
-		if (empty($thumb_file))
+		if (empty($thumbFile))
 		{
-			$images = agHelper::ag_imageArrayFromFolder($this->imagesFolderPhysicalPath . $folderName);
+			$images = Helper::imageArrayFromFolder($this->imagesFolderPhysicalPath . $folderName);
 
 			if (!empty($images))
 			{
-				$images = agHelper::array_sorting($images, $this->imagesFolderPhysicalPath . $folderName . $this->DS, $this->params['arrange']);
-				$thumb_file = $images[0]; // Get First image in folder as thumb
+				$images = Helper::arraySorting($images, $this->imagesFolderPhysicalPath . $folderName . $this->DS, $this->params['arrange']);
+				$thumbFile = $images[0]; // Get First image in folder as thumb
 			}
 		}
 
-		if (!empty($thumb_file))
+		if (!empty($thumbFile))
 		{
-			$this->create_album_thumb($folderName, $thumb_file);
-			$thumb_file = 'thumbs/' . $this->imagesFolderName . '/' . $folderName . '/' . basename($thumb_file);
+			$this->create_album_thumb($folderName, $thumbFile);
+			$thumbFile = 'thumbs/' . $this->imagesFolderName . '/' . $folderName . '/' . basename($thumbFile);
 		}
 		else
 		{
-			$thumb_file = $this->currTemplateRoot . $default_folder_img;
+			$thumbFile = $this->currTemplateRoot . $default_folder_img;
 		}
 
-		return $this->sitePath . $this->plugin_path . $thumb_file;
+		return $this->sitePath . $this->plugin_path . $thumbFile;
 	}
 
 	/**
@@ -554,7 +554,7 @@ class agGallery
 	 */
 	public function cleanThumbsFolder()
 	{
-		agHelper::ag_cleanThumbsFolder($this->imagesFolderPhysicalPath,
+		Helper::cleanThumbsFolder($this->imagesFolderPhysicalPath,
 			$this->thumbsFolderPhysicalPath
 		);
 	}
@@ -566,7 +566,7 @@ class agGallery
 	 */
 	public function clearOldThumbs()
 	{
-		agHelper::ag_clearOldThumbs($this->imagesFolderPhysicalPath,
+		Helper::clearOldThumbs($this->imagesFolderPhysicalPath,
 			$this->thumbsFolderPhysicalPath, $this->params['albumUse']
 		);
 	}
@@ -585,11 +585,11 @@ class agGallery
 		{
 			$ag_images = array();
 			$ag_files = $this->cms->getFiles($this->imagesFolderPhysicalPath);
-			$ag_ext_valid = array("jpg", "jpeg", "gif", "png"); // SET VALID IMAGE EXTENSION
+			$validExtentions = array("jpg", "jpeg", "gif", "png"); // SET VALID IMAGE EXTENSION
 
 			foreach ($ag_files as $key => $value)
 			{
-				if (is_numeric(array_search(strtolower(agHelper::ag_getExtension(basename($value))), $ag_ext_valid)))
+				if (is_numeric(array_search(strtolower(Helper::getExtension(basename($value))), $validExtentions)))
 				{
 					$ag_images[] = $value;
 				}
@@ -605,12 +605,12 @@ class agGallery
 					$this->descArray[$f] = $f;
 
 					// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-					$ag_pathWithStripExt = $this->imagesFolderPhysicalPath . agHelper::ag_removeExtension($f);
-					$descriptionFileAbsolutePath = $ag_pathWithStripExt . ".XML";
+					$pathWithStripExt = $this->imagesFolderPhysicalPath . Helper::removeExtension($f);
+					$descriptionFileAbsolutePath = $pathWithStripExt . ".XML";
 
-					if (file_exists($ag_pathWithStripExt . ".xml"))
+					if (file_exists($pathWithStripExt . ".xml"))
 					{
-						$descriptionFileAbsolutePath = $ag_pathWithStripExt . ".xml";
+						$descriptionFileAbsolutePath = $pathWithStripExt . ".xml";
 					}
 
 					if (file_exists($descriptionFileAbsolutePath))
@@ -666,11 +666,11 @@ class agGallery
 	 */
 	private function loadImageFiles()
 	{
-		$this->images = agHelper::ag_imageArrayFromFolder($this->imagesFolderPhysicalPath);
+		$this->images = Helper::imageArrayFromFolder($this->imagesFolderPhysicalPath);
 
 		if (!empty($this->images))
 		{
-			$this->images = agHelper::array_sorting($this->images, $this->imagesFolderPhysicalPath, $this->params['arrange']);
+			$this->images = Helper::arraySorting($this->images, $this->imagesFolderPhysicalPath, $this->params['arrange']);
 		}
 
 		// Pagination Support
@@ -703,11 +703,11 @@ class agGallery
 	 */
 	private function loadFolders()
 	{
-		$this->folders = agHelper::ag_foldersArrayFromFolder($this->imagesFolderPhysicalPath);
+		$this->folders = Helper::foldersArrayFromFolder($this->imagesFolderPhysicalPath);
 
 		if (!empty($this->folders))
 		{
-			$this->folders = agHelper::array_sorting($this->folders, $this->imagesFolderPhysicalPath, $this->params['arrange']);
+			$this->folders = Helper::arraySorting($this->folders, $this->imagesFolderPhysicalPath, $this->params['arrange']);
 		}
 	}
 
@@ -733,16 +733,16 @@ class agGallery
 		$this->validateParams();
 
 		// Adds index.html to thumbs folder
-		agHelper::ag_indexWrite($this->thumbsFolderPhysicalPath . $this->DS . 'index.html');
+		Helper::writeIndexFile($this->thumbsFolderPhysicalPath . $this->DS . 'index.html');
 
 		// Check for Changes
 		if (!empty($this->images))
 		{
 			foreach ($this->images as $imagesKey => $image)
 			{
-				$original_file = $this->imagesFolderPhysicalPath . $image;
-				$thumb_file = $this->thumbsFolderPhysicalPath . $image;
-				$this->generate_thumb($original_file, $thumb_file);
+				$originalFile = $this->imagesFolderPhysicalPath . $image;
+				$thumbFile = $this->thumbsFolderPhysicalPath . $image;
+				$this->generate_thumb($originalFile, $thumbFile);
 			}
 		}
 	}
@@ -770,32 +770,32 @@ class agGallery
 		}
 
 		// Adds index.html to thumbs folder
-		agHelper::ag_indexWrite($thumbsFolderPhysicalPath . 'index.html');
+		Helper::writeIndexFile($thumbsFolderPhysicalPath . 'index.html');
 
-		$original_file = $imagesFolderPhysicalPath . $ag_img;
-		$thumb_file = $thumbsFolderPhysicalPath . $ag_img;
-		$this->generate_thumb($original_file, $thumb_file);
+		$originalFile = $imagesFolderPhysicalPath . $ag_img;
+		$thumbFile = $thumbsFolderPhysicalPath . $ag_img;
+		$this->generate_thumb($originalFile, $thumbFile);
 	}
 	/**
 	 * Generates and updates thumbnails according to settings
 	 *
-	 * @param   string $original_file
-	 * @param   string $thumb_file
+	 * @param   string $originalFile
+	 * @param   string $thumbFile
 	 *
 	 *
 	 * @since 5.5.0
 	 */
-	private function generate_thumb(string $original_file, string $thumb_file)
+	private function generate_thumb(string $originalFile, string $thumbFile)
 	{
 		$create_thumb = false;
 
-		if (!file_exists($thumb_file))
+		if (!file_exists($thumbFile))
 		{
 			$create_thumb = true;
 		}
 		else
 		{
-			list($width, $height) = getimagesize($thumb_file);
+			list($width, $height) = getimagesize($thumbFile);
 
 			switch ($this->params['thumbAutoSize'])
 			{
@@ -822,9 +822,9 @@ class agGallery
 
 		if ($create_thumb)
 		{
-			$result = agHelper::ag_createThumb(
-				$original_file,
-				$thumb_file,
+			$result = Helper::createThumbnail(
+				$originalFile,
+				$thumbFile,
 				$this->params['thumbWidth'],
 				$this->params['thumbHeight'],
 				$this->params['thumbAutoSize']
@@ -832,14 +832,14 @@ class agGallery
 
 			if ($result)
 			{
-							$this->errorHandle->addError($this->cms->textConcat($result, $original_file));
+							$this->errorHandle->addError($this->cms->textConcat($result, $originalFile));
 			}
 		}
 
 		// ERROR - Invalid image
-		if (!file_exists($thumb_file))
+		if (!file_exists($thumbFile))
 		{
-			$this->errorHandle->addError($this->cms->textConcat("AG_CANNOT_READ_THUMBNAIL", $thumb_file));
+			$this->errorHandle->addError($this->cms->textConcat("AG_CANNOT_READ_THUMBNAIL", $thumbFile));
 		}
 	}
 

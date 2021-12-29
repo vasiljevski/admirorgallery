@@ -10,22 +10,22 @@
  */
 
 defined('_JEXEC') or die();
-$original_file = $_GET['img'];
+$originalFile = $_GET['img'];
 $mime = "";
 
-if (preg_match("/jpg|jpeg/i", $original_file))
+if (preg_match("/jpg|jpeg/i", $originalFile))
 {
 	$mime = "image/jpg";
 }
-elseif (preg_match("/png/i", $original_file))
+elseif (preg_match("/png/i", $originalFile))
 {
 	$mime = "image/png";
 }
-elseif (preg_match("/gif/i", $original_file))
+elseif (preg_match("/gif/i", $originalFile))
 {
 	$mime = "image/gif";
 }
 
 header('Content-Type: ' . $mime);
-header('Content-Disposition: attachment; filename="' . basename($original_file) . '"');
-readfile($original_file);
+header('Content-Disposition: attachment; filename="' . basename($originalFile) . '"');
+readfile($originalFile);

@@ -10,7 +10,7 @@
 
 defined('_JEXEC') or die();
 
-use Admiror\Plugin\Content\AdmirorGallery\agHelper;
+use Admiror\Plugin\Content\AdmirorGallery\Helper;
 use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Filesystem\File as JFile;
 use Joomla\CMS\Filesystem\Folder as JFolder;
@@ -19,9 +19,9 @@ use Joomla\CMS\Uri\Uri as JURI;
 
 $ag_folderName = dirname($this->ag_init_itemURL);
 $ag_fileName = basename($this->ag_init_itemURL);
-$AG_imgInfo = agHelper::ag_imageInfo(JPATH_SITE . $this->ag_init_itemURL);
+$AG_imgInfo = Helper::ag_imageInfo(JPATH_SITE . $this->ag_init_itemURL);
 
-agHelper::ag_sureRemoveDir($this->thumbsPath, true);
+Helper::ag_sureRemoveDir($this->thumbsPath, true);
 if (!JFolder::create($this->thumbsPath)) {
     JFactory::getApplication()->enqueueMessage(JText::_("AG_CANNOT_CREATE_FOLDER") . "&nbsp;" . $newFolderName, 'error');
 }
@@ -84,7 +84,7 @@ $ag_preview_content .= '
 </div>
 ';
 
-agHelper::ag_createThumb(JPATH_SITE . $this->ag_init_itemURL, $this->thumbsPath . DIRECTORY_SEPARATOR . basename($this->ag_init_itemURL), 145, 80, "none");
+Helper::ag_createThumb(JPATH_SITE . $this->ag_init_itemURL, $this->thumbsPath . DIRECTORY_SEPARATOR . basename($this->ag_init_itemURL), 145, 80, "none");
 
 //Image and image details
 $ag_preview_content .= $this->ag_render_image_info($this->ag_init_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb);

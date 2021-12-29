@@ -9,7 +9,7 @@
 
 use PHPUnit\Framework\TestCase;
 
-include_once '../agHelper.php';
+include_once '../Helper.php';
 
 class agHelperTest extends TestCase
 {
@@ -20,7 +20,7 @@ class agHelperTest extends TestCase
 	{
 		$this->assertEquals(
 			$expected,
-			agHelper::ag_fileRoundSize($given)
+			Helper::roundFileSize($given)
 		);
 	}
 
@@ -40,7 +40,7 @@ class agHelperTest extends TestCase
 	{
 		$this->assertEquals(
 			$expected,
-			agHelper::ag_get_os_($given)
+			Helper::getOsName($given)
 		);
 	}
 
@@ -74,7 +74,7 @@ class agHelperTest extends TestCase
 	{
 		$this->assertEquals(
 			$expected,
-			agHelper::ag_shrinkString($given[0], $given[1], $given[2] ?? '...')
+			Helper::shrinkString($given[0], $given[1], $given[2] ?? '...')
 		);
 	}
 

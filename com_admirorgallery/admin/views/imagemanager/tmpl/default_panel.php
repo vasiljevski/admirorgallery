@@ -10,7 +10,7 @@
 
 defined('_JEXEC') or die();
 
-use Admiror\Plugin\Content\AdmirorGallery\agHelper;
+use Admiror\Plugin\Content\AdmirorGallery\Helper;
 use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\Uri\Uri as JURI;
 
@@ -45,7 +45,7 @@ use Joomla\CMS\Uri\Uri as JURI;
                                     <a href="' . $value . '" class="AG_folderLink AG_common_button"
                                        title="' . $value . '">
                                                 <span><span>
-                                                        <?php echo agHelper::ag_shrinkString(basename($value), 20); ?>
+                                                        <?php echo Helper::ag_shrinkString(basename($value), 20); ?>
                                                     </span></span>
                                     </a>
                                 </td>
