@@ -3,16 +3,17 @@
  * @version     6.0.0
  * @package     Admiror.Plugin
  * @subpackage  Content.AdmirorGallery
- * @author      Igor Kekeljevic & Nikola Vasiljevski
+ * @author      Igor Kekeljevic <igor@admiror.com>
+ * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
 
-use Admiror\Plugin\Content\AdmirorGallery\agTemplate;
+use Admiror\Plugin\Content\AdmirorGallery\Template;
 
-$template = new agTemplate($AG, 'listed.css');
+$template = new Template($AG, 'listed.css');
 
 $template->preContent();
 
@@ -29,19 +30,21 @@ $template->appendContent('
 ' . $template->generatePaginationStyle() . '
 </style>
 <div id="AG_' . $AG->getGalleryID() . '" class="ag_reseter AG_' . $AG->params['template'] . '">
-');
-foreach ($AG->images as $imageKey => $imageName) {
+'
+);
 
-// Loads values into $AG->imageInfo array for target image
-    $AG->getImageInfo($imageName);
+foreach ($AG->images as $imageKey => $imageName)
+{
+	// Loads values into $AG->imageInfo array for target image
+	$AG->getImageInfo($imageName);
 
-    $template->appendContent('
+	$template->appendContent('
     <table class="ag_item">
     <tbody>
     <tr><td class="ag_thumbTd">
     <span class="ag_thumb' . $AG->params['template'] . '">' .
-            $AG->writePopupThumb($imageName). 
-    '</span></td>
+			$AG->writePopupThumb($imageName) .
+		'</span></td>
     <td class="ag_info">
     <table>
     <tbody>
@@ -53,7 +56,8 @@ foreach ($AG->images as $imageKey => $imageName) {
     <span>S:' . $AG->imageInfo["size"] . '</span>
     </td></tr>
     </td></tr></tbody></table>
-    </td></tr></tbody></table>');
+    </td></tr></tbody></table>'
+	);
 }
 
 $template->appendContent('<!-- Admiror Gallery --></div>');

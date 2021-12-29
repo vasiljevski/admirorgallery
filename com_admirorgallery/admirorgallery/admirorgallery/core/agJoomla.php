@@ -4,10 +4,11 @@
  * @version     6.0.0
  * @package     Admiror.Plugin
  * @subpackage  Content.AdmirorGallery
- * @author      Igor Kekeljevic & Nikola Vasiljevski
+ * @author      Igor Kekeljevic <igor@admiror.com>
+ * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2017 https://www.admiror-design-studio.com All Rights Reserved.
-*  @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
-*  @since       5.5.0
+ * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ * @since       5.5.0
  */
 
 namespace Admiror\Plugin\Content\AdmirorGallery;
@@ -22,91 +23,96 @@ use Joomla\CMS\Language\Text as JText;
 
 class agJoomla implements agCmsInterface
 {
-    private ?JDocument $doc;
-    private ?CMSApplication $app;
+	private ?JDocument $doc;
 
-    function __construct()
-    {
-        try {
-            $this->app = JFactory::getApplication();
-            $this->doc = $this->app->getDocument();
-        } catch (\Exception $e) {
-            trigger_error($e, E_ERROR);
-        }
-    }
+	private ?CMSApplication $app;
 
-    public function LoadClass(): void
-    {
-    }
+	function __construct()
+	{
+		try
+		{
+			$this->app = JFactory::getApplication();
+			$this->doc = $this->app->getDocument();
+		}
+		catch (\Exception $e)
+		{
+			trigger_error($e, E_ERROR);
+		}
+	}
 
-    public function AddJsFile(string $path): void
-    {
-        $this->doc->addScript($path);
-    }
+	public function LoadClass(): void
+	{
+	}
 
-    public function GetFiles(string $path): array
-    {
-        return JFolder::files($path);
-    }
+	public function AddJsFile(string $path): void
+	{
+		$this->doc->addScript($path);
+	}
 
-    public function AddToPathway(string $item, string $link): void
-    {
-        $this->app->getPathway()->addItem($item, $link);
-    }
+	public function GetFiles(string $path): array
+	{
+		return JFolder::files($path);
+	}
 
-    public function GetFolders(string $path): array
-    {
-        return JFolder::folders($path);
-    }
+	public function AddToPathway(string $item, string $link): void
+	{
+		$this->app->getPathway()->addItem($item, $link);
+	}
 
-    public function GetAlbumPath(string $key): ?string
-    {
-        return $this->app->input->getPath($key);
-    }
+	public function GetFolders(string $path): array
+	{
+		return JFolder::folders($path);
+	}
 
-    public function SetTitle(string $title): void
-    {
-        $this->doc->setTitle($title);
-    }
+	public function GetAlbumPath(string $key): ?string
+	{
+		return $this->app->input->getPath($key);
+	}
 
-    public function GetActiveLanguageTag(): string
-    {
-        return strtolower(JFactory::getLanguage()->getTag());
-    }
+	public function SetTitle(string $title): void
+	{
+		$this->doc->setTitle($title);
+	}
 
-    public function CreateFolder(string $path): bool
-    {
-        return JFolder::create($path);
-    }
+	public function GetActiveLanguageTag(): string
+	{
+		return strtolower(JFactory::getLanguage()->getTag());
+	}
 
-    public function AddCss(string $path): void
-    {
-        $this->doc->addStyleSheet($path);
-    }
+	public function CreateFolder(string $path): bool
+	{
+		return JFolder::create($path);
+	}
 
-    public function GetActivePage(string $key): ?int
-    {
-        return $this->app->input->getPath($key);
-    }
+	public function AddCss(string $path): void
+	{
+		$this->doc->addStyleSheet($path);
+	}
 
-    public function BreadcrumbsNeeded(): bool
-    {
-        $active = $this->app->getMenu()->getActive();
-        return (isset($active) && $active->query['view'] == 'layout');
-    }
+	public function GetActivePage(string $key): ?int
+	{
+		return $this->app->input->getPath($key);
+	}
 
-    public function Text(string $string_id): string
-    {
-        return JText::_($string_id);
-    }
+	public function BreadcrumbsNeeded(): bool
+	{
+		$active = $this->app->getMenu()->getActive();
 
-    public function TextConcat(string $string_id, $value): string
-    {
-        return JText::sprintf($string_id, $value);
-    }
+		return (isset($active) && $active->query['view'] == 'layout');
+	}
 
-    public function AddJsDeclaration(string $script): void
-    {
-        $this->doc->addScriptDeclaration($script);
-    }
+	public function Text(string $string_id): string
+	{
+		return JText::_($string_id);
+	}
+
+	public function TextConcat(string $string_id, $value): string
+	{
+		return JText::sprintf($string_id, $value);
+	}
+
+	public function AddJsDeclaration(string $script): void
+	{
+		$this->doc->addScriptDeclaration($script);
+	}
 }
