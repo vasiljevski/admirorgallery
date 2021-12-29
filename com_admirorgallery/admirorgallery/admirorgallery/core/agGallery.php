@@ -14,7 +14,7 @@ namespace Admiror\Plugin\Content\AdmirorGallery;
 
 class agGallery
 {
-	public agCmsInterface $cms;
+	public CmsInterface $cms;
 
 	public Parameters $params;
 
@@ -898,11 +898,11 @@ class agGallery
 	 * @param $globalParams
 	 * @param   string $path
 	 * @param   string $sitePhysicalPath
-	 * @param   agCmsInterface $cms
+	 * @param   CmsInterface $cms
 	 *
 	 * @since 5.5.0
 	 */
-	public function __construct($globalParams, string $path, string $sitePhysicalPath, agCmsInterface $cms)
+	public function __construct($globalParams, string $path, string $sitePhysicalPath, CmsInterface $cms)
 	{
 		$this->cms = $cms;
 		$this->params = new Parameters($globalParams);

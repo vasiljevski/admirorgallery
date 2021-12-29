@@ -25,7 +25,7 @@ use Joomla\CMS\Language\Text as JText;
  *
  * @since       5.5.0
  */
-class Joomla implements agCmsInterface
+class Joomla implements CmsInterface
 {
 	/**
 	 * @var JDocument|null
