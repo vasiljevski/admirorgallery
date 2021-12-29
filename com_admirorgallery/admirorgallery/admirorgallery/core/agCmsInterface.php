@@ -1,8 +1,8 @@
 <?php
 /**
  * @version     6.0.0
- * @package     Admiror Gallery (plugin)
- * @subpackage  admirorgallery
+ * @package     Admiror.Plugin
+ * @subpackage  Content.AdmirorGallery
  * @author      Igor Kekeljevic & Nikola Vasiljevski
  * @copyright   Copyright (C) 2010 - 2017 https://www.admiror-design-studio.com All Rights Reserved.
  * @since       5.5.0
