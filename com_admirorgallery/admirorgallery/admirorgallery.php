@@ -19,7 +19,7 @@ use Joomla\CMS\Uri\Uri as JUri;
 use Joomla\CMS\Version;
 use Joomla\Filesystem\Folder;
 use Admiror\Plugin\Content\AdmirorGallery\agGallery;
-use Admiror\Plugin\Content\AdmirorGallery\agJoomla;
+use Admiror\Plugin\Content\AdmirorGallery\Joomla;
 
 const AG_VERSION = '6.0.0';
 
@@ -127,7 +127,7 @@ class PlgContentAdmirorGallery extends CMSPlugin
 		// Create galleries
 		if (preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}#s", $row->text, $matches) > 0)
 		{
-			$AG = new agGallery($this->params, JUri::root(true), JPATH_SITE, new agJoomla);
+			$AG = new agGallery($this->params, JUri::root(true), JPATH_SITE, new Joomla);
 
 			// Load current language
 			CMSPlugin::loadLanguage('plg_content_admirorgallery', JPATH_ADMINISTRATOR);

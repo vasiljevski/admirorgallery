@@ -20,7 +20,7 @@ class agGallery
 
 	public Popup $popupEngine;
 
-	public agErrorHandler $errorHandle;
+	public ErrorHandler $errorHandle;
 
 	public string $sitePath = '';
 
@@ -112,7 +112,7 @@ class agGallery
 	 */
 	public function loadCSS(string $path): void
 	{
-		$this->cms->AddCss($this->sitePath . $this->plugin_path . $path);
+		$this->cms->addCss($this->sitePath . $this->plugin_path . $path);
 	}
 
 	/**
@@ -124,7 +124,7 @@ class agGallery
 	 */
 	public function loadJS(string $path): void
 	{
-		$this->cms->AddJsFile($this->sitePath . $this->plugin_path . $path);
+		$this->cms->addJsFile($this->sitePath . $this->plugin_path . $path);
 	}
 
 	/**
@@ -136,7 +136,7 @@ class agGallery
 	 */
 	public function insertJSCode(string $script): void
 	{
-		$this->cms->AddJsDeclaration($script);
+		$this->cms->addJsDeclaration($script);
 	}
 
 	/**
@@ -368,7 +368,7 @@ class agGallery
 
 					if ($paginPrev >= 1)
 					{
-						$html .= '<a href="javascript:void(0);" onClick="AG_form_submit_' . $this->articleID . '(' . $this->index . ',' . $paginPrev . ',\'' . $this->imagesFolderName . '\'); return false;" class="AG_pagin_prev">' . $this->cms->Text("AG_PREV") . '</a>';
+						$html .= '<a href="javascript:void(0);" onClick="AG_form_submit_' . $this->articleID . '(' . $this->index . ',' . $paginPrev . ',\'' . $this->imagesFolderName . '\'); return false;" class="AG_pagin_prev">' . $this->cms->text("AG_PREV") . '</a>';
 					}
 
 					for ($i = 1; $i <= ceil($this->paginImgTotal / $this->params['paginImagesPerGallery']); $i++)
@@ -387,7 +387,7 @@ class agGallery
 
 					if ($paginNext <= ceil($this->paginImgTotal / $this->params['paginImagesPerGallery']))
 					{
-						$html .= '<a href="javascript:void(0);" onClick="AG_form_submit_' . $this->articleID . '(' . $this->index . ',' . $paginNext . ',\'' . $this->imagesFolderName . '\'); return false;" class="AG_pagin_next">' . $this->cms->Text("AG_NEXT") . '</a>';
+						$html .= '<a href="javascript:void(0);" onClick="AG_form_submit_' . $this->articleID . '(' . $this->index . ',' . $paginNext . ',\'' . $this->imagesFolderName . '\'); return false;" class="AG_pagin_next">' . $this->cms->text("AG_NEXT") . '</a>';
 					}
 
 					$html .= '<br style="clear:both"></div>';
@@ -486,8 +486,8 @@ class agGallery
 		// Pagination Support
 		if ($this->params['paginUse'] || $this->params['albumUse'])
 		{
-			$initPages = $this->cms->GetActivePage('AG_form_paginInitPages_' . $this->articleID);
-			$albumPath = $this->cms->GetAlbumPath('AG_form_albumInitFolders_' . $this->articleID);
+			$initPages = $this->cms->getActivePage('AG_form_paginInitPages_' . $this->articleID);
+			$albumPath = $this->cms->getAlbumPath('AG_form_albumInitFolders_' . $this->articleID);
 
 			$this->paginInitPages[] = 1;
 
@@ -499,7 +499,7 @@ class agGallery
 
 			$script = 'var paginInitPages_' . $this->articleID . '="' . $initPages . '";';
 
-			$this->cms->AddJsDeclaration(strip_tags($script));
+			$this->cms->addJsDeclaration(strip_tags($script));
 
 			// Album Support
 			$this->albumParentLink = '';
@@ -527,13 +527,13 @@ class agGallery
 			}
 
 			// Breadcrumb Support
-			if ($this->cms->BreadcrumbsNeeded())
+			if ($this->cms->isBreadcrumbsNeeded())
 			{
 				$this->writeBreadcrumb();
 			}
 
 			$script = 'var albumInitFolders_' . $this->articleID . '="' . $albumPath . '";';
-			$this->cms->AddJsDeclaration(strip_tags($script));
+			$this->cms->addJsDeclaration(strip_tags($script));
 		}
 
 		$this->imagesFolderPhysicalPath = $this->sitePhysicalPath . $this->params['rootFolder'] . $this->imagesFolderName . $this->DS;
@@ -584,7 +584,7 @@ class agGallery
 		if (file_exists($this->imagesFolderPhysicalPath))
 		{
 			$ag_images = array();
-			$ag_files = $this->cms->GetFiles($this->imagesFolderPhysicalPath);
+			$ag_files = $this->cms->getFiles($this->imagesFolderPhysicalPath);
 			$ag_ext_valid = array("jpg", "jpeg", "gif", "png"); // SET VALID IMAGE EXTENSION
 
 			foreach ($ag_files as $key => $value)
@@ -595,7 +595,7 @@ class agGallery
 				}
 			}
 
-			$ag_files = array_merge($ag_images, $this->cms->GetFolders($this->imagesFolderPhysicalPath));
+			$ag_files = array_merge($ag_images, $this->cms->getFolders($this->imagesFolderPhysicalPath));
 
 			if (!empty($ag_files))
 			{
@@ -618,7 +618,7 @@ class agGallery
 						// Check is descriptions file exists
 						$ag_imgXML_xml = simplexml_load_file($descriptionFileAbsolutePath);
 						$ag_imgXML_captions = $ag_imgXML_xml->captions;
-						$langTag = $this->cms->GetActiveLanguageTag();
+						$langTag = $this->cms->getActiveLanguageTag();
 
 						// GET DEFAULT LABEL
 						if (!empty($ag_imgXML_captions->caption))
@@ -720,7 +720,7 @@ class agGallery
 	{
 		if (($this->params['thumbWidth'] == 0) || ($this->params['thumbHeight'] == 0))
 		{
-			$this->errorHandle->addError($this->cms->Text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
+			$this->errorHandle->addError($this->cms->text("AG_CANNOT_CREATE_THUMBNAILS_WIDTH_AND_HEIGHT_MUST_BE_GREATER_THEN_0"));
 		}
 	}
 	/**
@@ -766,7 +766,7 @@ class agGallery
 		if (!file_exists($thumbsFolderPhysicalPath))
 		{
 			// TODO:Handle return value
-			$this->cms->CreateFolder($thumbsFolderPhysicalPath);
+			$this->cms->createFolder($thumbsFolderPhysicalPath);
 		}
 
 		// Adds index.html to thumbs folder
@@ -832,14 +832,14 @@ class agGallery
 
 			if ($result)
 			{
-							$this->errorHandle->addError($this->cms->TextConcat($result, $original_file));
+							$this->errorHandle->addError($this->cms->textConcat($result, $original_file));
 			}
 		}
 
 		// ERROR - Invalid image
 		if (!file_exists($thumb_file))
 		{
-			$this->errorHandle->addError($this->cms->TextConcat("AG_CANNOT_READ_THUMBNAIL", $thumb_file));
+			$this->errorHandle->addError($this->cms->textConcat("AG_CANNOT_READ_THUMBNAIL", $thumb_file));
 		}
 	}
 
@@ -866,8 +866,8 @@ class agGallery
 			if ($albumName[$i] != '' && $i != 0)
 			{
 				$link = 'Javascript: AG_form_submit_' . $this->articleID . '(' . $this->index . ',1,\'' . $linkFolderName . '\');';
-				$this->cms->SetTitle($albumName[$i]);
-				$this->cms->AddToPathway($albumName[$i], $link);
+				$this->cms->setTitle($albumName[$i]);
+				$this->cms->addToPathway($albumName[$i], $link);
 			}
 		}
 	}
@@ -884,12 +884,12 @@ class agGallery
 
 	public function getText($string_id)
 	{
-		return $this->cms->Text($string_id);
+		return $this->cms->text($string_id);
 	}
 
 	public function getConcatText(int $string_id, $value)
 	{
-		return $this->cms->TextConcat($string_id, $value);
+		return $this->cms->textConcat($string_id, $value);
 	}
 
 	/**
@@ -907,7 +907,7 @@ class agGallery
 		$this->cms = $cms;
 		$this->params = new Parameters($globalParams);
 		$this->popupEngine = new Popup;
-		$this->errorHandle = new agErrorHandler;
+		$this->errorHandle = new ErrorHandler;
 
 		if (substr($path, -1) == "/")
 		{

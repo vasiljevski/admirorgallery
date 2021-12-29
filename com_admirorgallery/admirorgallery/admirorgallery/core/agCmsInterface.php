@@ -19,35 +19,35 @@ namespace Admiror\Plugin\Content\AdmirorGallery;
  */
 interface agCmsInterface
 {
-	public function LoadClass(): void;
-	public function GetActiveLanguageTag(): string;
+	public function loadClass(): void;
+	public function getActiveLanguageTag(): string;
 
 	// Context
 	// Input
 	// Document
-	public function AddJsFile(string $path): void;
-	public function AddJsDeclaration(string $script): void;
-	public function AddCss(string $path): void;
+	public function addJsFile(string $path): void;
+	public function addJsDeclaration(string $script): void;
+	public function addCss(string $path): void;
 
 	// Pagination
-	public function GetActivePage(string $key): ?int;
-	public function GetAlbumPath(string $key): ?string;
+	public function getActivePage(string $key): ?int;
+	public function getAlbumPath(string $key): ?string;
 
 	// Breadcrumbs
-	public function BreadcrumbsNeeded(): bool;
+	public function isBreadcrumbsNeeded(): bool;
 
 	// Public function GetPathway
-	public function SetTitle(string $title): void;
-	public function AddToPathway(string $item, string $link): void;
+	public function setTitle(string $title): void;
+	public function addToPathway(string $item, string $link): void;
 
 	// File I/O
-	public function GetFiles(string $path): array;
-	public function GetFolders(string $path): array;
+	public function getFiles(string $path): array;
+	public function getFolders(string $path): array;
 
 	// Public function GetActiveLanguage
-	public function CreateFolder(string $path): bool;
+	public function createFolder(string $path): bool;
 
 	// HTMLOutput
-	public function Text(string $string_id): string;
-	public function TextConcat(string $string_id, $value): string;
+	public function text(string $id): string;
+	public function textConcat(string $id, string $value): string
 }
