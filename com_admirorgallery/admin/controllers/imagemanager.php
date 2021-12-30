@@ -1,7 +1,8 @@
 <?php
 /**
  * @version     6.0.0
- * @package     Admiror Gallery (component)
+ * @package     Admiror.Administrator
+ * @subpackage  com_admirorgallery
  * @author      Igor Kekeljevic <igor@admiror.com>
  * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
@@ -12,117 +13,171 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Filesystem\File as JFile;
 
+/**
+ * AdmirorgalleryControllerImagemanager
+ *
+ * @since 1.0.0
+ */
 class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 {
+	/**
+	 * model
+	 *
+	 * @var   ?JModelLegacy
+	 */
+	private ?JModelLegacy $model;
 
-    var $model = null;
+	/**
+	 * __construct
+	 *
+	 * @since 1.0.0
+	 */
+	public function __construct()
+	{
+		parent::__construct();
 
-    function __construct()
-    {
-        parent::__construct();
+		// Register Extra tasks
+		$this->registerTask('agApply', 'agApply');
+		$this->registerTask('agReset', 'agReset');
+	}
 
-        // Register Extra tasks
-        $this->registerTask('AG_apply', 'AG_apply');
-        $this->registerTask('AG_reset', 'AG_reset');
-    }
+	/**
+	 * agApply
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 */
+	public function agApply(): void
+	{
 
-    function AG_apply()
-    {
+		$model = $this->getModel('imagemanager');
 
-        $model = $this->getModel('imagemanager');
+		$itemURL = $this->input->getPath('itemURL');
 
-        $AG_itemURL = $this->input->getPath('AG_itemURL');
-        if (is_dir(JPATH_SITE . $AG_itemURL)) {
+		if (is_dir(JPATH_SITE . $itemURL))
+		{
+			// FOLDER MODELS
+			// BOOKMARK REMOVE
+			$cbBookmarkRemove = $this->input->getVar('cbBookmarkRemove');
 
-            // FOLDER MODELS
-            // BOOKMARK REMOVE
-            $AG_cbox_bookmarkRemove = $this->input->getVar('AG_cbox_bookmarkRemove');
-            if (!empty($AG_cbox_bookmarkRemove)) {
-                $model->_bookmarkRemove($AG_cbox_bookmarkRemove);
-            }
+			if (!empty($cbBookmarkRemove))
+			{
+				$model->_bookmarkRemove($cbBookmarkRemove);
+			}
 
-            // PRIORITY
-            $AG_cbox_priority = $this->input->getVar('AG_cbox_priority');
-            if (!empty($AG_cbox_priority)) {
-                $model->_cbox_priority($AG_cbox_priority);
-            }
+			// PRIORITY
+			$cbPriority = $this->input->getVar('cbPriority');
 
-            // UPLOAD
-            $file = $this->input->getVar('AG_fileUpload', null, 'files');
-            if (isset($file) && !empty($file['name'])) {
-                $model->_fileUpload($AG_itemURL, $file);
-            }
+			if (!empty($cbPriority))
+			{
+				$model->_cbox_priority($cbPriority);
+			}
 
-            // ADD FOLDERS
-            $AG_addFolders = $this->input->getVar('AG_addFolders');
-            if (!empty($AG_addFolders)) {
-                $model->_addFolders($AG_itemURL, $AG_addFolders);
-            }
+			// UPLOAD
+			$file = $this->input->getVar('AG_fileUpload', null, 'files');
 
-            // REMOVE // BOOKMARK ADD
-            $AG_cbox_selectItem = $this->input->getVar('AG_cbox_selectItem');
-            $AG_operations_targetFolder = $this->input->getVar('AG_operations_targetFolder');
-            if (!empty($AG_cbox_selectItem)) {
-                switch ($this->input->getVar('AG_operations')) {
-                    case "move":
-                        $model->_move($AG_cbox_selectItem, $AG_operations_targetFolder);
-                        break;
-                    case "copy":
-                        $model->_copy($AG_cbox_selectItem, $AG_operations_targetFolder);
-                        break;
-                    case "bookmark":
-                        $model->_bookmarkAdd($AG_cbox_selectItem);
-                        break;
-                    case "delete":
-                        $model->_remove($AG_cbox_selectItem);
-                        break;
-                    case "hide":
-                        $model->_set_visible($AG_cbox_selectItem, $AG_itemURL, "hide");
-                        break;
-                    case "show":
-                        $model->_set_visible($AG_cbox_selectItem, $AG_itemURL, "show");
-                        break;
-                }
-            }
+			if (isset($file) && !empty($file['name']))
+			{
+						$model->_fileUpload($itemURL, $file);
+			}
 
-            // RENAME
-            $AG_rename = $this->input->getVar('AG_rename');
-            $webSafe = array("/", " ", ":", ".", "+", "&");
-            if (!empty($AG_rename)) {
-                foreach ($AG_rename as $ren_key => $ren_value) {
-                    $AG_originalName = JFile::stripExt(basename($ren_key));
-                    // CREATE WEBSAFE TITLES
-                    foreach ($webSafe as $key => $value) {
-                        $AG_newName = str_replace($value, "-", $ren_value);
-                    }
-                    if ($AG_originalName != $AG_newName && !empty($ren_value)) {
-                        $model->_rename($AG_itemURL, $ren_key, $AG_newName);
-                    }
-                }
-            }
+			// ADD FOLDERS
+			$addFolders = $this->input->getVar('addFolders');
 
-            // FOLDER DESCRIPTIONS
-            $AG_desc_content =  $this->input->getVar('AG_desc_content', '', 'POST', 'ARRAY', 'JREQUEST_ALLOWHTML');
-            $AG_desc_tags =  $this->input->getVar('AG_desc_tags');
-            $AG_folder_thumb =  $this->input->getVar('AG_folder_thumb');
-            if ( $this->input->getVar('AG_folderSettings_status') == "edit") {
-                $model->_folder_desc_content($AG_itemURL, $AG_desc_content, $AG_desc_tags, $AG_folder_thumb);
-            }
-        } else {
-            // FILE MODELS
-            // FILE DESCRIPTIONS
-            $AG_desc_content = $this->input->getVar('AG_desc_content', '', 'POST', 'ARRAY', 'JREQUEST_ALLOWHTML');
-            $AG_desc_tags =  $this->input->getVar('AG_desc_tags');
-            if (!empty($AG_desc_content)) {
-                $model->_desc_content($AG_itemURL, $AG_desc_content, $AG_desc_tags);
-            }
-        }
-        parent::display();
-    }
+			if (!empty($addFolders))
+			{
+						$model->_addFolders($itemURL, $addFolders);
+			}
 
-    function AG_reset()
-    {
-        parent::display();
-    }
+			// REMOVE // BOOKMARK ADD
+			$cbSelectItem = $this->input->getVar('cbSelectItem');
+			$operationsTargetFolder = $this->input->getVar('operationsTargetFolder');
+
+			if (!empty($cbSelectItem))
+			{
+				switch ($this->input->getVar('AG_operations'))
+				{
+					case "move":
+								$model->_move($cbSelectItem, $operationsTargetFolder);
+			break;
+					case "copy":
+						$model->_copy($cbSelectItem, $operationsTargetFolder);
+			break;
+					case "bookmark":
+						$model->_bookmarkAdd($cbSelectItem);
+						break;
+					case "delete":
+						$model->_remove($cbSelectItem);
+						break;
+					case "hide":
+						$model->_set_visible($cbSelectItem, $itemURL, "hide");
+						break;
+					case "show":
+						$model->_set_visible($cbSelectItem, $itemURL, "show");
+						break;
+				}
+			}
+
+			// RENAME
+			$rename = $this->input->getVar('rename');
+			$webSafe = array("/", " ", ":", ".", "+", "&");
+
+			if (!empty($rename))
+			{
+				foreach ($rename as $renameKey => $renameValue)
+				{
+					$originalName = JFile::stripExt(basename($renameKey));
+
+					// CREATE WEBSAFE TITLES
+					foreach ($webSafe as $key => $value)
+					{
+								$newName = str_replace($value, "-", $renameValue);
+					}
+
+					if ($originalName != $newName && !empty($renameValue))
+					{
+						$model->_rename($itemURL, $renameKey, $newName);
+					}
+				}
+			}
+
+			// FOLDER DESCRIPTIONS
+			$descContent = $this->input->getVar('descContent', '', 'POST', 'ARRAY', 'JREQUEST_ALLOWHTML');
+			$descTags = $this->input->getVar('descTags');
+			$folderThumb = $this->input->getVar('folderThumb');
+
+			if ($this->input->getVar('AG_folderSettings_status') == "edit")
+			{
+				$model->_folder_desc_content($itemURL, $descContent, $descTags, $folderThumb);
+			}
+		}
+		else
+		{
+			// FILE MODELS
+			// FILE DESCRIPTIONS
+			$descContent = $this->input->getVar('descContent', '', 'POST', 'ARRAY', 'JREQUEST_ALLOWHTML');
+			$descTags = $this->input->getVar('descTags');
+
+			if (!empty($descContent))
+			{
+				$model->_desc_content($itemURL, $descContent, $descTags);
+			}
+		}
+
+		parent::display();
+	}
+
+	/**
+	 * agReset
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 */
+	public function agReset(): void
+	{
+		parent::display();
+	}
 
 }

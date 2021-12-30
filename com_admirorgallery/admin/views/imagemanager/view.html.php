@@ -1,7 +1,8 @@
 <?php
 /**
  * @version     6.0.0
- * @package     Admiror Gallery (component)
+ * @package     Admiror.Administrator
+ * @subpackage  com_admirorgallery
  * @author      Igor Kekeljevic <igor@admiror.com>
  * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
@@ -21,104 +22,128 @@ use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
 
 class AdmirorgalleryViewImagemanager extends JViewLegacy
 {
-    var string $ag_template_id = 'default';
-    var string $ag_init_itemURL = '';
-    var string $ag_starting_folder = '';
-    var string $ag_rootFolder = '';
-    var $app = null;
+	var string $ag_template_id = 'default';
+
+	var string $ag_init_itemURL = '';
+
+	var string $ag_starting_folder = '';
+
+	var string $ag_rootFolder = '';
+
+	var $app = null;
+
 	var string $thumbsPath = JPATH_SITE . DIRECTORY_SEPARATOR . 'administrator' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_admirorgallery' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'thumbs';
 
-    function display($tpl = null) {
-        // Make sure you are logged in and have the necessary access
-        $validUsers = array(5 /*Publisher*/,6/*Manager*/,7/*Administrator*/,8/*Super Users*/);
-        $user = JFactory::getUser();
-        $this->app = JFactory::getApplication();
-        $post = JFactory::getApplication()->input->post;
-        $grantAccess = false;
-        $userGroups = $user->getAuthorisedGroups();
-        foreach ($userGroups as $group) {
-            if(in_array($group, $validUsers))
-            {
-                $grantAccess = true;
-                break;
-            }
-        }
-        if(!$grantAccess)
-        {
-            $this->app->setHeader('status', 403, true);
-            $this->app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'warning');
-            return;
-        }
+	function display($tpl = null)
+	{
+		// Make sure you are logged in and have the necessary access
+		$validUsers = array(5 /*Publisher*/,6/*Manager*/,7/*Administrator*/,8/*Super Users*/);
+		$user = JFactory::getUser();
+		$this->app = JFactory::getApplication();
+		$post = JFactory::getApplication()->input->post;
+		$grantAccess = false;
+		$userGroups = $user->getAuthorisedGroups();
 
-        /**
-         * Backward compatibility with Joomla!3
-         * Load namespace
-        */
-        JLoader::registerNamespace('Admiror\\Plugin\\Content\\AdmirorGallery', JPATH_PLUGINS."/content/admirorgallery/admirorgallery/core/", false, false, 'psr4');
+		foreach ($userGroups as $group)
+		{
+			if (in_array($group, $validUsers))
+			{
+				$grantAccess = true;
+				break;
+			}
+		}
 
-        $this->ag_template_id = $post->get('AG_template', 'default'); // Current template for AG Component
-        $ag_item_url = $post->getVar('AG_itemURL');
+		if (!$grantAccess)
+		{
+			$this->app->setHeader('status', 403, true);
+			$this->app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'warning');
 
-        // GET ROOT FOLDER
-        $plugin = JPluginHelper::getPlugin('content', 'admirorgallery');
-        $pluginParams = new JRegistry($plugin->params);
-        
-        $rootFolder =  $pluginParams->get('rootFolder', '/images/sampledata/');
-        $galleryPath = $rootFolder;
-        if ($this->app->isClient('site')){
-            $galleryPath .= ($this->app->getParams()->get('galleryName') != "-1") ? $this->app->getParams()->get('galleryName'). "/" : "";
-        }
-        
-        $this->ag_rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
+			return;
+		}
 
-        $this->ag_starting_folder = $this->ag_rootFolder;
-        $this->ag_init_itemURL = $this->ag_rootFolder;
+		/**
+		 * Backward compatibility with Joomla!3
+		 * Load namespace
+		*/
+		JLoader::registerNamespace('Admiror\\Plugin\\Content\\AdmirorGallery', JPATH_PLUGINS . "/content/admirorgallery/admirorgallery/core/", false, false, 'psr4');
 
-        // Check if we are in site
-        if ($this->app->isClient('site')) {
-            $this->ag_starting_folder = $galleryPath;
-            $this->ag_init_itemURL = $galleryPath;
-        }
+		$this->ag_template_id = $post->get('AG_template', 'default'); // Current template for AG Component
+		$ag_item_url = $post->getVar('itemURL');
 
-        if (isset($ag_item_url)) {
-            $this->ag_init_itemURL = $ag_item_url;
-        }
-        JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_IMAGE_MANAGER'), 'imagemanager');
-        
-        parent::display($tpl);
-    }
+		// GET ROOT FOLDER
+		$plugin = JPluginHelper::getPlugin('content', 'admirorgallery');
+		$pluginParams = new JRegistry($plugin->params);
 
-    function ag_render_breadcrumb($ag_itemURL, $ag_rootFolder, $ag_folderName, $ag_fileName): string
-    {
-        $ag_breadcrumb = '';
-        $ag_breadcrumb_link = '';
-        if ($ag_rootFolder != $ag_itemURL && !empty($ag_itemURL)) {
-            $ag_breadcrumb.='<a href="' . $ag_rootFolder . '" class="AG_folderLink AG_common_button"><span><span>' . substr($ag_rootFolder, 0, -1) . '</span></span></a>/';
-            $ag_breadcrumb_link.=$ag_rootFolder;
-            $ag_breadcrumb_cut = substr($ag_folderName, strlen($ag_rootFolder));
-            $ag_breadcrumb_cut_array = explode("/", $ag_breadcrumb_cut);
-            if (!empty($ag_breadcrumb_cut_array[0])) {
-                foreach ($ag_breadcrumb_cut_array as $cut_key => $cut_value) {
-                    $ag_breadcrumb_link.=$cut_value . '/';
-                    $ag_breadcrumb.='<a href="' . $ag_breadcrumb_link . '" class="AG_folderLink AG_common_button"><span><span>' . $cut_value . '</span></span></a>/';
-                }
-            }
-            $ag_breadcrumb.=$ag_fileName;
-        } else {
-            $ag_breadcrumb.=$ag_rootFolder;
-        }
-        return $ag_breadcrumb;
-    }
+		$rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
+		$galleryPath = $rootFolder;
 
-    function ag_render_image_info($ag_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb): string
-    {
-	    return '<div class="AG_margin_bottom AG_thumbAndInfo_wrapper">
+		if ($this->app->isClient('site'))
+		{
+			$galleryPath .= ($this->app->getParams()->get('galleryName') != "-1") ? $this->app->getParams()->get('galleryName') . "/" : "";
+		}
+
+		$this->ag_rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
+
+		$this->ag_starting_folder = $this->ag_rootFolder;
+		$this->ag_init_itemURL = $this->ag_rootFolder;
+
+		// Check if we are in site
+		if ($this->app->isClient('site'))
+		{
+			$this->ag_starting_folder = $galleryPath;
+			$this->ag_init_itemURL = $galleryPath;
+		}
+
+		if (isset($ag_item_url))
+		{
+			$this->ag_init_itemURL = $ag_item_url;
+		}
+
+		JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_IMAGE_MANAGER'), 'imagemanager');
+
+		parent::display($tpl);
+	}
+
+	function ag_render_breadcrumb($itemURL, $ag_rootFolder, $ag_folderName, $ag_fileName): string
+	{
+		$ag_breadcrumb = '';
+		$ag_breadcrumb_link = '';
+
+		if ($ag_rootFolder != $itemURL && !empty($itemURL))
+		{
+			$ag_breadcrumb .= '<a href="' . $ag_rootFolder . '" class="AG_folderLink AG_common_button"><span><span>' . substr($ag_rootFolder, 0, -1) . '</span></span></a>/';
+			$ag_breadcrumb_link .= $ag_rootFolder;
+			$ag_breadcrumb_cut = substr($ag_folderName, strlen($ag_rootFolder));
+			$ag_breadcrumb_cut_array = explode("/", $ag_breadcrumb_cut);
+
+			if (!empty($ag_breadcrumb_cut_array[0]))
+			{
+				foreach ($ag_breadcrumb_cut_array as $cut_key => $cut_value)
+				{
+					$ag_breadcrumb_link .= $cut_value . '/';
+					$ag_breadcrumb .= '<a href="' . $ag_breadcrumb_link . '" class="AG_folderLink AG_common_button"><span><span>' . $cut_value . '</span></span></a>/';
+				}
+			}
+
+			$ag_breadcrumb .= $ag_fileName;
+		}
+		else
+		{
+			$ag_breadcrumb .= $ag_rootFolder;
+		}
+
+		return $ag_breadcrumb;
+	}
+
+	function ag_render_image_info($itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb): string
+	{
+		return '<div class="AG_margin_bottom AG_thumbAndInfo_wrapper">
 	            <table>
 	                <tbody>
 	                    <tr>
 	                        <td>
-	                            <a class="AG_item_link" href="' . substr(JURI::root(), 0, -1) . $ag_itemURL . '" title="' . $ag_itemURL . '" rel="lightbox[\'AG\']" target="_blank">
-	                                <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/assets/thumbs/' . basename($ag_itemURL) . '" alt="' . $ag_itemURL . '">
+	                            <a class="AG_item_link" href="' . substr(JURI::root(), 0, -1) . $itemURL . '" title="' . $itemURL . '" rel="lightbox[\'AG\']" target="_blank">
+	                                <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/assets/thumbs/' . basename($itemURL) . '" alt="' . $itemURL . '">
 	                            </a>
 	                        </td>
 	                        <td class="AG_border_color AG_border_width" style="border-left-style:solid;">
@@ -133,64 +158,82 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 	            </table>   
 	            </div>
 	            ';
-    }
+	}
 
-    function ag_render_caption($ag_lang_name, $ag_lang_tag, $ag_lang_content): string
-    {
-        return '
+	function ag_render_caption($ag_lang_name, $ag_lang_tag, $ag_lang_content): string
+	{
+		return '
 	<div class="AG_border_color AG_border_width AG_margin_bottom">
 	    ' . $ag_lang_name . ' / ' . $ag_lang_tag . '
-	    <textarea class="AG_textarea" name="AG_desc_content[]">' . $ag_lang_content . '</textarea><input type="hidden" name="AG_desc_tags[]" value="' . $ag_lang_tag . '" />
+	    <textarea class="AG_textarea" name="descContent[]">' . $ag_lang_content . '</textarea><input type="hidden" name="descTags[]" value="' . $ag_lang_tag . '" />
 	</div>
     ';
-    }
+	}
 
-    function ag_render_captions($ag_imgXML_captions): string
-    {
-        $ag_site_languages = "";
-        $ag_matchCheck = Array("default");
+	function ag_render_captions($ag_imgXML_captions): string
+	{
+		$ag_site_languages = "";
+		$ag_matchCheck = Array("default");
 
-        // GET DEFAULT LABEL
-        $ag_imgXML_caption_content = "";
-        if (!empty($ag_imgXML_captions->caption)) {
-            foreach ($ag_imgXML_captions->caption as $ag_imgXML_caption) {
-                if (strtolower($ag_imgXML_caption->attributes()->lang) == "default") {
-                    $ag_imgXML_caption_content = $ag_imgXML_caption;
-                }
-            }
-        }
-        $ag_site_languages.=$this->ag_render_caption("Default", "default", $ag_imgXML_caption_content);
+		// GET DEFAULT LABEL
+		$ag_imgXML_caption_content = "";
 
-        $ag_lang_available = LanguageHelper::getKnownLanguages(JPATH_SITE);
-        if (!empty($ag_lang_available)) {
-            foreach ($ag_lang_available as $ag_lang) {
-                $ag_imgXML_caption_content = "";
-                if (!empty($ag_imgXML_captions->caption)) {
-                    foreach ($ag_imgXML_captions->caption as $ag_imgXML_caption) {
-                        if (strtolower($ag_imgXML_caption->attributes()->lang) == strtolower($ag_lang["tag"])) {
-                            $ag_imgXML_caption_content = $ag_imgXML_caption;
-                            $ag_matchCheck[] = strtolower($ag_lang["tag"]);
-                        }
-                    }
-                }
-                $ag_site_languages.= $this->ag_render_caption($ag_lang["name"], $ag_lang["tag"], $ag_imgXML_caption_content);
-            }
-        }
+		if (!empty($ag_imgXML_captions->caption))
+		{
+			foreach ($ag_imgXML_captions->caption as $ag_imgXML_caption)
+			{
+				if (strtolower($ag_imgXML_caption->attributes()->lang) == "default")
+				{
+					$ag_imgXML_caption_content = $ag_imgXML_caption;
+				}
+			}
+		}
 
-        if (!empty($ag_imgXML_captions->caption)) {
-            foreach ($ag_imgXML_captions->caption as $ag_imgXML_caption) {
-                $ag_imgXML_caption_attr = $ag_imgXML_caption->attributes()->lang;
-                if (!is_numeric(array_search(strtolower($ag_imgXML_caption_attr), $ag_matchCheck))) {
-                    $ag_site_languages.= $this->ag_render_caption($ag_imgXML_caption_attr, $ag_imgXML_caption_attr, $ag_imgXML_caption);
-                }
-            }
-        }
-        return $ag_site_languages;
-    }
+		$ag_site_languages .= $this->ag_render_caption("Default", "default", $ag_imgXML_caption_content);
 
-    function ag_render_file_footer(): string
-    {
-        return '<div style="clear:both" class="AG_margin_bottom"></div>
+		$ag_lang_available = LanguageHelper::getKnownLanguages(JPATH_SITE);
+
+		if (!empty($ag_lang_available))
+		{
+			foreach ($ag_lang_available as $ag_lang)
+			{
+				$ag_imgXML_caption_content = "";
+
+				if (!empty($ag_imgXML_captions->caption))
+				{
+					foreach ($ag_imgXML_captions->caption as $ag_imgXML_caption)
+					{
+						if (strtolower($ag_imgXML_caption->attributes()->lang) == strtolower($ag_lang["tag"]))
+						{
+							$ag_imgXML_caption_content = $ag_imgXML_caption;
+							$ag_matchCheck[] = strtolower($ag_lang["tag"]);
+						}
+					}
+				}
+
+				$ag_site_languages .= $this->ag_render_caption($ag_lang["name"], $ag_lang["tag"], $ag_imgXML_caption_content);
+			}
+		}
+
+		if (!empty($ag_imgXML_captions->caption))
+		{
+			foreach ($ag_imgXML_captions->caption as $ag_imgXML_caption)
+			{
+				$ag_imgXML_caption_attr = $ag_imgXML_caption->attributes()->lang;
+
+				if (!is_numeric(array_search(strtolower($ag_imgXML_caption_attr), $ag_matchCheck)))
+				{
+					$ag_site_languages .= $this->ag_render_caption($ag_imgXML_caption_attr, $ag_imgXML_caption_attr, $ag_imgXML_caption);
+				}
+			}
+		}
+
+		return $ag_site_languages;
+	}
+
+	function ag_render_file_footer(): string
+	{
+		return '<div style="clear:both" class="AG_margin_bottom"></div>
         <hr />
         <div  class="AG_legend">
         <h2>' . JText::_('AG_LEGEND') . '</h2>
@@ -206,10 +249,10 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
         </tbody></table>
         <div>
         ';
-    }
+	}
 
-    function ag_get_bookmark_path()
-    {
-        return $this->getModel('imagemanager')->ag_bookmark_path;
-    }
+	function ag_get_bookmark_path()
+	{
+		return $this->getModel('imagemanager')->ag_bookmark_path;
+	}
 }

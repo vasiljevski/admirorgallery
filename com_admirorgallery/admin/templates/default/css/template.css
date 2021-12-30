@@ -131,7 +131,7 @@ font-size:.909em;
 }
 
 fieldset,form,label,legend,caption,tbody,tfoot,thead,tr,th,td,.contentpaneopen,.contentheading,input[type="text"].AG_input,input[type="radio"].AG_input
-input[type="checkbox"].AG_cbox_selectItem {
+input[type="checkbox"].cbSelectItem {
 font-size:100%;
 outline:none;
 line-height:normal;
@@ -143,12 +143,12 @@ padding:0;
 }
 
 input[type="text"].AG_input,input[type="radio"].AG_input
-input[type="checkbox"].AG_cbox_selectItem {
+input[type="checkbox"].cbSelectItem {
 height:16px;
 margin:1px 0;
 }
 
-input[type="checkbox"].AG_cbox_selectItem {
+input[type="checkbox"].cbSelectItem {
 margin:0 0 0 2px;
 }
 

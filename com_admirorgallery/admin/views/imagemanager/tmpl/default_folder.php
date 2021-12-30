@@ -1,7 +1,8 @@
 <?php
 /**
  * @version     6.0.0
- * @package     Admiror Gallery (component)
+ * @package     Admiror.Administrator
+ * @subpackage  com_admirorgallery
  * @author      Igor Kekeljevic <igor@admiror.com>
  * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
@@ -23,8 +24,10 @@ $ag_folderName = dirname($this->ag_init_itemURL);
 $ag_fileName = basename($this->ag_init_itemURL);
 
 Helper::ag_sureRemoveDir($this->thumbsPath, true);
-if (!JFolder::create($this->thumbsPath)) {
-    JFactory::getApplication()->enqueueMessage(JText::_("AG_CANNOT_CREATE_FOLDER") . "&nbsp;" . $newFolderName, 'error');
+
+if (!JFolder::create($this->thumbsPath))
+{
+	JFactory::getApplication()->enqueueMessage(JText::_("AG_CANNOT_CREATE_FOLDER") . "&nbsp;" . $newFolderName, 'error');
 }
 
 $ag_preview_content = '
@@ -104,21 +107,31 @@ $ag_preview_content .= '
 // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
 $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . '/' . JFile::stripExt($ag_fileName);
 $ag_XML_path = $ag_pathWithStripExt . ".XML";
-if (JFIle::exists($ag_pathWithStripExt . ".xml")) {
-    $ag_XML_path = $ag_pathWithStripExt . ".xml";
+
+if (JFIle::exists($ag_pathWithStripExt . ".xml"))
+{
+	$ag_XML_path = $ag_pathWithStripExt . ".xml";
 }
 
 // Load if XML exists
-if (file_exists($ag_XML_path)) {
-    $ag_XML_xml = simplexml_load_file($ag_XML_path);
-    if ($ag_XML_xml->thumb) {
-        $ag_XML_thumb = $ag_XML_xml->thumb;
-    }
-    if ($ag_XML_xml->captions) {
-        $ag_XML_captions = $ag_XML_xml->captions;
-    }
-} else {
-    $ag_XML_captions = null;
+if (file_exists($ag_XML_path))
+{
+	$ag_XML_xml = simplexml_load_file($ag_XML_path);
+
+	if ($ag_XML_xml->thumb)
+	{
+		$ag_XML_thumb = $ag_XML_xml->thumb;
+	}
+
+
+	if ($ag_XML_xml->captions)
+	{
+		$ag_XML_captions = $ag_XML_xml->captions;
+	}
+}
+else
+{
+	$ag_XML_captions = null;
 }
 
 $ag_preview_content .= $this->ag_render_captions($ag_XML_captions);
@@ -132,78 +145,105 @@ $ag_preview_content .= '
 // CREATED SORTED ARRAY OF FOLDERS
 $ag_files = JFolder::folders(JPATH_SITE . $this->ag_init_itemURL);
 
-if (!empty($ag_files)) {
+if (!empty($ag_files))
+{
+	$ag_folders_priority = array();
+	$ag_folders_noPriority = array();
+	$ag_folders = array();
 
-    $ag_folders_priority = array();
-    $ag_folders_noPriority = array();
-    $ag_folders = array();
+	foreach ($ag_files as $key => $value)
+	{
+		$ag_folderName = $this->ag_init_itemURL;
+		$ag_fileName = basename($value);
 
-    foreach ($ag_files as $key => $value) {
-        $ag_folderName = $this->ag_init_itemURL;
-        $ag_fileName = basename($value);
-        // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-        $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . JFile::stripExt($ag_fileName);
-        $ag_XML_path = $ag_pathWithStripExt . ".XML";
-        if (JFIle::exists($ag_pathWithStripExt . ".xml")) {
-            $ag_XML_path = $ag_pathWithStripExt . ".xml";
-        }
-        if (file_exists($ag_XML_path)) {
-            $ag_XML_xml = simplexml_load_file($ag_XML_path);
-            $ag_XML_priority = $ag_XML_xml->priority;
-        }
+		// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
+		$ag_pathWithStripExt = JPATH_SITE . $ag_folderName . JFile::stripExt($ag_fileName);
+		$ag_XML_path = $ag_pathWithStripExt . ".XML";
 
-        if (!empty($ag_XML_priority) && file_exists($ag_XML_path)) {
-            $ag_folders_priority[$value] = $ag_XML_priority; // PRIORITIES IMAGES
-        } else {
-            $ag_folders_noPriority[] = $value; // NON PRIORITIES IMAGES
-        }
-    }
+		if (JFIle::exists($ag_pathWithStripExt . ".xml"))
+		{
+			$ag_XML_path = $ag_pathWithStripExt . ".xml";
+		}
+
+
+		if (file_exists($ag_XML_path))
+		{
+			$ag_XML_xml = simplexml_load_file($ag_XML_path);
+			$ag_XML_priority = $ag_XML_xml->priority;
+		}
+
+		if (!empty($ag_XML_priority) && file_exists($ag_XML_path))
+		{
+			$ag_folders_priority[$value] = $ag_XML_priority; // PRIORITIES IMAGES
+		}
+		else
+		{
+			$ag_folders_noPriority[] = $value; // NON PRIORITIES IMAGES
+		}
+	}
 }
 
-if (!empty($ag_folders_priority)) {
-    asort($ag_folders_priority);
-    foreach ($ag_folders_priority as $key => $value) {
-        $ag_folders[] = $key;
-    }
+if (!empty($ag_folders_priority))
+{
+	asort($ag_folders_priority);
+
+	foreach ($ag_folders_priority as $key => $value)
+	{
+		$ag_folders[] = $key;
+	}
 }
 
-if (!empty($ag_folders_noPriority)) {
-    natcasesort($ag_folders_noPriority);
-    foreach ($ag_folders_noPriority as $key => $value) {
-        $ag_folders[] = $value;
-    }
+if (!empty($ag_folders_noPriority))
+{
+	natcasesort($ag_folders_noPriority);
+
+	foreach ($ag_folders_noPriority as $key => $value)
+	{
+		$ag_folders[] = $value;
+	}
 }
 
-if (!empty($ag_folders)) {
-    foreach ($ag_folders as $key => $value) {
+if (!empty($ag_folders))
+{
+	foreach ($ag_folders as $key => $value)
+	{
+		$ag_hasXML = "";
+		$ag_hasThumb = "";
 
-        $ag_hasXML = "";
-        $ag_hasThumb = "";
+		// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
+		$ag_pathWithStripExt = JPATH_SITE . $this->ag_init_itemURL . JFile::stripExt(basename($value));
+		$ag_XML_path = $ag_pathWithStripExt . ".xml";
 
-        // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-        $ag_pathWithStripExt = JPATH_SITE . $this->ag_init_itemURL . JFile::stripExt(basename($value));
-        $ag_XML_path = $ag_pathWithStripExt . ".xml";
-        if (JFIle::exists($ag_pathWithStripExt . ".XML")) {
-            $ag_XML_path = $ag_pathWithStripExt . ".XML";
-        }
+		if (JFIle::exists($ag_pathWithStripExt . ".XML"))
+		{
+			$ag_XML_path = $ag_pathWithStripExt . ".XML";
+		}
 
-        $ag_XML_visible = "AG_VISIBLE";
-        $ag_XML_priority = "";
-        if (file_exists($ag_XML_path)) {
-            $ag_hasXML = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasXML.png"  class="ag_hasXML" />';
-            $ag_XML_xml = simplexml_load_file($ag_XML_path);
-            if (isset($ag_XML_xml->priority)) {
-                $ag_XML_priority = $ag_XML_xml->priority;
-            }
-            if (isset($ag_XML_xml->visible)) {
-                if ((string)$ag_XML_xml->visible == "false") {
-                    $ag_XML_visible = "AG_HIDDEN";
-                }
-            }
-        }
+		$ag_XML_visible = "AG_VISIBLE";
+		$ag_XML_priority = "";
+
+		if (file_exists($ag_XML_path))
+		{
+			$ag_hasXML = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasXML.png"  class="ag_hasXML" />';
+			$ag_XML_xml = simplexml_load_file($ag_XML_path);
+
+			if (isset($ag_XML_xml->priority))
+			{
+				$ag_XML_priority = $ag_XML_xml->priority;
+			}
 
 
-        $ag_preview_content .= '
+			if (isset($ag_XML_xml->visible))
+			{
+				if ((string) $ag_XML_xml->visible == "false")
+				{
+					$ag_XML_visible = "AG_HIDDEN";
+				}
+			}
+		}
+
+
+		$ag_preview_content .= '
     <div class="AG_border_color AG_border_width AG_item_wrapper">
 	    <a href="' . $this->ag_init_itemURL . $value . '/" class="AG_folderLink AG_item_link" title="' . $value . '">
 	        <div style="display:block; text-align:center;" class="AG_item_img_wrapper">
@@ -211,14 +251,14 @@ if (!empty($ag_folders)) {
 	        </div>
 	    </a>
 	    <div class="AG_border_color AG_border_width AG_item_controls_wrapper">
-	        <input type="text" value="' . $value . '" name="AG_rename[' . $this->ag_init_itemURL . $value . ']" class="AG_input" style="width:95%" /><hr />
+	        <input type="text" value="' . $value . '" name="rename[' . $this->ag_init_itemURL . $value . ']" class="AG_input" style="width:95%" /><hr />
 	        ' . JText::_($ag_XML_visible) . '<hr />
-	        <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/operations.png" style="float:left;" /><input type="checkbox" value="' . $this->ag_init_itemURL . $value . '/" name="AG_cbox_selectItem[]" class="AG_cbox_selectItem"><hr />
-	        ' . JText::_('AG_PRIORITY') . ':&nbsp;<input type="text" size="3" value="' . $ag_XML_priority . '" name="AG_cbox_priority[' . $this->ag_init_itemURL . $value . ']" class="AG_input" />
+	        <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/operations.png" style="float:left;" /><input type="checkbox" value="' . $this->ag_init_itemURL . $value . '/" name="cbSelectItem[]" class="cbSelectItem"><hr />
+	        ' . JText::_('AG_PRIORITY') . ':&nbsp;<input type="text" size="3" value="' . $ag_XML_priority . '" name="cbPriority[' . $this->ag_init_itemURL . $value . ']" class="AG_input" />
 	    </div>
     </div>
     ';
-    }
+	}
 }
 
 // RENDER IMAGES
@@ -226,94 +266,122 @@ if (!empty($ag_folders)) {
 $ag_files = JFolder::files(JPATH_SITE . $this->ag_init_itemURL);
 $ag_ext_valid = array("jpg", "jpeg", "gif", "png"); // SET VALID IMAGE EXTENSION
 
-if (!empty($ag_files)) {
+if (!empty($ag_files))
+{
+	$ag_images_priority = array();
+	$ag_images_noPriority = array();
+	$ag_images = array();
 
-    $ag_images_priority = array();
-    $ag_images_noPriority = array();
-    $ag_images = array();
+	foreach ($ag_files as $key => $value)
+	{
+		if (is_numeric(array_search(strtolower(JFile::getExt(basename($value))), $ag_ext_valid)))
+		{
+			$ag_folderName = $this->ag_init_itemURL;
+			$ag_fileName = basename($value);
 
-    foreach ($ag_files as $key => $value) {
-        if (is_numeric(array_search(strtolower(JFile::getExt(basename($value))), $ag_ext_valid))) {
+			// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
+			$ag_pathWithStripExt = JPATH_SITE . $ag_folderName . JFile::stripExt($ag_fileName);
+			$ag_XML_path = $ag_pathWithStripExt . ".XML";
 
-            $ag_folderName = $this->ag_init_itemURL;
-            $ag_fileName = basename($value);
+			if (JFIle::exists($ag_pathWithStripExt . ".xml"))
+			{
+				$ag_XML_path = $ag_pathWithStripExt . ".xml";
+			}
 
-            // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-            $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . JFile::stripExt($ag_fileName);
-            $ag_XML_path = $ag_pathWithStripExt . ".XML";
-            if (JFIle::exists($ag_pathWithStripExt . ".xml")) {
-                $ag_XML_path = $ag_pathWithStripExt . ".xml";
-            }
-            if (file_exists($ag_XML_path)) {
-                $ag_XML_xml = simplexml_load_file($ag_XML_path);
-                $ag_XML_priority = $ag_XML_xml->priority;
-            }
 
-            if (!empty($ag_XML_priority) && file_exists($ag_XML_path)) {
-                $ag_images_priority[$value] = $ag_XML_priority; // PRIORITIES IMAGES
-            } else {
-                $ag_images_noPriority[] = $value; // NON PRIORITIES IMAGES
-            }
-        }
-    }
+			if (file_exists($ag_XML_path))
+			{
+				$ag_XML_xml = simplexml_load_file($ag_XML_path);
+				$ag_XML_priority = $ag_XML_xml->priority;
+			}
+
+			if (!empty($ag_XML_priority) && file_exists($ag_XML_path))
+			{
+				$ag_images_priority[$value] = $ag_XML_priority; // PRIORITIES IMAGES
+			}
+			else
+			{
+				$ag_images_noPriority[] = $value; // NON PRIORITIES IMAGES
+			}
+		}
+	}
 }
 
-if (!empty($ag_images_priority)) {
-    asort($ag_images_priority);
-    foreach ($ag_images_priority as $key => $value) {
-        $ag_images[] = $key;
-    }
+if (!empty($ag_images_priority))
+{
+	asort($ag_images_priority);
+
+	foreach ($ag_images_priority as $key => $value)
+	{
+		$ag_images[] = $key;
+	}
 }
 
-if (!empty($ag_images_noPriority)) {
-    natcasesort($ag_images_noPriority);
-    foreach ($ag_images_noPriority as $key => $value) {
-        $ag_images[] = $value;
-    }
+if (!empty($ag_images_noPriority))
+{
+	natcasesort($ag_images_noPriority);
+
+	foreach ($ag_images_noPriority as $key => $value)
+	{
+		$ag_images[] = $value;
+	}
 }
 
-if (!empty($ag_images)) {
-    foreach ($ag_images as $key => $value) {
+if (!empty($ag_images))
+{
+	foreach ($ag_images as $key => $value)
+	{
+		$ag_hasXML = "";
+		$ag_hasThumb = "";
+
+		// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
+		$ag_pathWithStripExt = JPATH_SITE . $this->ag_init_itemURL . JFile::stripExt(basename($value));
+		$ag_XML_path = $ag_pathWithStripExt . ".xml";
+
+		if (JFIle::exists($ag_pathWithStripExt . ".XML"))
+		{
+			$ag_XML_path = $ag_pathWithStripExt . ".XML";
+		}
+
+		$ag_XML_visible = "AG_VISIBLE";
+		$ag_XML_priority = "";
+
+		if (file_exists($ag_XML_path))
+		{
+			$ag_hasXML = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasXML.png"  class="ag_hasXML" />';
+			$ag_XML_xml = simplexml_load_file($ag_XML_path);
+
+			if (isset($ag_XML_xml->priority))
+			{
+				$ag_XML_priority = $ag_XML_xml->priority;
+			}
 
 
-        $ag_hasXML = "";
-        $ag_hasThumb = "";
+			if (isset($ag_XML_xml->visible))
+			{
+				if ((string) $ag_XML_xml->visible == "false")
+				{
+					$ag_XML_visible = "AG_HIDDEN";
+				}
+			}
+		}
 
-        // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-        $ag_pathWithStripExt = JPATH_SITE . $this->ag_init_itemURL . JFile::stripExt(basename($value));
-        $ag_XML_path = $ag_pathWithStripExt . ".xml";
-        if (JFIle::exists($ag_pathWithStripExt . ".XML")) {
-            $ag_XML_path = $ag_pathWithStripExt . ".XML";
-        }
-
-        $ag_XML_visible = "AG_VISIBLE";
-        $ag_XML_priority = "";
-        if (file_exists($ag_XML_path)) {
-            $ag_hasXML = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasXML.png"  class="ag_hasXML" />';
-            $ag_XML_xml = simplexml_load_file($ag_XML_path);
-            if (isset($ag_XML_xml->priority)) {
-                $ag_XML_priority = $ag_XML_xml->priority;
-            }
-            if (isset($ag_XML_xml->visible)) {
-                if ((string)$ag_XML_xml->visible == "false") {
-                    $ag_XML_visible = "AG_HIDDEN";
-                }
-            }
-        }
-
-        if (file_exists(JPATH_SITE . "/plugins/content/admirorgallery/admirorgallery/thumbs/" . basename($ag_folderName) . "/" . basename($value))) {
-            $ag_hasThumb = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasThumb.png"  class="ag_hasThumb" />';
-        }
+		if (file_exists(JPATH_SITE . "/plugins/content/admirorgallery/admirorgallery/thumbs/" . basename($ag_folderName) . "/" . basename($value)))
+		{
+			$ag_hasThumb = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasThumb.png"  class="ag_hasThumb" />';
+		}
 
 
-        Helper::ag_createThumb(JPATH_SITE . $this->ag_init_itemURL . $value, $this->thumbsPath . DIRECTORY_SEPARATOR . $value, 145, 80, "none");
+		Helper::ag_createThumb(JPATH_SITE . $this->ag_init_itemURL . $value, $this->thumbsPath . DIRECTORY_SEPARATOR . $value, 145, 80, "none");
 
-        $AG_thumb_checked = "";
-        if ($ag_XML_thumb == $value) {
-            $AG_thumb_checked = " CHECKED";
-        }
+		$AG_thumb_checked = "";
 
-        $ag_preview_content .= '
+		if ($ag_XML_thumb == $value)
+		{
+			$AG_thumb_checked = " CHECKED";
+		}
+
+		$ag_preview_content .= '
      <div class="AG_border_color AG_border_width AG_item_wrapper">
 	<a href="' . $this->ag_init_itemURL . $value . '" class="AG_fileLink AG_item_link" title="' . $value . '">
 	      <div style="display:block; text-align:center;" class="AG_item_img_wrapper">
@@ -321,33 +389,38 @@ if (!empty($ag_images)) {
 	      </div>
 	</a>
 	<div class="AG_border_color AG_border_width AG_item_controls_wrapper">
-	    <input type="text" value="' . JFile::stripExt(basename($value)) . '" name="AG_rename[' . $this->ag_init_itemURL . $value . ']" class="AG_input" style="width:95%" /><hr />
+	    <input type="text" value="' . JFile::stripExt(basename($value)) . '" name="rename[' . $this->ag_init_itemURL . $value . ']" class="AG_input" style="width:95%" /><hr />
 	    ' . JText::_($ag_XML_visible) . '<hr />
-        <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/operations.png" style="float:left;" /><input type="checkbox" value="' . $this->ag_init_itemURL . $value . '" name="AG_cbox_selectItem[]" class="AG_cbox_selectItem"><hr />
-	    ' . JText::_('AG_PRIORITY') . ':&nbsp;<input type="text" size="3" value="' . $ag_XML_priority . '" name="AG_cbox_priority[' . $this->ag_init_itemURL . $value . ']" class="AG_input" /><hr />
-        <input type="radio" value="' . $value . '" name="AG_folder_thumb" class="AG_folder_thumb" class="AG_input"' . $AG_thumb_checked . ' />&nbsp;' . JText::_('AG_FOLDER_THUMB') . '
+        <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/operations.png" style="float:left;" /><input type="checkbox" value="' . $this->ag_init_itemURL . $value . '" name="cbSelectItem[]" class="cbSelectItem"><hr />
+	    ' . JText::_('AG_PRIORITY') . ':&nbsp;<input type="text" size="3" value="' . $ag_XML_priority . '" name="cbPriority[' . $this->ag_init_itemURL . $value . ']" class="AG_input" /><hr />
+        <input type="radio" value="' . $value . '" name="folderThumb" class="folderThumb" class="AG_input"' . $AG_thumb_checked . ' />&nbsp;' . JText::_('folderThumb') . '
 	</div>
      </div>
      ';
-    }
+	}
 }
 
-if (empty($ag_folders) && empty($ag_images)) {
-    $ag_preview_content .= JText::_('AG_NO_FOLDERS_OR_IMAGES_FOUND_IN_CURRENT_FOLDER');
+if (empty($ag_folders) && empty($ag_images))
+{
+	$ag_preview_content .= JText::_('AG_NO_FOLDERS_OR_IMAGES_FOUND_IN_CURRENT_FOLDER');
 }
 
 
-$AG_folderDroplist = "<select id='AG_operations_targetFolder' name='AG_operations_targetFolder'>";
+$AG_folderDroplist = "<select id='operationsTargetFolder' name='operationsTargetFolder'>";
 $AG_folders = JFolder::listFolderTree(JPATH_SITE . $this->ag_rootFolder, "");
 $AG_rootFolder_strlen = strlen($this->ag_rootFolder);
 $AG_folderDroplist .= "<option value='" . $this->ag_rootFolder . "' >" . JText::_('AG_IMAGES_ROOT_FOLDER') . "</option>";
-if (!empty($AG_folders)) {
-    foreach ($AG_folders as $AG_folders_key => $AG_folders_value) {
-        $AG_folderName = substr($AG_folders_value['relname'], $AG_rootFolder_strlen);
-        str_replace('\\\\', DIRECTORY_SEPARATOR, $AG_folderName);
-        $AG_folderDroplist .= "<option value='" . $this->ag_rootFolder . addslashes($AG_folderName) . "' >" . addslashes($AG_folderName) . "</option>";
-    }
+
+if (!empty($AG_folders))
+{
+	foreach ($AG_folders as $AG_folders_key => $AG_folders_value)
+	{
+		$AG_folderName = substr($AG_folders_value['relname'], $AG_rootFolder_strlen);
+		str_replace('\\\\', DIRECTORY_SEPARATOR, $AG_folderName);
+		$AG_folderDroplist .= "<option value='" . $this->ag_rootFolder . addslashes($AG_folderName) . "' >" . addslashes($AG_folderName) . "</option>";
+	}
 }
+
 $AG_folderDroplist .= "</select>";
 
 $ag_preview_content .= '

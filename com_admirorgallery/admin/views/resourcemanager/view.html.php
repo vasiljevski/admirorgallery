@@ -1,7 +1,8 @@
 <?php
 /**
  * @version     6.0.0
- * @package     Admiror Gallery (component)
+ * @package     Admiror.Administrator
+ * @subpackage  com_admirorgallery
  * @author      Igor Kekeljevic <igor@admiror.com>
  * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
@@ -18,30 +19,32 @@ use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
 
 class AdmirorgalleryViewResourcemanager extends JViewLegacy
 {
+	var $ag_resourceManager_installed = null;
 
-    var $ag_resourceManager_installed = null;
-    var $limitstart = 0;
-    var $limit = 0;
-    var $ag_resource_type = 'templates';
+	var $limitstart = 0;
 
-    function display($tpl = null)
-    {
-        $app = JFactory::getApplication();
-        $jinput = $app->input;
-        $option = $jinput->getCmd('option');
-        $this->ag_resource_type = $jinput->getVar('AG_resourceType'); // Current resource type
+	var $limit = 0;
 
-        JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_' . strtoupper($this->ag_resource_type)), $this->ag_resource_type);
+	var $ag_resource_type = 'templates';
 
-        // Loading JPagination vars
-        $this->limitstart = $app->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
-        $this->limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'int');
+	function display($tpl = null)
+	{
+		$app = JFactory::getApplication();
+		$jinput = $app->input;
+		$option = $jinput->getCmd('option');
+		$this->ag_resource_type = $jinput->getVar('AG_resourceType'); // Current resource type
 
-        // Read folder depending on $AG_resourceType
-        $this->ag_resourceManager_installed = JFolder::folders(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type); // N U
-        sort($this->ag_resourceManager_installed);
+		JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_' . strtoupper($this->ag_resource_type)), $this->ag_resource_type);
 
-        parent::display($tpl);
-    }
+		// Loading JPagination vars
+		$this->limitstart = $app->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
+		$this->limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'int');
+
+		// Read folder depending on $AG_resourceType
+		$this->ag_resourceManager_installed = JFolder::folders(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type); // N U
+		sort($this->ag_resourceManager_installed);
+
+		parent::display($tpl);
+	}
 
 }
