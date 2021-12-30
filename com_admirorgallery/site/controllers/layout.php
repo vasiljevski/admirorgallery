@@ -1,7 +1,8 @@
 <?php
 /**
  * @version     6.0.0
- * @package     Admiror Gallery (component)
+ * @package     Admiror.Site
+ * @subpackage  com_admirorgallery
  * @author      Igor Kekeljevic <igor@admiror.com>
  * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
@@ -10,5 +11,11 @@
 
 defined('_JEXEC') or die();
 
+/**
+ * AdmirorgalleryControllerLayout
+ *
+ * @since 1.0.0
+ */
 class AdmirorgalleryControllerLayout extends AdmirorgalleryController
-{}
+{
+}
