@@ -40,7 +40,7 @@ $xmlGen .= '</photos>';
 $template->insertScript('
 AG_jQuery(function(){
 	AG_jQuery("#AG_' . $AG->getGalleryID() . '").flash({
-		swf: "' . $AG->pluginPath . $AG->currTemplateRoot . 'simple_flash_gallery.swf",
+		swf: "' . $AG->domainPluginPath . $AG->currTemplateRoot . 'simple_flash_gallery.swf",
 		width: ' . $AG->params['frame_width'] . ',
 		height: ' . $AG->params['frame_height'] . ',
 		flashvars: {

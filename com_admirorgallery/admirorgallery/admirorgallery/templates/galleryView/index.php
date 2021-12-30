@@ -18,7 +18,7 @@ $template = new Template($AG, "galleryview.css");
 // Load CSS from current template folder
 $template->loadStyle($AG->currTemplateRoot . 'galleryview.css');
 
-$template->insertScript(' var full_loader_path = "' . $AG->pluginPath . $AG->currTemplateRoot . '";');
+$template->insertScript(' var full_loader_path = "' . $AG->domainPluginPath . $AG->currTemplateRoot . '";');
 $template->loadScript($AG->currTemplateRoot . 'jquery.timers-1.2.js');
 $template->loadScript($AG->currTemplateRoot . 'jquery.easing.1.3.js');
 $template->loadScript($AG->currTemplateRoot . 'jquery.galleryview-2.1.1.js');
@@ -34,7 +34,8 @@ AG_jQuery(document).ready(function(){
 	  pause_on_hover: true
   });
   AG_jQuery("#AG_' . $AG->getGalleryID() . ' div#photos").css({backgroundColor:"black"});
-  AG_jQuery("#AG_' . $AG->getGalleryID() . ' div#photos .panel-content img").css({width:"' . $AG->params['frame_width'] . 'px",height:"' . $AG->params['frame_height'] . 'px"});
+  AG_jQuery("#AG_' . $AG->getGalleryID() . ' div#photos .panel-content img").css({width:"' .
+	$AG->params['frame_width'] . 'px",height:"' . $AG->params['frame_height'] . 'px"});
 });
 '
 );

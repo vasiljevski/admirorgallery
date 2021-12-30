@@ -18,7 +18,7 @@ use Joomla\CMS\Language\Text;
 use Joomla\CMS\Uri\Uri as JUri;
 use Joomla\CMS\Version;
 use Joomla\Filesystem\Folder;
-use Admiror\Plugin\Content\AdmirorGallery\agGallery;
+use Admiror\Plugin\Content\AdmirorGallery\Gallery;
 use Admiror\Plugin\Content\AdmirorGallery\Joomla;
 
 const AG_VERSION = '6.0.0';
@@ -127,7 +127,7 @@ class PlgContentAdmirorGallery extends CMSPlugin
 		// Create galleries
 		if (preg_match_all("#{AdmirorGallery[^}]*}(.*?){/AdmirorGallery}|{AG[^}]*}(.*?){/AG}#s", $row->text, $matches) > 0)
 		{
-			$AG = new agGallery($this->params, JUri::root(true), JPATH_SITE, new Joomla);
+			$AG = new Gallery($this->params, JUri::root(true), JPATH_SITE, new Joomla);
 
 			// Load current language
 			CMSPlugin::loadLanguage('plg_content_admirorgallery', JPATH_ADMINISTRATOR);
@@ -146,7 +146,7 @@ class PlgContentAdmirorGallery extends CMSPlugin
 				error_reporting('E_NOTICE');
 			}
 
-			// Joomla specific variables is passed as parameters for agGallery independent of specific CMS
+			// Joomla specific variables is passed as parameters for Gallery independent of specific CMS
 			$AG->loadJS('AG_jQuery.js');
 			$AG->articleID = $row->id;
 
@@ -191,7 +191,7 @@ class PlgContentAdmirorGallery extends CMSPlugin
 
 				if (is_writable($AG->thumbsFolderPhysicalPath))
 				{
-					$AG->create_gallery_thumbs();
+					$AG->createGalleryThumbs();
 				}
 				else
 				{

@@ -30,10 +30,10 @@ class Template
 	/**
 	 * Gallery instance reference
 	 *
-	 * @var agGallery
+	 * @var Gallery
 	 * @since 5.5.0
 	 */
-	private agGallery $AG;
+	private Gallery $AG;
 
 	/**
 	 * Album support
@@ -78,7 +78,7 @@ class Template
 	/**
 	 * Template constructor.
 	 *
-	 * @param   agGallery  $ag               Gallery reference
+	 * @param   Gallery    $ag               Gallery reference
 	 * @param   string     $template         Template name
 	 * @param   string     $albumStyle       Album style
 	 * @param   string     $paginationStyle  Pagination style
@@ -86,7 +86,7 @@ class Template
 	 *
 	 * @since 5.5.0
 	 */
-	public function __construct(agGallery $ag,
+	public function __construct(Gallery $ag,
 		string $template = 'template.css',
 		string $albumStyle = 'albums/albums.css',
 		string $paginationStyle = 'pagination/pagination.css',
