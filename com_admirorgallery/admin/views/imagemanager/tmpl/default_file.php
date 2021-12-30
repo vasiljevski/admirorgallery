@@ -20,9 +20,9 @@ use Joomla\CMS\Uri\Uri as JURI;
 
 $folderName = dirname($this->ag_init_itemURL);
 $ag_fileName = basename($this->ag_init_itemURL);
-$AG_imgInfo = Helper::ag_imageInfo(JPATH_SITE . $this->ag_init_itemURL);
+$AG_imgInfo = Helper::imageInfo(JPATH_SITE . $this->ag_init_itemURL);
 
-Helper::ag_sureRemoveDir($this->thumbsPath, true);
+Helper::sureRemoveDir($this->thumbsPath, true);
 
 if (!JFolder::create($this->thumbsPath))
 {
@@ -109,7 +109,7 @@ $ag_preview_content .= '
 </div>
 ';
 
-Helper::ag_createThumb(JPATH_SITE . $this->ag_init_itemURL, $this->thumbsPath . DIRECTORY_SEPARATOR . basename($this->ag_init_itemURL), 145, 80, "none");
+Helper::createThumbnail(JPATH_SITE . $this->ag_init_itemURL, $this->thumbsPath . DIRECTORY_SEPARATOR . basename($this->ag_init_itemURL), 145, 80, "none");
 
 // Image and image details
 $ag_preview_content .= $this->ag_render_image_info($this->ag_init_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb);

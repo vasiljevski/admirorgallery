@@ -27,7 +27,7 @@ class AdmirorgalleryViewAdmirorgallery extends JViewLegacy
 	 *
 	 * @var mixed
 	 */
-	private $parameters;
+	public $parameters;
 	/**
 	 * display
 	 *

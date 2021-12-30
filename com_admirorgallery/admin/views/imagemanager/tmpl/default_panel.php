@@ -49,7 +49,7 @@ use Joomla\CMS\Uri\Uri as JURI;
 									<a href="' . $value . '" class="AG_folderLink AG_common_button"
 									   title="' . $value . '">
 												<span><span>
-														<?php echo Helper::ag_shrinkString(basename($value), 20); ?>
+														<?php echo Helper::shrinkString(basename($value), 20); ?>
 													</span></span>
 									</a>
 								</td>

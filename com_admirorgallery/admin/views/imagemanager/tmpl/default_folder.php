@@ -23,7 +23,7 @@ $ag_XML_thumb = "";
 $folderName = dirname($this->ag_init_itemURL);
 $ag_fileName = basename($this->ag_init_itemURL);
 
-Helper::ag_sureRemoveDir($this->thumbsPath, true);
+Helper::sureRemoveDir($this->thumbsPath, true);
 
 if (!JFolder::create($this->thumbsPath))
 {
@@ -372,7 +372,7 @@ if (!empty($ag_images))
 		}
 
 
-		Helper::ag_createThumb(JPATH_SITE . $this->ag_init_itemURL . $value, $this->thumbsPath . DIRECTORY_SEPARATOR . $value, 145, 80, "none");
+		Helper::createThumbnail(JPATH_SITE . $this->ag_init_itemURL . $value, $this->thumbsPath . DIRECTORY_SEPARATOR . $value, 145, 80, "none");
 
 		$AG_thumb_checked = "";
 

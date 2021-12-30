@@ -13,7 +13,11 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
 
+/**
+ * AdmirorgalleryViewButton
+ *
+ * @since 1.0.0
+ */
 class AdmirorgalleryViewButton extends JViewLegacy
 {
-
 }
