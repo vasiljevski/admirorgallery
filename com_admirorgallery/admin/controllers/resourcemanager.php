@@ -60,7 +60,7 @@ class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController
 
 		if (isset($file) && !empty($file['name']))
 		{
-			$resourceType = $this->model->input->getVar('resourceType');
+			$resourceType = $this->input->get('resourceType');
 
 			// Trim trailing directory separator
 			$resourceType = substr($resourceType, 0, strlen($resourceType) - 1);
@@ -88,7 +88,7 @@ class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController
 
 		if (!empty($idsToRemove))
 		{
-			$this->model->uninstallResource($idsToRemove, $this->model->input->getVar('resourceType'));
+			$this->model->uninstallResource($idsToRemove, $this->input->get('resourceType'));
 		}
 
 		parent::display();

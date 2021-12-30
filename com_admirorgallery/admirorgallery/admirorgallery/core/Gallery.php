@@ -599,7 +599,7 @@ class Gallery
 	 *
 	 * @since 5.5.0
 	 */
-	public function writeDescription(string $imageName): mixed
+	public function writeDescription(string $imageName): string
 	{
 		return $this->descArray[$imageName];
 	}
@@ -1085,11 +1085,11 @@ class Gallery
 	/**
 	 * @param   string $id String ID
 	 *
-	 * @return mixed
+	 * @return string
 	 *
 	 * @since version
 	 */
-	public function getText($id): mixed
+	public function getText($id): string
 	{
 		return $this->cms->text($id);
 	}

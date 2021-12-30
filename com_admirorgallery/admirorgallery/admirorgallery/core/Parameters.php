@@ -114,7 +114,7 @@ class Parameters implements ArrayAccess
 	 *
 	 * @since 5.5.0
 	 */
-	public function offsetSet(mixed $offset, mixed $value): void
+	public function offsetSet($offset,$value): void
 	{
 		if (is_null($offset))
 		{
@@ -145,7 +145,7 @@ class Parameters implements ArrayAccess
 	 *
 	 * @since 5.5.0
 	 */
-	public function offsetUnset(mixed $offset): void
+	public function offsetUnset($offset): void
 	{
 		unset($this->params[$offset]);
 	}

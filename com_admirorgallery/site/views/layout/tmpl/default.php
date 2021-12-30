@@ -25,18 +25,19 @@ $inlineParams = '';
 
 foreach ($params as $key => $value)
 {
-	$inlineParams .= ' ' . $key . '="' . $value . '"';
+	$inlineParams .= " '{$key}'='{$value}'";
 }
 
 $article = new stdClass;
+$article->text = "";
 
 // Display page heading
 if ($active->getParams()->get('show_page_heading'))
 {
-	$article->text = '<h1>' . $active->getParams()->get('page_title') . '</h1>';
+	$article->text = "<h1>{$active->getParams()->get('page_title')}</h1>";
 }
 
-$article->text .= '{AG ' . $inlineParams . ' }' . $params->get('galleryName') . '{/AG}';
+$article->text .= "{AG {$inlineParams}}{$params->get('galleryName')}{/AG}";
 $article->id = $active->id;
 
 $app->triggerEvent('onContentPrepare', array(&$context, &$article, &$params));

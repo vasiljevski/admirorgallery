@@ -20,5 +20,4 @@ use Joomla\CMS\MVC\Controller\BaseController as JControllerLegacy;
  */
 class AdmirorgalleryController extends JControllerLegacy
 {
-
 }
