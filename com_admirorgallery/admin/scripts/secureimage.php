@@ -3,62 +3,102 @@
  * @version     0.3.0
  * @package     Admiror.Administrator
  * @subpackage  com_admirorgallery
- * @author      Mesut Timur
- * @copyright   mesut@h-labs.org
+ * @author      Mesut Timur <mesut@h-labs.org>
+ * @copyright   Copyright (C) 2008 mesut@h-labs.org All Rights Reserved.
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
 
+/**
+ * SecureImage
+ *
+ * @since 0.3.0
+ */
 class SecureImage
 {
-	// Private vars
-	var $_file;
+	/**
+	 * file
+	 *
+	 * @var mixed
+	 */
+	private $file;
 
-	var $_image;
+	/**
+	 * image
+	 *
+	 * @var mixed
+	 */
+	private $image;
 
-	var $_extension;
+	/**
+	 * extension
+	 *
+	 * @var mixed
+	 */
+	private $extension;
 
-	// Constructor
-	function __construct($file_)
+	/**
+	 * Constructor
+	 *
+	 * @param   string $file File path
+	 *
+	 * @since 0.3.0
+	 */
+	public function __construct(string $file)
 	{
-		$this->_file = $file_;
+		$this->file = $file;
 
 		// Get extension
-		$this->_extension = strrchr($this->_file, '.');
-		$this->_extension = strtolower($this->_extension);
+		$this->extension = strrchr($this->file, '.');
+		$this->extension = strtolower($this->extension);
 	}
 
-	// Check routine
-	function checkIt()
+	/**
+	 * Check routine
+	 *
+	 * @return boolean
+	 *
+	 * @since 0.3.0
+	 */
+	public function checkIt(): bool
 	{
 		// If it can be opened
-		$this->_image = $this->_openImage($this->_file);
+		$this->image = $this->openImage($this->file);
 
-		if ($this->_image == false)
+		if ($this->image == false)
 		{
 			return false;
 		}
 
 		// Removing EXIF
-		$this->_convert();
+		$this->convert();
 
 		return true;
 	}
 
-	function _openImage($file)
+	/**
+	 * openImage
+	 *
+	 * @param   mixed $file Filepath to open
+	 *
+	 * @return mixed
+	 *
+	 * @since 0.3.0
+	 */
+	private function openImage(string $file): mixed
 	{
-		switch ($this->_extension)
+		switch ($this->extension)
 		{
 			case '.jpg':
 			case '.jpeg':
-				$im = @imagecreatefromjpeg($this->_file);
+				$im = @imagecreatefromjpeg($this->file);
 				break;
 			case '.gif':
-				$im = @imagecreatefromgif($this->_file);
+				$im = @imagecreatefromgif($this->file);
 				break;
 			case '.png':
-				$im = @imagecreatefrompng($this->_file);
+				$im = @imagecreatefrompng($this->file);
 				break;
 
 			default:
@@ -69,35 +109,52 @@ class SecureImage
 		return $im;
 	}
 
-	function _convert()
+	/**
+	 * Converts the image and removes EXIF data
+	 *
+	 * @return void
+	 *
+	 * @since 0.3.0
+	 */
+	private function convert(): void
 	{
-		switch ($this->_extension)
+		switch ($this->extension)
 		{
 			case '.jpg':
 			case '.jpeg':
-				imagegif($this->_image, $this->_file);
-				imagejpeg($this->_image, $this->_file);
-				$this->_jpgclean("clean.tmp");
-				rename("clean.tmp", $this->_file);
+				imagegif($this->image, $this->file);
+				imagejpeg($this->image, $this->file);
+				$this->jpgClean("clean.tmp");
+				rename("clean.tmp", $this->file);
 				break;
 			case '.gif':
-				imagejpeg($this->_image, $this->_file);
-				imagegif($this->_image, $this->_file);
+				imagejpeg($this->image, $this->file);
+				imagegif($this->image, $this->file);
 				break;
 			case '.png':
-				imagejpeg($this->_image, $this->_file);
-				imagepng($this->_image, $this->_file);
+				imagejpeg($this->image, $this->file);
+				imagepng($this->image, $this->file);
 				break;
 			default:
 				die("Something went wrong");
 		}
 	}
 
-	function _jpgclean($destination, $erstellen = true)
+	/**
+	 * jpgClean
+	 *
+	 * @param   mixed $destination Destination path
+	 * @param   mixed $erstellen   First time?
+	 *
+	 * @return mixed
+	 *
+	 * @since 0.3.0
+	 */
+	private function jpgClean(string $destination, bool $erstellen = true): mixed
 	{
 		// By Robert Beran
 		// webmaster@robert-beran.de
-		$handle = fopen($this->_file, "rb");
+		$handle = fopen($this->file, "rb");
 		$segment[] = fread($handle, 2);
 
 		if ($segment[0] === "\xFF\xD8")

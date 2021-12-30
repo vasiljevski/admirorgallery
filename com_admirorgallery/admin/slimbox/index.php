@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
 $doc = JFactory::getDocument();
 
 // Load JavaScript from current popup folder
-$doc->addScript(JURI::root() . 'administrator/components/com_admirorgallery/slimbox/js/slimbox2.js');
+$doc->addScript(JURI::root(true) . 'plugins/content/admirorgallery/admirorgallery/popups/slimbox/js/slimbox2.js');
 
 // Load CSS from current popup folder
-$doc->addStyleSheet(JURI::root() . 'administrator/components/com_admirorgallery/slimbox/css/slimbox2.css');
+$doc->addStyleSheet(JURI::root(true) . 'plugins/content/admirorgallery/admirorgallery/popups/slimbox/css/slimbox2.css');
