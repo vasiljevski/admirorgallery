@@ -51,7 +51,7 @@ if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
                 <input type="hidden" name="boxchecked" value="0"/>
                 <input type="hidden" name="view" value="resourcemanager"/>
                 <input type="hidden" name="controller" value="resourcemanager"/>
-                <input type="hidden" name="AG_resourceType" value="<?php echo $this->ag_resource_type; ?>"/>
+                <input type="hidden" name="resourceType" value="<?php echo $this->ag_resource_type; ?>"/>
                 <?php echo JHTML::_('form.token'); ?>
 
                 <script type="text/javascript">
@@ -115,12 +115,12 @@ if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/')) {
                                 $ag_resourceManager_description = JText::_("AG_NO_DESCRIPTION");
 
                                 if (JFIle::exists(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type . '/' . $ag_resourceManager_id . '/details.xml')) {// N U
-                                    $ag_resourceManager_xml = simplexml_load_file(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type . '/' . $ag_resourceManager_id . '/details.xml');
-                                    $ag_resourceManager_name = $ag_resourceManager_xml->name;
-                                    $ag_resourceManager_creationDate = $ag_resourceManager_xml->creationDate;
-                                    $ag_resourceManager_author = $ag_resourceManager_xml->author;
-                                    $ag_resourceManager_version = $ag_resourceManager_xml->version;
-                                    $ag_resourceManager_description = $ag_resourceManager_xml->description;
+                                    $resourceManagerXmlObject = simplexml_load_file(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type . '/' . $ag_resourceManager_id . '/details.xml');
+                                    $ag_resourceManager_name = $resourceManagerXmlObject->name;
+                                    $ag_resourceManager_creationDate = $resourceManagerXmlObject->creationDate;
+                                    $ag_resourceManager_author = $resourceManagerXmlObject->author;
+                                    $ag_resourceManager_version = $resourceManagerXmlObject->version;
+                                    $ag_resourceManager_description = $resourceManagerXmlObject->description;
                                 }
                                 ?>
                                 <tr>

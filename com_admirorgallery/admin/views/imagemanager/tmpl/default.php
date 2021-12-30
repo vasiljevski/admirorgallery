@@ -86,7 +86,7 @@ if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/'))
 					}
 					else
 					{
-						$ag_error[] = array(JText::_('AG_FOLDER_OR_IMAGE_NOT_FOUND'), $this->ag_init_itemURL);
+						$errorMsg[] = array(JText::_('AG_FOLDER_OR_IMAGE_NOT_FOUND'), $this->ag_init_itemURL);
 						$this->app->enqueueMessage(JText::_('AG_FOLDER_OR_IMAGE_NOT_FOUND') . '<br>' . $this->ag_init_itemURL, 'warning');
 						$ag_preview_content = '
                                     <div class="ag_screenSection_title">

@@ -15,21 +15,33 @@ use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\MVC\Model\BaseDatabaseModel as JModelLegacy;
 
+/**
+ * AdmirorgalleryModelAdmirorgallery
+ *
+ * @since 1.0.0
+ */
 class AdmirorgalleryModelAdmirorgallery extends JModelLegacy
 {
-	function _update()
+	/**
+	 * update
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 */
+	public function update(): void
 	{
-		$AG_DB_input = '{';
+		$dbInput = '{';
 
 		foreach ($_POST['params'] as $key => $value)
 		{
-			$AG_DB_input .= '"' . $key . '":"' . $value . '",';
+			$dbInput .= '"' . $key . '":"' . $value . '",';
 		}
 
-		$AG_DB_input = substr_replace($AG_DB_input, '}', -1, 1);
+		$dbInput = substr_replace($dbInput, '}', -1, 1);
 
 		$db = JFactory::getDBO();
-		$query = "UPDATE #__extensions SET params='" . $AG_DB_input . "' WHERE (element = 'admirorgallery') AND (type = 'plugin')";
+		$query = "UPDATE #__extensions SET params='" . $dbInput . "' WHERE (element = 'admirorgallery') AND (type = 'plugin')";
 		$db->setQuery($query);
 
 		if ($db->execute())

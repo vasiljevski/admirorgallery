@@ -45,7 +45,7 @@ class AdmirorgalleryController extends JControllerLegacy
 		}
 
 		AdmirorGalleryHelper::addSubmenu(
-			$this->input->get('view', 'control_panel'), $this->input->get('AG_resourceType', '')
+			$this->input->get('view', 'control_panel'), $this->input->get('resourceType', '')
 		);
 
 		$doc = JFactory::getDocument();
@@ -63,8 +63,8 @@ class AdmirorgalleryController extends JControllerLegacy
 
 			if ($viewName == 'resourcemanager')
 			{
-				JToolbarHelper::custom('ag_install', 'ag_install', 'ag_install', 'JTOOLBAR_INSTALL', false, false);
-				JToolbarHelper::deleteList('COM_ADMIRORGALLERY_ARE_YOU_SURE', 'ag_uninstall', 'JTOOLBAR_UNINSTALL');
+				JToolbarHelper::custom('installResource', 'installResource', 'installResource', 'JTOOLBAR_INSTALL', false, false);
+				JToolbarHelper::deleteList('COM_ADMIRORGALLERY_ARE_YOU_SURE', 'uninstallResource', 'JTOOLBAR_UNINSTALL');
 			}
 			else
 			{

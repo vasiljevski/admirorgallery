@@ -59,11 +59,11 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 		{
 			// FOLDER MODELS
 			// BOOKMARK REMOVE
-			$cbBookmarkRemove = $this->input->getVar('cbBookmarkRemove');
+			$bookmarksToRemove = $this->input->getVar('bookmarksToRemove');
 
-			if (!empty($cbBookmarkRemove))
+			if (!empty($bookmarksToRemove))
 			{
-				$model->_bookmarkRemove($cbBookmarkRemove);
+				$model->removeBookmark($bookmarksToRemove, $model->bookmarkPath);
 			}
 
 			// PRIORITY
@@ -71,7 +71,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 
 			if (!empty($cbPriority))
 			{
-				$model->_cbox_priority($cbPriority);
+				$model->updatePriority($cbPriority);
 			}
 
 			// UPLOAD
@@ -79,7 +79,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 
 			if (isset($file) && !empty($file['name']))
 			{
-						$model->_fileUpload($itemURL, $file);
+				$model->uploadFile($itemURL, $file);
 			}
 
 			// ADD FOLDERS
@@ -87,41 +87,40 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 
 			if (!empty($addFolders))
 			{
-						$model->_addFolders($itemURL, $addFolders);
+				$model->addFolders($itemURL, $addFolders);
 			}
 
 			// REMOVE // BOOKMARK ADD
-			$cbSelectItem = $this->input->getVar('cbSelectItem');
+			$selectItem = $this->input->getVar('selectItem');
 			$operationsTargetFolder = $this->input->getVar('operationsTargetFolder');
 
-			if (!empty($cbSelectItem))
+			if (!empty($selectItem))
 			{
 				switch ($this->input->getVar('AG_operations'))
 				{
 					case "move":
-								$model->_move($cbSelectItem, $operationsTargetFolder);
-			break;
+						$model->moveItems($selectItem, $operationsTargetFolder);
+						break;
 					case "copy":
-						$model->_copy($cbSelectItem, $operationsTargetFolder);
-			break;
+						$model->copyItems($selectItem, $operationsTargetFolder);
+						break;
 					case "bookmark":
-						$model->_bookmarkAdd($cbSelectItem);
+						$model->bookmarkAdd($selectItem);
 						break;
 					case "delete":
-						$model->_remove($cbSelectItem);
+						$model->removeItems($selectItem);
 						break;
 					case "hide":
-						$model->_set_visible($cbSelectItem, $itemURL, "hide");
+						$model->setVisible($selectItem, $itemURL, "hide");
 						break;
 					case "show":
-						$model->_set_visible($cbSelectItem, $itemURL, "show");
+						$model->setVisible($selectItem, $itemURL, "show");
 						break;
 				}
 			}
 
 			// RENAME
 			$rename = $this->input->getVar('rename');
-			$webSafe = array("/", " ", ":", ".", "+", "&");
 
 			if (!empty($rename))
 			{
@@ -130,14 +129,14 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 					$originalName = JFile::stripExt(basename($renameKey));
 
 					// CREATE WEBSAFE TITLES
-					foreach ($webSafe as $key => $value)
+					foreach ($this->model->webSafe as $key => $value)
 					{
-								$newName = str_replace($value, "-", $renameValue);
+						$newName = str_replace($value, "-", $renameValue);
 					}
 
 					if ($originalName != $newName && !empty($renameValue))
 					{
-						$model->_rename($itemURL, $renameKey, $newName);
+						$model->renameItem($itemURL, $renameKey, $newName);
 					}
 				}
 			}
@@ -149,7 +148,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 
 			if ($this->input->getVar('AG_folderSettings_status') == "edit")
 			{
-				$model->_folder_desc_content($itemURL, $descContent, $descTags, $folderThumb);
+				$model->setFolderDescription($itemURL, $descContent, $descTags, $folderThumb);
 			}
 		}
 		else
@@ -161,7 +160,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 
 			if (!empty($descContent))
 			{
-				$model->_desc_content($itemURL, $descContent, $descTags);
+				$model->setDescriptionContent($itemURL, $descContent, $descTags);
 			}
 		}
 

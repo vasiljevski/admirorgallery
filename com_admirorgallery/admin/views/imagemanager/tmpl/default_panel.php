@@ -28,11 +28,11 @@ use Joomla\CMS\Uri\Uri as JURI;
 						 style="float:left;"/>&nbsp;<?php echo JText::_('AG_GALLERIES'); ?>
 				</h1>
 				<?php
-				$ag_bookmarks_xml = simplexml_load_file($this->ag_get_bookmark_path());
+				$bookmarks = simplexml_load_file($this->ag_get_bookmark_path());
 
-				if (isset($ag_bookmarks_xml->bookmark))
+				if (isset($bookmarks->bookmark))
 {
-					foreach ($ag_bookmarks_xml->bookmark as $key => $value)
+					foreach ($bookmarks->bookmark as $key => $value)
 	{
 						?>
 
@@ -43,7 +43,7 @@ use Joomla\CMS\Uri\Uri as JURI;
 									<img src="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/bookmarkRemove.png'; ?>"
 										 style="float:left;"/></td>
 								<td><input type="checkbox" value="<?php echo $value; ?>"
-										   name="cbBookmarkRemove[]"></td>
+										   name="bookmarksToRemove[]"></td>
 								<td><span class="AG_border_color AG_border_width AG_separator">&nbsp;</span></td>
 								<td>
 									<a href="' . $value . '" class="AG_folderLink AG_common_button"

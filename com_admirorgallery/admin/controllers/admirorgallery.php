@@ -45,7 +45,7 @@ class AdmirorgalleryControllerAdmirorgallery extends AdmirorgalleryController
 		$model = $this->getModel('admirorgallery');
 
 		// UPDATE
-		$model->_update();
+		$model->update();
 
 		parent::display();
 	}

@@ -18,19 +18,27 @@ use Joomla\CMS\Filesystem\File as JFile;
 use Joomla\CMS\Filesystem\Folder as JFolder;
 use Joomla\Archive\Archive as JArchive;
 
+/**
+ * AdmirorgalleryModelResourcemanager
+ *
+ * @since 1.0.0
+ */
 class AdmirorgalleryModelResourcemanager extends JModelLegacy
 {
-
-	function _install($file)
+	/**
+	 * installResource
+	 *
+	 * @param   string $file            Manifest file of the resource
+	 * @param   string $resourceType    Current resource type (used to locate folder) popup|template
+	 * @param   string $fileType        Supported file type : zip
+	 * @param   string $tempDestination Temp folder location
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 */
+	public function installResource(string $file, string $resourceType, string $fileType, string $tempDestination): void
 	{
-
-		$AG_resourceType = $this->input->getVar('AG_resourceType'); // Current resource type
-		$config = JFactory::getConfig();
-		$tmp_dest = $config->get('tmp_path');
-		$resourceType = substr($AG_resourceType, 0, strlen($AG_resourceType) - 1);
-
-		$file_type = "zip";
-
 		if (isset($file) && !empty($file['name']))
 		{
 			// Clean up filename to get rid of strange characters like spaces etc
@@ -38,46 +46,62 @@ class AdmirorgalleryModelResourcemanager extends JModelLegacy
 			$ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
 
 			$src = $file['tmp_name'];
-			$dest = $tmp_dest . DIRECTORY_SEPARATOR . $filename;
+			$dest = $tempDestination . DIRECTORY_SEPARATOR . $filename;
 
 			// First check if the file has the right extension
-			if ($ext == $file_type)
+			if ($ext == $fileType)
 			{
 				if (JFile::upload($src, $dest))
 				{
-					if (JArchive::extract($tmp_dest . DIRECTORY_SEPARATOR . $filename, $tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType))
+					if (JArchive::extract($tempDestination . DIRECTORY_SEPARATOR . $filename, $tempDestination . DIRECTORY_SEPARATOR . $resourceType))
 					{
-						JFile::delete($tmp_dest . DIRECTORY_SEPARATOR . $filename);
+						JFile::delete($tempDestination . DIRECTORY_SEPARATOR . $filename);
 					}
 
 					// TEMPLATE DETAILS PARSING
-					if (JFile::exists($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml'))
+					if (JFile::exists(
+						$tempDestination . DIRECTORY_SEPARATOR .
+						$resourceType . DIRECTORY_SEPARATOR .
+						JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml'
+					)
+					)
 					{
-						$ag_resourceManager_xml = simplexml_load_file($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml');
+						$resourceManagerXmlObject = simplexml_load_file(
+							$tempDestination . DIRECTORY_SEPARATOR . $resourceType .
+							DIRECTORY_SEPARATOR . JFile::stripExt($filename) . DIRECTORY_SEPARATOR . 'details.xml'
+						);
 
-						if (isset($ag_resourceManager_xml->type))
+						if (isset($resourceManagerXmlObject->type))
 						{
-							$ag_resourceManager_type = $ag_resourceManager_xml->type;
+							$resourceManagerType = $resourceManagerXmlObject->type;
 						}
 						else
 						{
-							JFolder::delete($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType);
-							JFactory::getApplication()->enqueueMessage(JText::_('AG_ZIP_PACKAGE_IS_NOT_VALID_RESOURCE_TYPE') . "&nbsp;" . $filename, 'error');
+							JFolder::delete($tempDestination . DIRECTORY_SEPARATOR . $resourceType);
+							JFactory::getApplication()->
+								enqueueMessage(JText::_('AG_ZIP_PACKAGE_IS_NOT_VALID_RESOURCE_TYPE') . "&nbsp;" . $filename, 'error');
 
 							return;
 						}
 					}
 					else
 					{
-						JFolder::delete($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType);
-						JFactory::getApplication()->enqueueMessage(JText::_('AG_ZIP_PACKAGE_IS_NOT_VALID_RESOURCE_TYPE') . "&nbsp;" . $filename, 'error');
+						JFolder::delete($tempDestination . DIRECTORY_SEPARATOR . $resourceType);
+						JFactory::getApplication()->
+							enqueueMessage(JText::_('AG_ZIP_PACKAGE_IS_NOT_VALID_RESOURCE_TYPE') . "&nbsp;" . $filename, 'error');
 
 						return;
 					}
 
-					if (($ag_resourceManager_type) && ($ag_resourceManager_type == $resourceType))
+					if (($resourceManagerType) && ($resourceManagerType == $resourceType))
 					{
-						$result = JFolder::move($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename), JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename));
+						$result = JFolder::move(
+							$tempDestination . DIRECTORY_SEPARATOR . $resourceType .
+							DIRECTORY_SEPARATOR . JFile::stripExt($filename), JPATH_SITE .
+							DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' .
+							DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' .
+							DIRECTORY_SEPARATOR . $resourceType . DIRECTORY_SEPARATOR . JFile::stripExt($filename)
+						);
 
 						if ($result)
 						{
@@ -90,8 +114,9 @@ class AdmirorgalleryModelResourcemanager extends JModelLegacy
 					}
 					else
 					{
-						JFolder::delete($tmp_dest . DIRECTORY_SEPARATOR . $AG_resourceType);
-						JFactory::getApplication()->enqueueMessage(JText::_('AG_ZIP_PACKAGE_IS_NOT_VALID_RESOURCE_TYPE') . "&nbsp;" . $filename, 'error');
+						JFolder::delete($tempDestination . DIRECTORY_SEPARATOR . $resourceType);
+						JFactory::getApplication()->
+							enqueueMessage(JText::_('AG_ZIP_PACKAGE_IS_NOT_VALID_RESOURCE_TYPE') . "&nbsp;" . $filename, 'error');
 					}
 				}
 				else
@@ -106,21 +131,35 @@ class AdmirorgalleryModelResourcemanager extends JModelLegacy
 		}
 	}
 
-	function _uninstall($ag_cidArray)
+	/**
+	 * uninstallResource
+	 *
+	 * @param   mixed $idsToRemove  Array of resource id's to be uninstalled
+	 * @param   mixed $resourceType Current resource type (used to locate folder) popup|template
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 */
+	public function uninstallResource(array $idsToRemove, string $resourceType): void
 	{
-		$AG_resourceType = $this->input->getVar('AG_resourceType'); // Current resource type
-
-		foreach ($ag_cidArray as $ag_cidArrayKey => $ag_cidArrayValue)
+		foreach ($idsToRemove as $idValue)
 		{
-			if (!empty($ag_cidArrayValue))
+			if (!empty($idValue))
 			{
-				if (JFolder::delete(JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . $AG_resourceType . DIRECTORY_SEPARATOR . $ag_cidArrayValue))
+				if (JFolder::delete(
+					JPATH_SITE . DIRECTORY_SEPARATOR . 'plugins' .
+					DIRECTORY_SEPARATOR . 'content' . DIRECTORY_SEPARATOR . 'admirorgallery' .
+					DIRECTORY_SEPARATOR . 'admirorgallery' . DIRECTORY_SEPARATOR . $resourceType .
+					DIRECTORY_SEPARATOR . $idValue
+				)
+				)
 				{
-					JFactory::getApplication()->enqueueMessage(JText::_('AG_PACKAGE_REMOVED') . "&nbsp;" . $ag_cidArrayValue, 'message');
+					JFactory::getApplication()->enqueueMessage(JText::_('AG_PACKAGE_REMOVED') . "&nbsp;" . $idValue, 'message');
 				}
 				else
 				{
-					JFactory::getApplication()->enqueueMessage(JText::_('AG_PACKAGE_CANNOT_BE_REMOVED') . "&nbsp;" . $ag_cidArrayValue, 'error');
+					JFactory::getApplication()->enqueueMessage(JText::_('AG_PACKAGE_CANNOT_BE_REMOVED') . "&nbsp;" . $idValue, 'error');
 				}
 			}
 		}

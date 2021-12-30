@@ -26,22 +26,24 @@ abstract class AdmirorGalleryHelper
 	/**
 	 * Configure the Linkbar
 	 *
-	 * @param   string $submenu
-	 * @param   string $type
+	 * @param   string $submenu Submenu
+	 * @param   string $type    Type
+	 *
+	 * @return void
 	 *
 	 * @since 5.5.0
 	 */
-	public static function addSubmenu(string $submenu, string $type)
+	public static function addSubmenu(string $submenu, string $type): void
 	{
 		JHtmlSidebar::addEntry(JText::_('COM_ADMIRORGALLERY_CONTROL_PANEL'),
 			'index.php?option=com_admirorgallery&amp;controller=admirorgallery', $submenu == 'control_panel'
 		);
 		JHtmlSidebar::addEntry(JText::_('COM_ADMIRORGALLERY_TEMPLATES'),
-			'index.php?option=com_admirorgallery&amp;view=resourcemanager&amp;AG_resourceType=templates',
+			'index.php?option=com_admirorgallery&amp;view=resourcemanager&amp;resourceType=templates',
 			$type == 'templates'
 		);
 		JHtmlSidebar::addEntry(JText::_('COM_ADMIRORGALLERY_POPUPS'),
-			'index.php?option=com_admirorgallery&amp;view=resourcemanager&amp;AG_resourceType=popups',
+			'index.php?option=com_admirorgallery&amp;view=resourcemanager&amp;resourceType=popups',
 			$type == 'popups'
 		);
 		JHtmlSidebar::addEntry(JText::_('COM_ADMIRORGALLERY_IMAGE_MANAGER'),
@@ -53,14 +55,14 @@ abstract class AdmirorGalleryHelper
 	/**
 	 * Read JInput values
 	 *
-	 * @param   string $name
-	 * @param $default
+	 * @param   string $name    Name of the fieald we need walue from
+	 * @param   mixed  $default Default value in case none is found
 	 *
 	 * @return string|null
 	 *
 	 * @since 5.5.0
 	 */
-	public static function getCmd(string $name, $default): ?string
+	public static function getCmd(string $name, mixed $default): ?string
 	{
 		try
 		{

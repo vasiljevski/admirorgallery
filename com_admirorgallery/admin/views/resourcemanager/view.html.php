@@ -32,7 +32,7 @@ class AdmirorgalleryViewResourcemanager extends JViewLegacy
 		$app = JFactory::getApplication();
 		$jinput = $app->input;
 		$option = $jinput->getCmd('option');
-		$this->ag_resource_type = $jinput->getVar('AG_resourceType'); // Current resource type
+		$this->ag_resource_type = $jinput->getVar('resourceType'); // Current resource type
 
 		JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_' . strtoupper($this->ag_resource_type)), $this->ag_resource_type);
 
@@ -40,7 +40,7 @@ class AdmirorgalleryViewResourcemanager extends JViewLegacy
 		$this->limitstart = $app->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
 		$this->limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'int');
 
-		// Read folder depending on $AG_resourceType
+		// Read folder depending on $resourceType
 		$this->ag_resourceManager_installed = JFolder::folders(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type); // N U
 		sort($this->ag_resourceManager_installed);
 

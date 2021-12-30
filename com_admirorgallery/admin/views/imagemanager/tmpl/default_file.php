@@ -18,7 +18,7 @@ use Joomla\CMS\Filesystem\Folder as JFolder;
 use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\Uri\Uri as JURI;
 
-$ag_folderName = dirname($this->ag_init_itemURL);
+$folderName = dirname($this->ag_init_itemURL);
 $ag_fileName = basename($this->ag_init_itemURL);
 $AG_imgInfo = Helper::ag_imageInfo(JPATH_SITE . $this->ag_init_itemURL);
 
@@ -33,15 +33,15 @@ $ag_hasXML = "";
 $ag_hasThumb = "";
 
 // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-$ag_pathWithStripExt = JPATH_SITE . $ag_folderName . '/' . JFile::stripExt(basename($this->ag_init_itemURL));
-$ag_imgXML_path = $ag_pathWithStripExt . ".XML";
+$pathWithStripExt = JPATH_SITE . $folderName . '/' . JFile::stripExt(basename($this->ag_init_itemURL));
+$ag_imgXML_path = $pathWithStripExt . ".XML";
 
-if (JFIle::exists($ag_pathWithStripExt . ".xml"))
+if (JFIle::exists($pathWithStripExt . ".xml"))
 {
-	$ag_imgXML_path = $ag_pathWithStripExt . ".xml";
+	$ag_imgXML_path = $pathWithStripExt . ".xml";
 }
 
-if (file_exists(JPATH_SITE . "/plugins/content/admirorgallery/admirorgallery/thumbs/" . basename($ag_folderName) . "/" . basename($ag_fileName)))
+if (file_exists(JPATH_SITE . "/plugins/content/admirorgallery/admirorgallery/thumbs/" . basename($folderName) . "/" . basename($ag_fileName)))
 {
 	$ag_hasThumb = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasThumb.png" class="ag_hasThumb" />';
 }
@@ -60,16 +60,16 @@ else
 $ag_preview_content = '';
 
 // GET IMAGES FOR NEXT AND PREV IMAGES FUNCTIONS
-$ag_files = JFolder::files(JPATH_SITE . $ag_folderName);
+$ag_files = JFolder::files(JPATH_SITE . $folderName);
 
 if (!empty($ag_files))
 {
-	$ag_ext_valid = array("jpg", "jpeg", "gif", "png");// SET VALID IMAGE EXTENSION
+	$validExtensions = array("jpg", "jpeg", "gif", "png");// SET VALID IMAGE EXTENSION
 	$ag_images = array();
 
 	foreach ($ag_files as $key => $value)
 	{
-		if (is_numeric(array_search(strtolower(JFile::getExt(basename($value))), $ag_ext_valid)))
+		if (is_numeric(array_search(strtolower(JFile::getExt(basename($value))), $validExtensions)))
 		{
 			$ag_images[] = $value;
 		}
@@ -90,13 +90,13 @@ if (!empty($ag_files))
 
 	if (!empty($ag_fileName_prev))
 	{
-		$ag_preview_content .= '<a class="AG_common_button" href="" onclick="AG_jQuery(\'#AG_input_itemURL\').val(\'' . $ag_folderName . '/' . $ag_fileName_prev . '\');submitbutton(\'agReset\');return false;"><span><span>' . JText::_("AG_PREVIOUS_IMAGE") . '</span></span></a>' . "\n";
+		$ag_preview_content .= '<a class="AG_common_button" href="" onclick="AG_jQuery(\'#AG_input_itemURL\').val(\'' . $folderName . '/' . $ag_fileName_prev . '\');submitbutton(\'agReset\');return false;"><span><span>' . JText::_("AG_PREVIOUS_IMAGE") . '</span></span></a>' . "\n";
 	}
 
 
 	if (!empty($ag_fileName_next))
 	{
-		$ag_preview_content .= '<a class="AG_common_button" href="" onclick="AG_jQuery(\'#AG_input_itemURL\').val(\'' . $ag_folderName . '/' . $ag_fileName_next . '\');submitbutton(\'agReset\');return false;"><span><span>' . JText::_("AG_NEXT_IMAGE") . '</span></span></a>' . "\n";
+		$ag_preview_content .= '<a class="AG_common_button" href="" onclick="AG_jQuery(\'#AG_input_itemURL\').val(\'' . $folderName . '/' . $ag_fileName_next . '\');submitbutton(\'agReset\');return false;"><span><span>' . JText::_("AG_NEXT_IMAGE") . '</span></span></a>' . "\n";
 	}
 }
 
@@ -105,7 +105,7 @@ $ag_preview_content .= '<hr />';
 $ag_preview_content .= '
 <h1>' . JText::_('AG_IMAGE_DETAILS_FOR_FILE') . '</h1>
 <div class="AG_border_color AG_border_width AG_margin_bottom AG_breadcrumbs_wrapper">
-' . $this->ag_render_breadcrumb($this->ag_init_itemURL, $this->ag_starting_folder, $ag_folderName, $ag_fileName) . '
+' . $this->ag_render_breadcrumb($this->ag_init_itemURL, $this->ag_starting_folder, $folderName, $ag_fileName) . '
 </div>
 ';
 

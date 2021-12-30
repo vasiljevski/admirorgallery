@@ -14,6 +14,11 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\MVC\Model\BaseDatabaseModel as JModelLegacy;
 
+/**
+ * AdmirorgalleryModelButton
+ *
+ * @since 1.0.0
+ */
 class AdmirorgalleryModelButton extends JModelLegacy
 {
 }

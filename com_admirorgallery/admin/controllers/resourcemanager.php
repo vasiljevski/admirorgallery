@@ -14,29 +14,58 @@ defined('_JEXEC') or die();
 use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Language\Text as JText;
 
+/**
+ * AdmirorgalleryControllerResourcemanager
+ *
+ * @since 1.0.0
+ */
 class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController
 {
-	var $model;
+	/**
+	 * model
+	 *
+	 * @var mixed
+	 *
+	 * @since 1.0.0
+	 */
+	public $model;
 
-	function __construct()
+	/**
+	 * __construct
+	 *
+	 * @since 1.0.0
+	 */
+	public function __construct()
 	{
 		parent::__construct();
 
 		// Register Extra tasks
-		$this->registerTask('ag_install', 'ag_install');
-		$this->registerTask('ag_uninstall', 'ag_uninstall');
-		$this->registerTask('ag_reset', 'ag_reset');
+		$this->registerTask('installResource', 'installResource');
+		$this->registerTask('uninstallResource', 'uninstallResource');
+		$this->registerTask('resetResource', 'resetResource');
 
 		$this->model = $this->getModel('resourcemanager');
 	}
 
-	function ag_install()
+	/**
+	 * installResource
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 */
+	public function installResource(): void
 	{
 		$file = $this->input->getVar('AG_fileUpload', null, 'files');
 
 		if (isset($file) && !empty($file['name']))
 		{
-			$this->model->_install($file);
+			$resourceType = $this->model->input->getVar('resourceType');
+
+			// Trim trailing directory separator
+			$resourceType = substr($resourceType, 0, strlen($resourceType) - 1);
+
+			$this->model->installResource($file, $resourceType, "zip", JFactory::getConfig()->get('tmp_path'));
 		}
 		else
 		{
@@ -46,19 +75,33 @@ class AdmirorgalleryControllerResourcemanager extends AdmirorgalleryController
 		parent::display();
 	}
 
-	function ag_uninstall()
+	/**
+	 * uninstallResource
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 */
+	public function uninstallResource(): void
 	{
-		$ag_cidArray = $this->input->getVar('cid');
+		$idsToRemove = $this->input->getVar('cid');
 
-		if (!empty($ag_cidArray))
+		if (!empty($idsToRemove))
 		{
-			$this->model->_uninstall($ag_cidArray);
+			$this->model->uninstallResource($idsToRemove, $this->model->input->getVar('resourceType'));
 		}
 
 		parent::display();
 	}
 
-	function ag_reset()
+	/**
+	 * resetResource
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 */
+	public function resetResource(): void
 	{
 		parent::display();
 	}

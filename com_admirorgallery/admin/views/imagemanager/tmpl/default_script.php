@@ -91,7 +91,7 @@ defined('_JEXEC') or die();
 			ag_file_selected(AG_jQuery(this).attr("href"));
 		});
 
-		AG_jQuery(".cbSelectItem").click(function (e) {
+		AG_jQuery(".selectItem").click(function (e) {
 			AG_jQuery(this).closest(".AG_item_wrapper").toggleClass("AG_mark_selectItem");
 		});
 

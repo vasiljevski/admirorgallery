@@ -104,7 +104,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 		parent::display($tpl);
 	}
 
-	function ag_render_breadcrumb($itemURL, $ag_rootFolder, $ag_folderName, $ag_fileName): string
+	function ag_render_breadcrumb($itemURL, $ag_rootFolder, $folderName, $ag_fileName): string
 	{
 		$ag_breadcrumb = '';
 		$ag_breadcrumb_link = '';
@@ -113,7 +113,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 		{
 			$ag_breadcrumb .= '<a href="' . $ag_rootFolder . '" class="AG_folderLink AG_common_button"><span><span>' . substr($ag_rootFolder, 0, -1) . '</span></span></a>/';
 			$ag_breadcrumb_link .= $ag_rootFolder;
-			$ag_breadcrumb_cut = substr($ag_folderName, strlen($ag_rootFolder));
+			$ag_breadcrumb_cut = substr($folderName, strlen($ag_rootFolder));
 			$ag_breadcrumb_cut_array = explode("/", $ag_breadcrumb_cut);
 
 			if (!empty($ag_breadcrumb_cut_array[0]))
@@ -253,6 +253,6 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 
 	function ag_get_bookmark_path()
 	{
-		return $this->getModel('imagemanager')->ag_bookmark_path;
+		return $this->getModel('imagemanager')->bookmarkPath;
 	}
 }
