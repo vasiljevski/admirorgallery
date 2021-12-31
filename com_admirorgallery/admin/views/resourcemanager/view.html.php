@@ -17,34 +17,94 @@ use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
 use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
 
+/**
+ * AdmirorgalleryViewResourcemanager
+ *
+ * @since 1.0.0
+ */
 class AdmirorgalleryViewResourcemanager extends JViewLegacy
 {
-	var $ag_resourceManager_installed = null;
+	/**
+	 * @var array
+	 *
+	 * @since 1.0.0
+	 */
+	public array $resourceManagerInstalled = array();
 
-	var $limitstart = 0;
+	/**
+	 * @var integer
+	 *
+	 * @since 1.0.0
+	 */
+	public integer $limitstart;
 
-	var $limit = 0;
+	/**
+	 * @var integer
+	 *
+	 * @since 1.0.0
+	 */
+	public integer $limit;
 
-	var $ag_resource_type = 'templates';
+	/**
+	 * @var string
+	 *
+	 * @since 1.0.0
+	 */
+	public string $resourceType = 'templates';
 
-	function display($tpl = null)
+	/**
+	 * display
+	 *
+	 * @param   mixed $tpl Template to be displayed
+	 * @return void
+	 */
+	public function display($tpl = null)
 	{
+		// Check if plugin is installed, otherwise don't show view
+		if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/'))
+		{
+			return;
+		}
+
 		$app = JFactory::getApplication();
 		$jinput = $app->input;
 		$option = $jinput->getCmd('option');
-		$this->ag_resource_type = $jinput->getVar('resourceType'); // Current resource type
 
-		JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_' . strtoupper($this->ag_resource_type)), $this->ag_resource_type);
+		// Current resource type
+		$this->resourceType = $jinput->getVar('resourceType');
+
+		JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_' . strtoupper($this->resourceType)), $this->resourceType);
 
 		// Loading JPagination vars
 		$this->limitstart = $app->getUserStateFromRequest($option . '.limitstart', 'limitstart', 0, 'int');
 		$this->limit = $app->getUserStateFromRequest('global.list.limit', 'limit', $app->getCfg('list_limit'), 'int');
 
 		// Read folder depending on $resourceType
-		$this->ag_resourceManager_installed = JFolder::folders(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->ag_resource_type); // N U
-		sort($this->ag_resourceManager_installed);
+		$this->resourceManagerInstalled = JFolder::folders(JPATH_SITE . '/plugins/content/admirorgallery/admirorgallery/' . $this->resourceType);
+		sort($this->resourceManagerInstalled);
 
 		parent::display($tpl);
+	}
+
+	/**
+	 * getVersionInfoHTML
+	 *
+	 * @return  string
+	 */
+	public function getVersionInfoHTML(): string
+	{
+		$xmlObject = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/com_admirorgallery.xml');
+
+		$versionInfo = "";
+
+		if ($xmlObject)
+		{
+			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_COMPONENT_VERSION') . '&nbsp;' . $xmlObject->version . "</li>";
+			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_PLUGIN_VERSION') . '&nbsp;' . $xmlObject->pluginVersion . "</li>";
+			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_BUTTON_VERSION') . '&nbsp;' . $xmlObject->buttonVersion . "</li>";
+		}
+
+		return $versionInfo;
 	}
 
 }
