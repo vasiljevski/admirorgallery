@@ -36,14 +36,14 @@ class AdmirorgalleryViewResourcemanager extends JViewLegacy
 	 *
 	 * @since 1.0.0
 	 */
-	public integer $limitstart;
+	public int $limitstart;
 
 	/**
 	 * @var integer
 	 *
 	 * @since 1.0.0
 	 */
-	public integer $limit;
+	public int $limit;
 
 	/**
 	 * @var string

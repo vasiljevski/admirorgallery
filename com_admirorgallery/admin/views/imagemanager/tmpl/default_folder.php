@@ -46,7 +46,7 @@ $previewContent .= '
      <tbody>
      <tr>
           <td>
-                <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->templateName . '/images/operations.png" style="float:left;" />
+                <img src="' . JURI::root(true) . '/administrator/components/com_admirorgallery/templates/' . $this->templateName . '/images/operations.png" style="float:left;" />
           </td>
 	      <td>
 	            ' . JText::_('AG_OPERATION_WITH_SELECTED_ITEMS') . '
@@ -72,7 +72,7 @@ $previewContent .= '
 <table cellspacing="0" cellpadding="0" border="0" class="AG_fieldset">
      <tbody>
      <tr>
-	  <td><img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->templateName . '/images/upload.png" style="float:left;" /></td><td>&nbsp;' . JText::_('AG_UPLOAD_IMAGES_JPG_JPEG_GIF_PNG_OR_ZIP') . '&nbsp;[ <b>' . JText::_('AG_MAX') . '&nbsp;' . (JComponentHelper::getParams('com_media')->get('upload_maxsize', 0)) . ' MB</b> ]:&nbsp;</td><td><input type="file" name="AG_fileUpload" /></td>
+	  <td><img src="' . JURI::root(true) . '/administrator/components/com_admirorgallery/templates/' . $this->templateName . '/images/upload.png" style="float:left;" /></td><td>&nbsp;' . JText::_('AG_UPLOAD_IMAGES_JPG_JPEG_GIF_PNG_OR_ZIP') . '&nbsp;[ <b>' . JText::_('AG_MAX') . '&nbsp;' . (JComponentHelper::getParams('com_media')->get('upload_maxsize', 0)) . ' MB</b> ]:&nbsp;</td><td><input type="file" name="AG_fileUpload" /></td>
      </tr>
      </tbody>
 </table>
@@ -80,7 +80,7 @@ $previewContent .= '
 <table cellspacing="0" cellpadding="0" border="0" class="AG_fieldset">
      <tbody>
      <tr>
-	  <td><img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->templateName . '/images/folder-new.png" style="float:left;" /></td><td>&nbsp;' . JText::_('AG_CREATE_FOLDERS') . '&nbsp;</td>
+	  <td><img src="' . JURI::root(true) . '/administrator/components/com_admirorgallery/templates/' . $this->templateName . '/images/folder-new.png" style="float:left;" /></td><td>&nbsp;' . JText::_('AG_CREATE_FOLDERS') . '&nbsp;</td>
 <td id="AG_folder_add">
     <a href=""  id="ag_add_new_folder_input" class="AG_common_button">
     <span><span>
@@ -141,9 +141,9 @@ $previewContent .= '
 <hr />
 ';
 
-echo $this->renderItems($fileName, 'folder', $xmlThumb);
+$previewContent .= $this->renderItems($this->initItemURL, 'folder', $xmlThumb);
 
-echo $this->renderItems($fileName, 'file', $xmlThumb);
+$previewContent .= $this->renderItems($this->initItemURL, 'file', $xmlThumb);
 
 
 $AG_folderDroplist = "<select id='operationsTargetFolder' name='operationsTargetFolder'>";
@@ -170,7 +170,7 @@ AG_jQuery("#AG_operations").change(function() {
         switch(AG_jQuery(this).val())
         {
         case "delete":
-          AG_jQuery("#AG_targetFolder").html("<img src=\'' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->templateName . '/images/alert.png\'  style=\'float:left;\' />&nbsp;' . JText::_('AG_SELECTED_ITEMS_WILL_BE_DELETED') . '");
+          AG_jQuery("#AG_targetFolder").html("<img src=\'' . JURI::root(true) . '/administrator/components/com_admirorgallery/templates/' . $this->templateName . '/images/alert.png\'  style=\'float:left;\' />&nbsp;' . JText::_('AG_SELECTED_ITEMS_WILL_BE_DELETED') . '");
           break;
         case "move":
           AG_jQuery("#AG_targetFolder").html("' . $AG_folderDroplist . '");

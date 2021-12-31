@@ -19,6 +19,7 @@ use Joomla\CMS\Uri\Uri as JURI;
 use Joomla\Registry\Registry as JRegistry;
 use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
 use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
+use Admiror\Plugin\Content\AdmirorGallery\Helper;
 
 /**
  * AdmirorgalleryViewImagemanager
@@ -138,6 +139,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 		 // Current template for AG Component
 		$this->templateName = $post->get('AG_template', 'default');
 		$itemUrl = $post->getVar('itemURL');
+		print_r($itemUrl);
 
 		// GET ROOT FOLDER
 		$plugin = JPluginHelper::getPlugin('content', 'admirorgallery');
@@ -152,7 +154,6 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 		}
 
 		$this->rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
-
 		$this->startingFolder = $this->rootFolder;
 		$this->initItemURL = $this->rootFolder;
 
@@ -219,19 +220,26 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 
 			$breadcrumbLink .= $rootFolder;
 			$breadcrumbCut = substr($folderName, strlen($rootFolder));
+			print_r($breadcrumbCut);
 			$breadcrumbCutArray = explode("/", $breadcrumbCut);
 
-			if (!empty($breadcrumbCutArray[0]))
+			print_r("<pre>");
+			print_r($breadcrumbCutArray);
+			print_r("</pre>");
+
+			foreach ($breadcrumbCutArray as $cutValue)
 			{
-				foreach ($breadcrumbCutArray as $cutValue)
+				if (empty($cutValue))
 				{
-					$breadcrumbLink .= $cutValue . '/';
-					$breadcrumb .= '<a href="' .
-										$breadcrumbLink .
-										'" class="AG_folderLink AG_common_button"><span><span>' .
-										$cutValue .
-										'</span></span></a>/';
+					continue;
 				}
+
+				$breadcrumbLink .= $cutValue . '/';
+				$breadcrumb .= '<a href="' .
+									$breadcrumbLink .
+									'" class="AG_folderLink AG_common_button"><span><span>' .
+									$cutValue .
+									'</span></span></a>/';
 			}
 
 			$breadcrumb .= $fileName;
@@ -248,7 +256,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 	 * renderImageInfo
 	 *
 	 * @param   string $itemURL  Item URL
-	 * @param   string $imgInfo  Image info
+	 * @param   array  $imgInfo  Image info
 	 * @param   string $hasXML   Has XML description
 	 * @param   string $hasThumb Has Thumbnail
 	 *
@@ -256,7 +264,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 	 *
 	 * @since 1.0.0
 	 */
-	public function renderImageInfo(string $itemURL, string $imgInfo, string $hasXML, string $hasThumb): string
+	public function renderImageInfo(string $itemURL, array $imgInfo, string $hasXML, string $hasThumb): string
 	{
 		return '<div class="AG_margin_bottom AG_thumbAndInfo_wrapper">
 	            <table>
@@ -317,7 +325,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 	 *
 	 * @since 1.0.0
 	 */
-	public function renderCaptions(array $imgCaptions): string
+	public function renderCaptions($imgCaptions): string
 	{
 		$siteLanguages = "";
 		$matchCheck = Array("default");
@@ -421,15 +429,17 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 
 	public function renderItems(string $path, string $type, string $thumb): string
 	{
-		$hasXML = "<img src='{JURI::root(true)}/administrator/components/com_admirorgallery/templates/{
+		$juriRoot = JURI::root(true);
+		$hasXML = "<img src=\"{$juriRoot}/administrator/components/com_admirorgallery/templates/{
 			$this->templateName}/images/icon-hasXML.png'  class='hasXML' />";
-		$hasThumb = "<img src='{JURI::root(true)}'/administrator/components/com_admirorgallery/templates/{
+		$hasThumb = "<img src=\"{$juriRoot}/administrator/components/com_admirorgallery/templates/{
 			$this->templateName}/images/icon-hasThumb.png\"  class=\"hasThumb\" />";
-		$previewContent .= JText::_('AG_NO_FOLDERS_OR_IMAGES_FOUND_IN_CURRENT_FOLDER');
+		$previewContent = JText::_('AG_NO_FOLDERS_OR_IMAGES_FOUND_IN_CURRENT_FOLDER');
 		$items = array();
 		$priority = array();
 		$noPriority = array();
 		$objects = array();
+		$validExtensions = array("jpg", "jpeg", "gif", "png"); // SET VALID IMAGE EXTENSION
 
 		if ($type == 'folder')
 		{
@@ -437,12 +447,12 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 		}
 		else
 		{
-			$items = JFolder::files(JPATH_SITE . $this->initItemURL);
+			$items = JFolder::files(JPATH_SITE . $path);
 		}
 
 		foreach ($items as $value)
 		{
-			if (($type != 'folder') && is_numeric(array_search(strtolower(JFile::getExt(basename($value))), $validExtensions)))
+			if (($type == 'file') && !is_numeric(array_search(strtolower(JFile::getExt(basename($value))), $validExtensions)))
 			{
 				continue;
 			}
@@ -472,6 +482,8 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 			{
 				$noPriority[] = $value;
 			}
+
+			$previewContent = "";
 		}
 
 		asort($priority);
@@ -522,7 +534,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 			}
 
 			$valueStripped = $value;
-			$iconImage = "<img src=\"{JURI::root(true)}/administrator/components/com_admirorgallery/templates/
+			$iconImage = "<img src=\"{$juriRoot}/administrator/components/com_admirorgallery/templates/
 						{$this->templateName}/images/folder.png\" />";
 
 			if ($type != 'folder')
@@ -535,7 +547,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 					$hasThumb = '';
 				}
 
-				Helper::createThumbnail(JPATH_SITE . $path . $value, $this->thumbsPath . DIRECTORY_SEPARATOR . $value, 145, 80, "none");
+				Helper::createThumbnail(JPATH_SITE . $path . "/" . $value, $this->thumbsPath . DIRECTORY_SEPARATOR . $value, 145, 80, "none");
 
 				$thumbChecked = "";
 
@@ -544,35 +556,37 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 					$thumbChecked = " CHECKED";
 				}
 
-				$iconImage = "<img src=\"{JURI::root(true)}administrator/components/com_admirorgallery/assets/thumbs/{$value}
+				$iconImage = "<img src=\"{$juriRoot}/administrator/components/com_admirorgallery/assets/thumbs/{$value}
 					\" class=\"ag_imgThumb\" />";
 				$valueStripped = JFile::stripExt(basename($value));
+				$folderThumb = JText::_('AG_FOLDER_THUMB');
 				$thumbnailInput = "
 					<hr /> 
 					<input type=\"radio\" value=\"{$value}\" name=\"folderThumb\" class=\"folderThumb\" class=\"AG_input {$thumbChecked}\"/>&nbsp;
-					{JText::_('folderThumb')}";
+					{$folderThumb}";
 			}
 
-			$outputPath = "{$path}{$value}";
+			$outputPath = "{$path}/{$value}";
+			$visibleText = JText::_($visible);
+			$priorityText = JText::_('priority');
 			$previewContent .= "
 			<div class=\"AG_border_color AG_border_width AG_item_wrapper\">
 				<a href=\"{$outputPath}\" class=\"AG_folderLink AG_item_link\" title=\"{$value}\">
 					<div style=\"display:block; text-align:center;\" class=\"AG_item_img_wrapper\">
-					<img src=\"{JURI::root(true)}/administrator/components/com_admirorgallery/templates/{$this->templateName}/images/folder.png\" />
-					
+					{$iconImage}					
 					</div>
 				</a>
 				<div class=\"AG_border_color AG_border_width AG_item_controls_wrapper\">
 					<input type=\"text\" value=\"{$valueStripped}\" name=\"rename[{$outputPath}]\" class=\"AG_input\" style=\"width:95%\" />
 					<hr />
-					{JText::_($visible)}
+					{$visibleText}
 					<hr />
-					<img src=\"{JURI::root(true)}administrator/components/com_admirorgallery/templates/{$this->templateName}/images/operations.png\" 
+					<img src=\"{$juriRoot}/administrator/components/com_admirorgallery/templates/{$this->templateName}/images/operations.png\" 
 						style=\"float:left;\" />
 					<input type=\"checkbox\" value=\"{$outputPath}/\" name=\"selectItem[]\" class=\"selectItem\">
 					<hr />
-					{JText::_('priority')}:&nbsp;
-					<input type=\"text\" size=\"3\" value=\"{$priority}\" name=\"cbPriority[\'{$outputPath}\']\" class=\"AG_input\" />
+					{$priorityText}:&nbsp;
+					<input type=\"text\" size=\"3\" value=\"{$priority}\" name=\"cbPriority[{$outputPath}]\" class=\"AG_input\" />
 					{$thumbnailInput}
 				</div>
 			</div>

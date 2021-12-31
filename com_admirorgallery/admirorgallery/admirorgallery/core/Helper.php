@@ -503,7 +503,7 @@ class Helper
 	 *
 	 * @since 5.5.0
 	 */
-	public static function createThumbnail(string $originalFile,string $thumbFile,int $newWidth,int $newHeight,string $autoSize): int
+	public static function createThumbnail(string $originalFile,string $thumbFile,int $newWidth,int $newHeight,string $autoSize)
 	{
 		// GD check
 		if (!function_exists('gd_info'))

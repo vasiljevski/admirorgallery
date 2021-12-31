@@ -927,7 +927,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
 	 *
 	 * @since 1.0.0
 	 */
-	public function setDescriptionContent(string $itemURL, string $descContent, string $descTags): void
+	public function setDescriptionContent(string $itemURL, array $descContent, array $descTags): void
 	{
 		$folderName = dirname($itemURL);
 
