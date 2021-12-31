@@ -18,48 +18,50 @@ use Joomla\CMS\Uri\Uri as JURI;
 ?>
 <div class="AG_body_wrapper">
 	<!--FORMAT SCREEN-->
-	<table border="0" cellspacing="0" cellpadding="0" width="100%">
+	<table cellspacing="0" cellpadding="0" width="100%">
 		<tbody>
 		<tr>
 			<td class="AG_bookmarks_wrapper" style="display:none;">
 
 				<h1>
-					<img src="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/bookmark.png'; ?>"
+					<img src="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' .
+											$this->templateName . '/images/bookmark.png'; ?>"
 						 style="float:left;"/>&nbsp;<?php echo JText::_('AG_GALLERIES'); ?>
 				</h1>
-				<?php
-				$bookmarks = simplexml_load_file($this->ag_get_bookmark_path());
+<?php
+$bookmarks = simplexml_load_file($this->getBookmarkPath());
 
-				if (isset($bookmarks->bookmark))
+if (isset($bookmarks->bookmark))
 {
-					foreach ($bookmarks->bookmark as $key => $value)
+	foreach ($bookmarks->bookmark as $key => $value)
 	{
-						?>
+		?>
 
-						<table border="0" cellspacing="0" cellpadding="0">
-							<tbody>
-							<tr>
-								<td>
-									<img src="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/bookmarkRemove.png'; ?>"
-										 style="float:left;"/></td>
-								<td><input type="checkbox" value="<?php echo $value; ?>"
-										   name="bookmarksToRemove[]"></td>
-								<td><span class="AG_border_color AG_border_width AG_separator">&nbsp;</span></td>
-								<td>
-									<a href="' . $value . '" class="AG_folderLink AG_common_button"
-									   title="' . $value . '">
-												<span><span>
-														<?php echo Helper::shrinkString(basename($value), 20); ?>
-													</span></span>
-									</a>
-								</td>
-							</tr>
-							</tbody>
-						</table>
-						<?php
-					}
-				}
-				?>
+		<table cellspacing="0" cellpadding="0">
+			<tbody>
+			<tr>
+				<td>
+					<img src="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' .
+											$this->templateName . '/images/bookmarkRemove.png'; ?>"
+							style="float:left;"/></td>
+				<td><input type="checkbox" value="<?php echo $value; ?>"
+							name="bookmarksToRemove[]"></td>
+				<td><span class="AG_border_color AG_border_width AG_separator">&nbsp;</span></td>
+				<td>
+					<a href="' . $value . '" class="AG_folderLink AG_common_button"
+						title="' . $value . '">
+								<span><span>
+										<?php echo Helper::shrinkString(basename($value), 20); ?>
+									</span></span>
+					</a>
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<?php
+	}
+}
+?>
 
 				<div style="clear:both" class="AG_margin_bottom"></div>
 				<hr/>
@@ -69,7 +71,8 @@ use Joomla\CMS\Uri\Uri as JURI;
 						<tbody>
 						<tr>
 							<td>
-								<img src="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/bookmarkRemove.png' ?>"
+								<img src="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' .
+														$this->templateName . '/images/bookmarkRemove.png' ?>"
 									 style="float:left;"/></td>
 							<td><?php echo JText::_('AG_SELECT_TO_REMOVE_BOOKMARK') ?></td>
 						</tr>
@@ -80,7 +83,7 @@ use Joomla\CMS\Uri\Uri as JURI;
 			<td id="AG_main">
 				<a class="AG_common_button" href=""
 				   id="AG_bookmarks_showHide"><span><span><?php echo JText::_('AG_SHOW_SIDEBAR') ?></span></span></a>
-				<?php echo $ag_preview_content; ?>
+				<?php echo $previewContent; ?>
 			</td>
 		</tr>
 		</tbody>

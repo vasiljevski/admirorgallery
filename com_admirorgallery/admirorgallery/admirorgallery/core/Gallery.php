@@ -802,29 +802,29 @@ class Gallery
 					{
 						// Check is descriptions file exists
 						$imgXmlObject = simplexml_load_file($descriptionFileAbsolutePath);
-						$imgXmlCaptions = $imgXmlObject->captions;
+						$imgCaptions = $imgXmlObject->captions;
 						$langTag = $this->cms->getActiveLanguageTag();
 
 						// GET DEFAULT LABEL
-						if (!empty($imgXmlCaptions->caption))
+						if (!empty($imgCaptions->caption))
 						{
-							foreach ($imgXmlCaptions->caption as $imgXmlCaptions)
+							foreach ($imgCaptions->caption as $imgCaptions)
 							{
-								if (strtolower($imgXmlCaptions->attributes()->lang) == "default")
+								if (strtolower($imgCaptions->attributes()->lang) == "default")
 								{
-									$this->descArray[$f] = $imgXmlCaptions;
+									$this->descArray[$f] = $imgCaptions;
 								}
 							}
 						}
 
 						// GET CURRENT LANG LABEL
-						if (!empty($imgXmlCaptions->caption))
+						if (!empty($imgCaptions->caption))
 						{
-							foreach ($imgXmlCaptions->caption as $imgXmlCaptions)
+							foreach ($imgCaptions->caption as $imgCaptions)
 							{
-								if (strtolower($imgXmlCaptions->attributes()->lang) == strtolower($langTag))
+								if (strtolower($imgCaptions->attributes()->lang) == strtolower($langTag))
 								{
-									$this->descArray[$f] = $imgXmlCaptions;
+									$this->descArray[$f] = $imgCaptions;
 								}
 							}
 						}

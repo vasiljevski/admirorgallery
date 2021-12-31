@@ -56,7 +56,10 @@ class AdmirorgalleryViewResourcemanager extends JViewLegacy
 	 * display
 	 *
 	 * @param   mixed $tpl Template to be displayed
+	 *
 	 * @return void
+	 *
+	 * @since 1.0.0
 	 */
 	public function display($tpl = null)
 	{

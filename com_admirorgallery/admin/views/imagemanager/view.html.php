@@ -20,24 +20,87 @@ use Joomla\Registry\Registry as JRegistry;
 use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
 use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
 
+/**
+ * AdmirorgalleryViewImagemanager
+ *
+ * @since 1.0.0
+ */
 class AdmirorgalleryViewImagemanager extends JViewLegacy
 {
-	var string $ag_template_id = 'default';
+	/**
+	 * @var string
+	 *
+	 * @since 1.0.0
+	 */
+	public string $templateName = 'default';
 
-	var string $ag_init_itemURL = '';
+	/**
+	 * @var string
+	 *
+	 * @since 1.0.0
+	 */
+	public string $initItemURL = '';
 
-	var string $ag_starting_folder = '';
+	/**
+	 * @var string
+	 *
+	 * @since 1.0.0
+	 */
+	public string $startingFolder = '';
 
-	var string $ag_rootFolder = '';
+	/**
+	 * @var string
+	 *
+	 * @since 1.0.0
+	 */
+	public string $rootFolder = '';
 
-	var $app = null;
+	/**
+	 * @var null
+	 *
+	 * @since 1.0.0
+	 */
+	public $app = null;
 
-	var string $thumbsPath = JPATH_SITE . DIRECTORY_SEPARATOR . 'administrator' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_admirorgallery' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'thumbs';
+	/**
+	 * @var string
+	 *
+	 * @since 1.0.0
+	 */
+	public string $thumbsPath = JPATH_SITE . DIRECTORY_SEPARATOR .
+	'administrator' . DIRECTORY_SEPARATOR .
+	'components' . DIRECTORY_SEPARATOR .
+	'com_admirorgallery' . DIRECTORY_SEPARATOR .
+	'assets' . DIRECTORY_SEPARATOR .
+	'thumbs';
 
-	function display($tpl = null)
+	/**
+	 * display
+	 *
+	 * @param   string $tpl Templalate to load
+	 *
+	 * @return void
+	 *
+	 * @throws Exception
+	 *
+	 * @since 1.0.0
+	 */
+	public function display($tpl = null): void
 	{
-		// Make sure you are logged in and have the necessary access
-		$validUsers = array(5 /*Publisher*/,6/*Manager*/,7/*Administrator*/,8/*Super Users*/);
+		// Check if plugin is installed, otherwise don't show view
+		if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/'))
+		{
+			return;
+		}
+
+		/**
+		 * Make sure you are logged in and have the necessary access
+		 * 5 - Publisher
+		 * 6 - Manager
+		 * 7 - Administrator
+		 * 8 - Super Users
+		 */
+		$validUsers = array(5 ,6 ,7 ,8);
 		$user = JFactory::getUser();
 		$this->app = JFactory::getApplication();
 		$post = JFactory::getApplication()->input->post;
@@ -65,10 +128,16 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 		 * Backward compatibility with Joomla!3
 		 * Load namespace
 		*/
-		JLoader::registerNamespace('Admiror\\Plugin\\Content\\AdmirorGallery', JPATH_PLUGINS . "/content/admirorgallery/admirorgallery/core/", false, false, 'psr4');
+		JLoader::registerNamespace('Admiror\\Plugin\\Content\\AdmirorGallery',
+			JPATH_PLUGINS . "/content/admirorgallery/admirorgallery/core/",
+			false,
+			false,
+			'psr4'
+		);
 
-		$this->ag_template_id = $post->get('AG_template', 'default'); // Current template for AG Component
-		$ag_item_url = $post->getVar('itemURL');
+		 // Current template for AG Component
+		$this->templateName = $post->get('AG_template', 'default');
+		$itemUrl = $post->getVar('itemURL');
 
 		// GET ROOT FOLDER
 		$plugin = JPluginHelper::getPlugin('content', 'admirorgallery');
@@ -82,21 +151,21 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 			$galleryPath .= ($this->app->getParams()->get('galleryName') != "-1") ? $this->app->getParams()->get('galleryName') . "/" : "";
 		}
 
-		$this->ag_rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
+		$this->rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
 
-		$this->ag_starting_folder = $this->ag_rootFolder;
-		$this->ag_init_itemURL = $this->ag_rootFolder;
+		$this->startingFolder = $this->rootFolder;
+		$this->initItemURL = $this->rootFolder;
 
 		// Check if we are in site
 		if ($this->app->isClient('site'))
 		{
-			$this->ag_starting_folder = $galleryPath;
-			$this->ag_init_itemURL = $galleryPath;
+			$this->startingFolder = $galleryPath;
+			$this->initItemURL = $galleryPath;
 		}
 
-		if (isset($ag_item_url))
+		if (isset($itemUrl))
 		{
-			$this->ag_init_itemURL = $ag_item_url;
+			$this->initItemURL = $itemUrl;
 		}
 
 		JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_IMAGE_MANAGER'), 'imagemanager');
@@ -104,54 +173,111 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 		parent::display($tpl);
 	}
 
-	function ag_render_breadcrumb($itemURL, $ag_rootFolder, $folderName, $ag_fileName): string
+	/**
+	 * getVersionInfoHTML
+	 *
+	 * @return  string
+	 */
+	public function getVersionInfoHTML(): string
 	{
-		$ag_breadcrumb = '';
-		$ag_breadcrumb_link = '';
+		$xmlObject = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/com_admirorgallery.xml');
 
-		if ($ag_rootFolder != $itemURL && !empty($itemURL))
+		$versionInfo = "";
+
+		if ($xmlObject)
 		{
-			$ag_breadcrumb .= '<a href="' . $ag_rootFolder . '" class="AG_folderLink AG_common_button"><span><span>' . substr($ag_rootFolder, 0, -1) . '</span></span></a>/';
-			$ag_breadcrumb_link .= $ag_rootFolder;
-			$ag_breadcrumb_cut = substr($folderName, strlen($ag_rootFolder));
-			$ag_breadcrumb_cut_array = explode("/", $ag_breadcrumb_cut);
+			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_COMPONENT_VERSION') . '&nbsp;' . $xmlObject->version . "</li>";
+			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_PLUGIN_VERSION') . '&nbsp;' . $xmlObject->pluginVersion . "</li>";
+			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_BUTTON_VERSION') . '&nbsp;' . $xmlObject->buttonVersion . "</li>";
+		}
 
-			if (!empty($ag_breadcrumb_cut_array[0]))
+		return $versionInfo;
+	}
+
+	/**
+	 * renderBreadcrumb
+	 *
+	 * @param   string $itemURL     Item URL
+	 * @param   string $rootFolder  Root folder
+	 * @param   string $folderName  Folder name
+	 * @param   string $fileName    File name
+	 *
+	 * @return string
+	 *
+	 * @since 1.0.0
+	 */
+	public function renderBreadcrumb(string $itemURL, string $rootFolder, string $folderName, string $fileName): string
+	{
+		$breadcrumb = '';
+		$breadcrumbLink = '';
+
+		if ($rootFolder != $itemURL && !empty($itemURL))
+		{
+			$breadcrumb .= '<a href="' . $rootFolder .
+			'" class="AG_folderLink AG_common_button"><span><span>' .
+			substr($rootFolder, 0, -1) . '</span></span></a>/';
+
+			$breadcrumbLink .= $rootFolder;
+			$breadcrumbCut = substr($folderName, strlen($rootFolder));
+			$breadcrumbCutArray = explode("/", $breadcrumbCut);
+
+			if (!empty($breadcrumbCutArray[0]))
 			{
-				foreach ($ag_breadcrumb_cut_array as $cut_key => $cut_value)
+				foreach ($breadcrumbCutArray as $cutValue)
 				{
-					$ag_breadcrumb_link .= $cut_value . '/';
-					$ag_breadcrumb .= '<a href="' . $ag_breadcrumb_link . '" class="AG_folderLink AG_common_button"><span><span>' . $cut_value . '</span></span></a>/';
+					$breadcrumbLink .= $cutValue . '/';
+					$breadcrumb .= '<a href="' .
+										$breadcrumbLink .
+										'" class="AG_folderLink AG_common_button"><span><span>' .
+										$cutValue .
+										'</span></span></a>/';
 				}
 			}
 
-			$ag_breadcrumb .= $ag_fileName;
+			$breadcrumb .= $fileName;
 		}
 		else
 		{
-			$ag_breadcrumb .= $ag_rootFolder;
+			$breadcrumb .= $rootFolder;
 		}
 
-		return $ag_breadcrumb;
+		return $breadcrumb;
 	}
 
-	function ag_render_image_info($itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb): string
+	/**
+	 * renderImageInfo
+	 *
+	 * @param   string $itemURL  Item URL
+	 * @param   string $imgInfo  Image info
+	 * @param   string $hasXML   Has XML description
+	 * @param   string $hasThumb Has Thumbnail
+	 *
+	 * @return string
+	 *
+	 * @since 1.0.0
+	 */
+	public function renderImageInfo(string $itemURL, string $imgInfo, string $hasXML, string $hasThumb): string
 	{
 		return '<div class="AG_margin_bottom AG_thumbAndInfo_wrapper">
 	            <table>
 	                <tbody>
 	                    <tr>
 	                        <td>
-	                            <a class="AG_item_link" href="' . substr(JURI::root(), 0, -1) . $itemURL . '" title="' . $itemURL . '" rel="lightbox[\'AG\']" target="_blank">
-	                                <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/assets/thumbs/' . basename($itemURL) . '" alt="' . $itemURL . '">
+	                            <a class="AG_item_link" href="' .
+										substr(JURI::root(), 0, -1) .
+										$itemURL . '" title="' .
+										$itemURL . '" rel="lightbox[\'AG\']" target="_blank">
+										<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/assets/thumbs/' .
+										basename($itemURL) .
+										'" alt="' . $itemURL . '">
 	                            </a>
 	                        </td>
 	                        <td class="AG_border_color AG_border_width" style="border-left-style:solid;">
-	                            <div>' . JText::_("AG_IMG_WIDTH") . ': ' . $AG_imgInfo["width"] . 'px</div>
-	                            <div>' . JText::_("AG_IMG_HEIGHT") . ': ' . $AG_imgInfo["height"] . 'px</div>
-	                            <div>' . JText::_("AG_IMG_TYPE") . ': ' . $AG_imgInfo["type"] . '</div>
-	                            <div>' . JText::_("AG_IMG_SIZE") . ': ' . $AG_imgInfo["size"] . '</div>
-	                            <div>' . $ag_hasXML . $ag_hasThumb . '</div>
+	                            <div>' . JText::_("AG_IMG_WIDTH") . ': ' . $imgInfo["width"] . 'px</div>
+	                            <div>' . JText::_("AG_IMG_HEIGHT") . ': ' . $imgInfo["height"] . 'px</div>
+	                            <div>' . JText::_("AG_IMG_TYPE") . ': ' . $imgInfo["type"] . '</div>
+	                            <div>' . JText::_("AG_IMG_SIZE") . ': ' . $imgInfo["size"] . '</div>
+	                            <div>' . $hasXML . $hasThumb . '</div>
 	                        </td>
 	                    </tr>
 	                </tbody>
@@ -160,78 +286,106 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 	            ';
 	}
 
-	function ag_render_caption($ag_lang_name, $ag_lang_tag, $ag_lang_content): string
+	/**
+	 * renderCaption
+	 *
+	 * @param   mixed $langName    Language name
+	 * @param   mixed $langTag     Language tag
+	 * @param   mixed $langContent Language content
+	 *
+	 * @return string
+	 *
+	 * @since 1.0.0
+	 */
+	private function renderCaption($langName, $langTag, $langContent): string
 	{
 		return '
 	<div class="AG_border_color AG_border_width AG_margin_bottom">
-	    ' . $ag_lang_name . ' / ' . $ag_lang_tag . '
-	    <textarea class="AG_textarea" name="descContent[]">' . $ag_lang_content . '</textarea><input type="hidden" name="descTags[]" value="' . $ag_lang_tag . '" />
+	    ' . $langName . ' / ' . $langTag . '
+	    <textarea class="AG_textarea" name="descContent[]">' .
+				$langContent . '</textarea><input type="hidden" name="descTags[]" value="' . $langTag . '" />
 	</div>
     ';
 	}
 
-	function ag_render_captions($ag_imgXML_captions): string
+	/**
+	 * renderCaptions
+	 *
+	 * @param   mixed $imgCaptions Array of caption objects
+	 *
+	 * @return string
+	 *
+	 * @since 1.0.0
+	 */
+	public function renderCaptions(array $imgCaptions): string
 	{
-		$ag_site_languages = "";
-		$ag_matchCheck = Array("default");
+		$siteLanguages = "";
+		$matchCheck = Array("default");
 
 		// GET DEFAULT LABEL
-		$ag_imgXML_caption_content = "";
+		$captionContent = "";
 
-		if (!empty($ag_imgXML_captions->caption))
+		if (!empty($imgCaptions->caption))
 		{
-			foreach ($ag_imgXML_captions->caption as $ag_imgXML_caption)
+			foreach ($imgCaptions->caption as $caption)
 			{
-				if (strtolower($ag_imgXML_caption->attributes()->lang) == "default")
+				if (strtolower($caption->attributes()->lang) == "default")
 				{
-					$ag_imgXML_caption_content = $ag_imgXML_caption;
+					$captionContent = $caption;
 				}
 			}
 		}
 
-		$ag_site_languages .= $this->ag_render_caption("Default", "default", $ag_imgXML_caption_content);
+		$siteLanguages .= $this->renderCaption("Default", "default", $captionContent);
 
-		$ag_lang_available = LanguageHelper::getKnownLanguages(JPATH_SITE);
+		$langAvailable = LanguageHelper::getKnownLanguages(JPATH_SITE);
 
-		if (!empty($ag_lang_available))
+		if (!empty($langAvailable))
 		{
-			foreach ($ag_lang_available as $ag_lang)
+			foreach ($langAvailable as $lang)
 			{
-				$ag_imgXML_caption_content = "";
+				$captionContent = "";
 
-				if (!empty($ag_imgXML_captions->caption))
+				if (!empty($imgCaptions->caption))
 				{
-					foreach ($ag_imgXML_captions->caption as $ag_imgXML_caption)
+					foreach ($imgCaptions->caption as $caption)
 					{
-						if (strtolower($ag_imgXML_caption->attributes()->lang) == strtolower($ag_lang["tag"]))
+						if (strtolower($caption->attributes()->lang) == strtolower($lang["tag"]))
 						{
-							$ag_imgXML_caption_content = $ag_imgXML_caption;
-							$ag_matchCheck[] = strtolower($ag_lang["tag"]);
+							$captionContent = $caption;
+							$matchCheck[] = strtolower($lang["tag"]);
 						}
 					}
 				}
 
-				$ag_site_languages .= $this->ag_render_caption($ag_lang["name"], $ag_lang["tag"], $ag_imgXML_caption_content);
+				$siteLanguages .= $this->renderCaption($lang["name"], $lang["tag"], $captionContent);
 			}
 		}
 
-		if (!empty($ag_imgXML_captions->caption))
+		if (!empty($imgCaptions->caption))
 		{
-			foreach ($ag_imgXML_captions->caption as $ag_imgXML_caption)
+			foreach ($imgCaptions->caption as $caption)
 			{
-				$ag_imgXML_caption_attr = $ag_imgXML_caption->attributes()->lang;
+				$captionAttr = $caption->attributes()->lang;
 
-				if (!is_numeric(array_search(strtolower($ag_imgXML_caption_attr), $ag_matchCheck)))
+				if (!is_numeric(array_search(strtolower($captionAttr), $matchCheck)))
 				{
-					$ag_site_languages .= $this->ag_render_caption($ag_imgXML_caption_attr, $ag_imgXML_caption_attr, $ag_imgXML_caption);
+					$siteLanguages .= $this->renderCaption($captionAttr, $captionAttr, $caption);
 				}
 			}
 		}
 
-		return $ag_site_languages;
+		return $siteLanguages;
 	}
 
-	function ag_render_file_footer(): string
+	/**
+	 * renderFileFooter
+	 *
+	 * @return string
+	 *
+	 * @since 1.0.0
+	 */
+	public function renderFileFooter(): string
 	{
 		return '<div style="clear:both" class="AG_margin_bottom"></div>
         <hr />
@@ -239,11 +393,13 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
         <h2>' . JText::_('AG_LEGEND') . '</h2>
         <table><tbody>
         <tr>
-            <td><img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasThumb.png" style="float:left;" /></td>
+            <td><img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' .
+				$this->templateName . '/images/icon-hasThumb.png" style="float:left;" /></td>
             <td>' . JText::_('AG_IMAGE_HAS_THUMBNAIL_CREATED') . '</td>
         </tr>
         <tr>
-            <td><img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasXML.png" style="float:left;" /></td>
+            <td><img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' .
+				$this->templateName . '/images/icon-hasXML.png" style="float:left;" /></td>
             <td>' . JText::_('AG_IMAGE_HAS_ADDITIONAL_DETAILS_SAVED') . '</td>
         </tr>
         </tbody></table>
@@ -251,8 +407,178 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
         ';
 	}
 
-	function ag_get_bookmark_path()
+	/**
+	 * getBookmarkPath
+	 *
+	 * @return string
+	 *
+	 * @since 1.0.0
+	 */
+	public function getBookmarkPath(): string
 	{
 		return $this->getModel('imagemanager')->bookmarkPath;
+	}
+
+	public function renderItems(string $path, string $type, string $thumb): string
+	{
+		$hasXML = "<img src='{JURI::root(true)}/administrator/components/com_admirorgallery/templates/{
+			$this->templateName}/images/icon-hasXML.png'  class='hasXML' />";
+		$hasThumb = "<img src='{JURI::root(true)}'/administrator/components/com_admirorgallery/templates/{
+			$this->templateName}/images/icon-hasThumb.png\"  class=\"hasThumb\" />";
+		$previewContent .= JText::_('AG_NO_FOLDERS_OR_IMAGES_FOUND_IN_CURRENT_FOLDER');
+		$items = array();
+		$priority = array();
+		$noPriority = array();
+		$objects = array();
+
+		if ($type == 'folder')
+		{
+			$items = JFolder::folders(JPATH_SITE . $path);
+		}
+		else
+		{
+			$items = JFolder::files(JPATH_SITE . $this->initItemURL);
+		}
+
+		foreach ($items as $value)
+		{
+			if (($type != 'folder') && is_numeric(array_search(strtolower(JFile::getExt(basename($value))), $validExtensions)))
+			{
+				continue;
+			}
+
+			// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
+			$descriptionPath = JPATH_SITE . $path . JFile::stripExt(basename($value)) . ".XML";
+
+			if (file_exists($pathWithStripExt . ".xml"))
+			{
+				$descriptionPath = $pathWithStripExt . ".xml";
+			}
+
+			$description = simplexml_load_file($descriptionPath);
+
+			if (!$description)
+			{
+				if (!empty($description->priority))
+				{
+					$priority[$value] = $description->priority;
+				}
+				else
+				{
+					$noPriority[] = $value;
+				}
+			}
+			else
+			{
+				$noPriority[] = $value;
+			}
+		}
+
+		asort($priority);
+
+		foreach ($priority as $key => $value)
+		{
+			$objects[] = $key;
+		}
+
+		natcasesort($noPriority);
+
+		foreach ($noPriority as $key => $value)
+		{
+			$objects[] = $value;
+		}
+
+		foreach ($objects as $key => $value)
+		{
+			$hasThumb = "";
+
+			// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
+			$descriptionPath = JPATH_SITE . $path . JFile::stripExt(basename($value)) . ".XML";
+
+			if (file_exists($pathWithStripExt . ".xml"))
+			{
+				$descriptionPath = $pathWithStripExt . ".xml";
+			}
+
+			$description = simplexml_load_file($descriptionPath);
+
+			$visible = "AG_VISIBLE";
+			$priority = "";
+
+			if (!$description)
+			{
+				if (isset($description->priority))
+				{
+					$priority = $description->priority;
+				}
+
+				if (isset($description->visible))
+				{
+					if ((string) $description->visible == "false")
+					{
+						$visible = "AG_HIDDEN";
+					}
+				}
+			}
+
+			$valueStripped = $value;
+			$iconImage = "<img src=\"{JURI::root(true)}/administrator/components/com_admirorgallery/templates/
+						{$this->templateName}/images/folder.png\" />";
+
+			if ($type != 'folder')
+			{
+				if (!file_exists(JPATH_SITE . "/plugins/content/admirorgallery/admirorgallery/thumbs/" .
+					basename($folderName) . "/" . basename($value)
+				)
+				)
+				{
+					$hasThumb = '';
+				}
+
+				Helper::createThumbnail(JPATH_SITE . $path . $value, $this->thumbsPath . DIRECTORY_SEPARATOR . $value, 145, 80, "none");
+
+				$thumbChecked = "";
+
+				if ($thumb == $value)
+				{
+					$thumbChecked = " CHECKED";
+				}
+
+				$iconImage = "<img src=\"{JURI::root(true)}administrator/components/com_admirorgallery/assets/thumbs/{$value}
+					\" class=\"ag_imgThumb\" />";
+				$valueStripped = JFile::stripExt(basename($value));
+				$thumbnailInput = "
+					<hr /> 
+					<input type=\"radio\" value=\"{$value}\" name=\"folderThumb\" class=\"folderThumb\" class=\"AG_input {$thumbChecked}\"/>&nbsp;
+					{JText::_('folderThumb')}";
+			}
+
+			$outputPath = "{$path}{$value}";
+			$previewContent .= "
+			<div class=\"AG_border_color AG_border_width AG_item_wrapper\">
+				<a href=\"{$outputPath}\" class=\"AG_folderLink AG_item_link\" title=\"{$value}\">
+					<div style=\"display:block; text-align:center;\" class=\"AG_item_img_wrapper\">
+					<img src=\"{JURI::root(true)}/administrator/components/com_admirorgallery/templates/{$this->templateName}/images/folder.png\" />
+					
+					</div>
+				</a>
+				<div class=\"AG_border_color AG_border_width AG_item_controls_wrapper\">
+					<input type=\"text\" value=\"{$valueStripped}\" name=\"rename[{$outputPath}]\" class=\"AG_input\" style=\"width:95%\" />
+					<hr />
+					{JText::_($visible)}
+					<hr />
+					<img src=\"{JURI::root(true)}administrator/components/com_admirorgallery/templates/{$this->templateName}/images/operations.png\" 
+						style=\"float:left;\" />
+					<input type=\"checkbox\" value=\"{$outputPath}/\" name=\"selectItem[]\" class=\"selectItem\">
+					<hr />
+					{JText::_('priority')}:&nbsp;
+					<input type=\"text\" size=\"3\" value=\"{$priority}\" name=\"cbPriority[\'{$outputPath}\']\" class=\"AG_input\" />
+					{$thumbnailInput}
+				</div>
+			</div>
+			";
+		}
+
+		return $previewContent;
 	}
 }

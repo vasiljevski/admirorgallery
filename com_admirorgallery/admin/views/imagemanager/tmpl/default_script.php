@@ -13,17 +13,19 @@ defined('_JEXEC') or die();
 ?>
 <script type="text/javascript">
 
-	var ag_init_itemURL = '<?php echo $this->ag_init_itemURL; ?>';
-	var ag_init_itemType = '<?php echo $ag_init_itemType; ?>';
+	var initItemURL = '<?php echo $this->initItemURL; ?>';
+	var initItemType = '<?php echo $initItemType; ?>';
 
-	<?php if ($this->app->isClient('site'))
-	{
-		?>
+<?php if ($this->app->isClient('site'))
+{
+	?>
 	Joomla.submitbutton = function (pressbutton) {
 		AG_jQuery('input[name="task"]').val(pressbutton);
 		AG_jQuery('form[id="adminForm"]').submit();
 	};
-	<?php } ?>
+	<?php
+}
+?>
 	function basename(path) {
 		return path.replace(/\\/g, "/").replace(/.*\//, "");
 	}
@@ -51,8 +53,16 @@ defined('_JEXEC') or die();
 			e.preventDefault();
 			AG_jQuery("#AG_folder_add").prepend("<input type=\'text\' class=\'AG_input\' name=\'addFolders[]\'/>");
 			if (!AG_jQuery("#ag_create_new_folder").length) {
-				AG_jQuery("#AG_folder_add").append('<a href="#" id="ag_create_new_folder" class="AG_common_button"><span><span><?php echo JText::_('COM_ADMIRORGALLERY_TOOLBAR_APPLY'); ?></span></span></a>');
-				AG_jQuery("#AG_folder_add").append('<a href="#" id="ag_cancel_new_folder" class="AG_common_button"><span><span><?php echo JText::_('COM_ADMIRORGALLERY_TOOLBAR_CANCEL'); ?></span></span></a>');
+				AG_jQuery("#AG_folder_add").
+					append('<a href="#" id="ag_create_new_folder" class="AG_common_button"><span><span><?php
+					echo JText::_('COM_ADMIRORGALLERY_TOOLBAR_APPLY');
+					?></span></span></a>'
+					);
+				AG_jQuery("#AG_folder_add").
+					append('<a href="#" id="ag_cancel_new_folder" class="AG_common_button"><span><span><?php
+					echo JText::_('COM_ADMIRORGALLERY_TOOLBAR_CANCEL');
+					?></span></span></a>'
+					);
 				// Binding event to Create New Folder
 				AG_jQuery("#ag_create_new_folder").click(function (e) {
 					e.preventDefault();
@@ -125,9 +135,10 @@ defined('_JEXEC') or die();
 		AG_jQuery(".folderThumb").change(function () {
 			AG_jQuery("#AG_folderSettings_status").val("edit");
 		});
-		<?php if ($this->app->isClient('site'))
-		{
-			?>
+<?php
+if ($this->app->isClient('site'))
+{
+	?>
 		// SET SHORTCUTS
 		AG_jQuery(document).bind("keydown", "ctrl+return", function () {
 			submitbutton("agApply");
@@ -137,7 +148,9 @@ defined('_JEXEC') or die();
 			submitbutton("agReset");
 			return false;
 		});
-		<?php } ?>
-	});//AG_jQuery(function()
+	<?php
+}
+?>
+	}); //AG_jQuery(function()
 
 </script>

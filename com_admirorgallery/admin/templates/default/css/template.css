@@ -344,7 +344,7 @@ a.AG_common_button:hover span span {
     background-position: left -72px;
 }
 
-.ag_hasXML,
+.hasXML,
 .ag_itemControls {
     vertical-align: middle;
     line-height: 22px;
@@ -352,8 +352,8 @@ a.AG_common_button:hover span span {
     padding: 0;
 }
 
-.ag_hasXML,
-.ag_hasThumb {
+.hasXML,
+.hasThumb {
     vertical-align: middle;
     margin: 0;
     padding: 0;
