@@ -15,6 +15,8 @@ use Admiror\Plugin\Content\AdmirorGallery\Helper;
 use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\Uri\Uri as JURI;
 
+$templateBase = JURI::root(true) . "/administrator/components/com_admirorgallery/templates/{$this->templateName}";
+
 ?>
 <div class="AG_body_wrapper">
 	<!--FORMAT SCREEN-->
@@ -24,43 +26,44 @@ use Joomla\CMS\Uri\Uri as JURI;
 			<td class="AG_bookmarks_wrapper" style="display:none;">
 
 				<h1>
-					<img src="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' .
-											$this->templateName . '/images/bookmark.png'; ?>"
+					<img src="<?php echo "{$templateBase}/images/bookmark.png"; ?>"
 						 style="float:left;"/>&nbsp;<?php echo JText::_('AG_GALLERIES'); ?>
 				</h1>
 <?php
+
 $bookmarks = simplexml_load_file($this->getBookmarkPath());
 
-if (isset($bookmarks->bookmark))
-{
+if ($bookmarks && isset($bookmarks->bookmark))
+:
 	foreach ($bookmarks->bookmark as $key => $value)
-	{
+	:
 		?>
-
 		<table cellspacing="0" cellpadding="0">
 			<tbody>
 			<tr>
 				<td>
-					<img src="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' .
-											$this->templateName . '/images/bookmarkRemove.png'; ?>"
+					<img src="<?php echo "{$templateBase}/images/bookmarkRemove.png"; ?>"
 							style="float:left;"/></td>
-				<td><input type="checkbox" value="<?php echo $value; ?>"
-							name="bookmarksToRemove[]"></td>
-				<td><span class="AG_border_color AG_border_width AG_separator">&nbsp;</span></td>
 				<td>
-					<a href="' . $value . '" class="AG_folderLink AG_common_button"
-						title="' . $value . '">
-								<span><span>
-										<?php echo Helper::shrinkString(basename($value), 20); ?>
-									</span></span>
+					<input type="checkbox" value="<?php echo $value; ?>"
+							name="bookmarksToRemove[]"></td>
+				<td>
+					<span class="AG_border_color AG_border_width AG_separator">&nbsp;</span></td>
+				<td>
+					<a href="<?php echo $value ?>" class="AG_folderLink AG_common_button" title="<?php echo $value ?>">
+						<span>
+							<span>
+							<?php echo Helper::shrinkString(basename($value), 20); ?>
+							</span>
+						</span>
 					</a>
 				</td>
 			</tr>
 			</tbody>
 		</table>
 		<?php
-	}
-}
+	endforeach;
+endif;
 ?>
 
 				<div style="clear:both" class="AG_margin_bottom"></div>
@@ -71,8 +74,7 @@ if (isset($bookmarks->bookmark))
 						<tbody>
 						<tr>
 							<td>
-								<img src="<?php echo JURI::root() . 'administrator/components/com_admirorgallery/templates/' .
-														$this->templateName . '/images/bookmarkRemove.png' ?>"
+								<img src="<?php echo "{$templateBase}/images/bookmarkRemove.png" ?>"
 									 style="float:left;"/></td>
 							<td><?php echo JText::_('AG_SELECT_TO_REMOVE_BOOKMARK') ?></td>
 						</tr>

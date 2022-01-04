@@ -199,15 +199,15 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 	 *
 	 * @param   string $itemURL     Item URL
 	 * @param   string $rootFolder  Root folder
-	 * @param   string $folderName  Folder name
-	 * @param   string $fileName    File name
 	 *
 	 * @return string
 	 *
 	 * @since 1.0.0
 	 */
-	public function renderBreadcrumb(string $itemURL, string $rootFolder, string $folderName, string $fileName): string
+	public function renderBreadcrumb(string $itemURL, string $rootFolder): string
 	{
+		$folderName = dirname($itemURL);
+		$fileName = basename($itemURL);
 		$breadcrumb = '';
 		$breadcrumbLink = '';
 
@@ -416,7 +416,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 	 *
 	 * @since 1.0.0
 	 */
-	public function getBookmarkPath(): string
+	public function getBookmarkPath(): ?string
 	{
 		return $this->getModel('imagemanager')->bookmarkPath;
 	}
@@ -444,6 +444,8 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 			$items = JFolder::files(JPATH_SITE . $path);
 		}
 
+		//$items = scandir(JPATH_SITE . $path);
+
 		foreach ($items as $value)
 		{
 			if (($type == 'file') && !is_numeric(array_search(strtolower(JFile::getExt(basename($value))), $validExtensions)))
@@ -454,9 +456,9 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 			// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
 			$descriptionPath = JPATH_SITE . $path . JFile::stripExt(basename($value)) . ".XML";
 
-			if (file_exists($pathWithStripExt . ".xml"))
+			if (file_exists($descriptionPath . ".xml"))
 			{
-				$descriptionPath = $pathWithStripExt . ".xml";
+				$descriptionPath = $descriptionPath . ".xml";
 			}
 
 			$description = simplexml_load_file($descriptionPath);
@@ -501,9 +503,9 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 			// Set Possible Description File Absolute Path // Instant patch for upper and lower case...
 			$descriptionPath = JPATH_SITE . $path . JFile::stripExt(basename($value)) . ".XML";
 
-			if (file_exists($pathWithStripExt . ".xml"))
+			if (file_exists($descriptionPath . ".xml"))
 			{
-				$descriptionPath = $pathWithStripExt . ".xml";
+				$descriptionPath = $descriptionPath . ".xml";
 			}
 
 			$description = simplexml_load_file($descriptionPath);
@@ -530,11 +532,12 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 			$valueStripped = $value;
 			$iconImage = "<img src=\"{$juriRoot}/administrator/components/com_admirorgallery/templates/
 						{$this->templateName}/images/folder.png\" />";
+			$thumbnailInput = "";
 
 			if ($type != 'folder')
 			{
 				if (!file_exists(JPATH_SITE . "/plugins/content/admirorgallery/admirorgallery/thumbs/" .
-					basename($folderName) . "/" . basename($value)
+					basename($path) . "/" . basename($value)
 				)
 				)
 				{

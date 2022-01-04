@@ -38,7 +38,7 @@ $previewContent .= '
 <h1>' . JText::_('AG_CURRENT_FOLDER') . '</h1>
 
 <div class="AG_breadcrumbs_wrapper">
-     ' . $this->renderBreadcrumb($this->initItemURL, $this->startingFolder, $folderName, $fileName) . '
+     ' . $this->renderBreadcrumb($this->initItemURL, $this->startingFolder) . '
 </div>
 <hr />
 

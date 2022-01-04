@@ -105,7 +105,7 @@ $previewContent .= '<hr />';
 $previewContent .= '
 <h1>' . JText::_('AG_IMAGE_DETAILS_FOR_FILE') . '</h1>
 <div class="AG_border_color AG_border_width AG_margin_bottom AG_breadcrumbs_wrapper">
-' . $this->renderBreadcrumb($this->initItemURL, $this->startingFolder, $folderName, $fileName) . '
+' . $this->renderBreadcrumb($this->initItemURL, $this->startingFolder) . '
 </div>
 ';
 

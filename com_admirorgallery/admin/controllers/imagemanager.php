@@ -28,6 +28,14 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 	private ?JModelLegacy $model;
 
 	/**
+	 * webSafe
+	 *
+	 * @var array
+	 *
+	 * @since 1.0.0
+	 */
+	public $webSafe = array("/", " ", ":", ".", "+", "&");
+	/**
 	 * __construct
 	 *
 	 * @since 1.0.0
@@ -41,6 +49,10 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 		$this->registerTask('agReset', 'agReset');
 	}
 
+	public function getModel($name = 'Imagemanager', $prefix = 'AdmirorgalleryModel', $config = array('ignore_request' => true))
+	{
+		return parent::getModel($name, $prefix, $config);
+	}
 	/**
 	 * agApply
 	 *
@@ -51,7 +63,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 	public function agApply(): void
 	{
 
-		$model = $this->getModel('imagemanager');
+		$model = $this->getModel();
 
 		$itemURL = $this->input->getPath('itemURL');
 
@@ -105,7 +117,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 						$model->copyItems($selectItem, $operationsTargetFolder);
 						break;
 					case "bookmark":
-						$model->bookmarkAdd($selectItem);
+						$model->bookmarkAdd($selectItem, $model->bookmarkPath);
 						break;
 					case "delete":
 						$model->removeItems($selectItem);
@@ -129,7 +141,7 @@ class AdmirorgalleryControllerImagemanager extends AdmirorgalleryController
 					$originalName = JFile::stripExt(basename($renameKey));
 
 					// CREATE WEBSAFE TITLES
-					foreach ($this->model->webSafe as $key => $value)
+					foreach ($this->webSafe as $key => $value)
 					{
 						$newName = str_replace($value, "-", $renameValue);
 					}

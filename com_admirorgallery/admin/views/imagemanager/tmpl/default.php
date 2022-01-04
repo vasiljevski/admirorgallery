@@ -13,8 +13,8 @@ defined('_JEXEC') or die();
 ?>
 <div class="row-fluid">
 <?php
-if (!$this->app->isClient('site'))
-{
+if ($this->app->isClient('administrator'))
+:
 	?>
 	<div class="span2">
 		<div class="well well-small">
@@ -30,28 +30,26 @@ if (!$this->app->isClient('site'))
 	</div>
 	<div class="span10">
 	<?php
-}
-else
-{
+else : 
 	?>
 		<div class="span12">
 	<?php
-}
+endif;
 ?>
-			<div class="well well-small">
-				<form action="<?php echo JRoute::_('index.php?option=com_admirorgallery&view=imagemanager'); ?>"
-					  method="post"
-					  name="adminForm"
-					  id="adminForm"
-					  enctype="multipart/form-data">
+		<div class="well well-small">
+			<form action="<?php echo JRoute::_('index.php?option=com_admirorgallery&view=imagemanager'); ?>"
+					method="post"
+					name="adminForm"
+					id="adminForm"
+					enctype="multipart/form-data">
 
-					<input type="hidden" name="option" value="com_admirorgallery"/>
-					<input type="hidden" name="task" value=""/>
-					<input type="hidden" name="boxchecked" value="0"/>
-					<input type="hidden" name="view" value="imagemanager"/>
-					<input type="hidden" name="controller" value="imagemanager"/>
-					<input type="hidden" name="itemURL" value="<?php echo $this->initItemURL; ?>"
-						   id="AG_input_itemURL"/>
+				<input type="hidden" name="option" value="com_admirorgallery"/>
+				<input type="hidden" name="task" value=""/>
+				<input type="hidden" name="boxchecked" value="0"/>
+				<input type="hidden" name="view" value="imagemanager"/>
+				<input type="hidden" name="controller" value="imagemanager"/>
+				<input type="hidden" name="itemURL" value="<?php echo $this->initItemURL; ?>"
+						id="AG_input_itemURL"/>
 
 <?php
 if (file_exists(JPATH_SITE . $this->initItemURL))
