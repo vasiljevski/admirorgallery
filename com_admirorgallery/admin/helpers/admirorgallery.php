@@ -62,7 +62,7 @@ abstract class AdmirorGalleryHelper
 	 *
 	 * @since 5.5.0
 	 */
-	public static function getCmd(string $name, mixed $default): ?string
+	public static function getCmd(string $name, string $default): ?string
 	{
 		try
 		{

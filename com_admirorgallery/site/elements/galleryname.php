@@ -23,18 +23,17 @@ FormHelper::loadFieldClass('folderlist');
  */
 class JFormFieldGalleryName extends JFormFieldFolderList
 {
-	/**
-	 * getOptions
-	 *
-	 * @return  array  The field option objects.
-	 *
-	 * @since 1.0.0
-	 */
-	public function getOptions()
-	{
-		$this->directory = (!empty($this->form->getValue("params")->rootFolder)) ? $this->form->getValue("params")->rootFolder : $this->directory;
+    /**
+     * getOptions
+     *
+     * @return  array  The field option objects.
+     *
+     * @since 1.0.0
+     */
+    public function getOptions()
+    {
+        $this->directory = (!empty($this->form->getValue("params")->rootFolder)) ? $this->form->getValue("params")->rootFolder : $this->directory;
 
-		return parent::getOptions();
-	}
+        return parent::getOptions();
+    }
 }
-

@@ -14,7 +14,6 @@ defined('_JEXEC') or die();
 
 use Joomla\CMS\Toolbar\Toolbar as JToolBar;
 
-
 /**
  * AdmirorgalleryHelperToolbar
  *
@@ -22,20 +21,20 @@ use Joomla\CMS\Toolbar\Toolbar as JToolBar;
  */
 class AdmirorgalleryHelperToolbar extends JToolBar
 {
-	/**
-	 * getToolbar
-	 *
-	 * @return string
-	 *
-	 * @since 1.0.0
-	 */
-	public static function getToolbar(): string
-	{
-		$bar = new JToolBar('toolbar');
+    /**
+     * getToolbar
+     *
+     * @return string
+     *
+     * @since 1.0.0
+     */
+    public static function getToolbar(): string
+    {
+        $bar = new JToolBar('toolbar');
 
-		$bar->appendButton('Standard', 'unpublish', 'COM_ADMIRORGALLERY_RESET_DESC', 'agReset', false);
-		$bar->appendButton('Standard', 'publish', 'COM_ADMIRORGALLERY_APPLY_DESC', 'agApply', false);
+        $bar->appendButton('Standard', 'unpublish', 'COM_ADMIRORGALLERY_RESET_DESC', 'agReset', false);
+        $bar->appendButton('Standard', 'publish', 'COM_ADMIRORGALLERY_APPLY_DESC', 'agApply', false);
 
-		return $bar->render();
-	}
+        return $bar->render();
+    }
 }

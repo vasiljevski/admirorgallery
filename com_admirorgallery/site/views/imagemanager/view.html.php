@@ -16,7 +16,7 @@ use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Uri\Uri as JURI;
 
 $doc = JFactory::getApplication()->getDocument();
-$template = JFactory::getApplication()->input->getString('AG_template');
+$template = JFactory::getApplication()->input->getString('template');
 
 // Shared scripts for all views
 $doc->addScript(JURI::root(true) . '/plugins/content/admirorgallery/admirorgallery/AG_jQuery.js');
@@ -25,4 +25,4 @@ $doc->addStyleSheet(JURI::root(true) . '/administrator/components/com_admirorgal
 $doc->addStyleSheet(JURI::root(true) . '/administrator/components/com_admirorgallery/templates/' . $template . '/css/toolbar.css');
 
 require_once JPATH_COMPONENT_ADMINISTRATOR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR .
-				'imagemanager' . DIRECTORY_SEPARATOR . 'view.html.php';
+			'imagemanager' . DIRECTORY_SEPARATOR . 'view.html.php';

@@ -137,9 +137,8 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 		);
 
 		 // Current template for AG Component
-		$this->templateName = $post->get('AG_template', 'default');
+		$this->templateName = $post->get('template', 'default');
 		$itemUrl = $post->getVar('itemURL');
-		print_r($itemUrl);
 
 		// GET ROOT FOLDER
 		$plugin = JPluginHelper::getPlugin('content', 'admirorgallery');
@@ -220,12 +219,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 
 			$breadcrumbLink .= $rootFolder;
 			$breadcrumbCut = substr($folderName, strlen($rootFolder));
-			print_r($breadcrumbCut);
 			$breadcrumbCutArray = explode("/", $breadcrumbCut);
-
-			print_r("<pre>");
-			print_r($breadcrumbCutArray);
-			print_r("</pre>");
 
 			foreach ($breadcrumbCutArray as $cutValue)
 			{

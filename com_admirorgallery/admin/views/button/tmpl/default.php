@@ -22,7 +22,7 @@ require_once JPATH_COMPONENT_ADMINISTRATOR . '/helpers/admirorgallery.php';
 $doc = JFactory::getApplication()->getDocument();
 
 // Current template for AG Component
-$template = AdmirorGalleryHelper::getCmd('AG_template', '');
+$template = AdmirorGalleryHelper::getCmd('template', '');
 $itemUrl = AdmirorGalleryHelper::getRootPath();
 $path = JURI::root(true) . "/";
 
