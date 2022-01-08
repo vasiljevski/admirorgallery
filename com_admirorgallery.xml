@@ -8,8 +8,8 @@
     <copyright>This extension in released under the GNU/GPL License - https://www.gnu.org/licenses/gpl-3.0.html</copyright>
     <license>GNU/GPL</license>
     <version>6.0.0</version>
-    <button_version>6.0.0</button_version>
-    <plugin_version>6.0.0</plugin_version>
+    <buttonVersion>6.0.0</buttonVersion>
+    <pluginVersion>6.0.0</pluginVersion>
     <description>COM_ADMIRORGALLERY_DESCRIPTION</description>
     <scriptfile>admirorgallery.scriptfile.php</scriptfile>
     <updateservers>
