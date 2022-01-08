@@ -14,7 +14,7 @@ defined('_JEXEC') or die();
 <script type="text/javascript">
 
 	var initItemURL = '<?php echo $this->initItemURL; ?>';
-	var initItemType = '<?php echo $initItemType; ?>';
+	var initItemType = '<?php echo $this->itemType; ?>';
 
 <?php if ($this->app->isClient('site'))
 {

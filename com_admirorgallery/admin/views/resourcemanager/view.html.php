@@ -88,26 +88,4 @@ class AdmirorgalleryViewResourcemanager extends JViewLegacy
 
 		parent::display($tpl);
 	}
-
-	/**
-	 * getVersionInfoHTML
-	 *
-	 * @return  string
-	 */
-	public function getVersionInfoHTML(): string
-	{
-		$xmlObject = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/com_admirorgallery.xml');
-
-		$versionInfo = "";
-
-		if ($xmlObject)
-		{
-			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_COMPONENT_VERSION') . '&nbsp;' . $xmlObject->version . "</li>";
-			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_PLUGIN_VERSION') . '&nbsp;' . $xmlObject->pluginVersion . "</li>";
-			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_BUTTON_VERSION') . '&nbsp;' . $xmlObject->buttonVersion . "</li>";
-		}
-
-		return $versionInfo;
-	}
-
 }

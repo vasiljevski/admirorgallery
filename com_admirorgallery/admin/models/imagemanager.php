@@ -80,6 +80,13 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
 		}
 	}
 
+	public function getBookmarks() {
+		if(is_file($this->bookmarkPath)) {
+			return simplexml_load_file($this->bookmarkPath);
+		}
+		return array();
+	}
+
 	/**
 	 * saveXml
 	 *

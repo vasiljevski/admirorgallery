@@ -86,5 +86,4 @@ class AdmirorgalleryController extends JControllerLegacy
 		);
 		parent::display();
 	}
-
 }

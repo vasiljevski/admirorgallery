@@ -19,6 +19,7 @@ use Joomla\CMS\Uri\Uri as JURI;
 use Joomla\Registry\Registry as JRegistry;
 use Joomla\CMS\MVC\View\HtmlView as JViewLegacy;
 use Joomla\CMS\Toolbar\ToolbarHelper as JToolBarHelper;
+use Joomla\CMS\Component\ComponentHelper as JComponentHelper;
 use Admiror\Plugin\Content\AdmirorGallery\Helper;
 
 /**
@@ -63,6 +64,11 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 	 */
 	public $app = null;
 
+	public $juriRoot = "";
+
+	public $itemType = "folder";
+
+	public $uploadMaxSize = 100;
 	/**
 	 * @var string
 	 *
@@ -93,38 +99,27 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 		{
 			return;
 		}
-
-		/**
-		 * Make sure you are logged in and have the necessary access
-		 * 5 - Publisher
-		 * 6 - Manager
-		 * 7 - Administrator
-		 * 8 - Super Users
-		 */
-		$validUsers = array(5 ,6 ,7 ,8);
-		$user = JFactory::getUser();
+	
 		$this->app = JFactory::getApplication();
 		$post = JFactory::getApplication()->input->post;
-		$grantAccess = false;
-		$userGroups = $user->getAuthorisedGroups();
+		$this->juriRoot = JURI::root(true);
 
-		foreach ($userGroups as $group)
-		{
-			if (in_array($group, $validUsers))
-			{
-				$grantAccess = true;
-				break;
-			}
-		}
+		$grantAccess = $this->isAccessGranted();
 
 		if (!$grantAccess)
 		{
 			$this->app->setHeader('status', 403, true);
 			$this->app->enqueueMessage(JText::_('JERROR_ALERTNOAUTHOR'), 'warning');
-
 			return;
 		}
 
+		if (!file_exists(JPATH_SITE . $this->initItemURL))
+		{
+			$errorMsg[] = array(JText::_('AG_FOLDER_OR_IMAGE_NOT_FOUND'), $this->initItemURL);
+			$this->app->enqueueMessage(JText::_('AG_FOLDER_OR_IMAGE_NOT_FOUND') . "<br>{$this->initItemURL}", 'warning');
+			$previewContent ="<div class=\"ag_screenSection_title\">{$this->initItemURL}</div>";
+			return;
+		}
 		/**
 		 * Backward compatibility with Joomla!3
 		 * Load namespace
@@ -140,6 +135,9 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 		$this->templateName = $post->get('template', 'default');
 		$itemUrl = $post->getVar('itemURL');
 
+		$this->bookmarks = $this->get('bookmarks');
+		$this->templateBasePath = "{$this->juriRoot}/administrator/components/com_admirorgallery/templates/{$this->templateName}";
+
 		// GET ROOT FOLDER
 		$plugin = JPluginHelper::getPlugin('content', 'admirorgallery');
 		$pluginParams = new JRegistry($plugin->params);
@@ -147,18 +145,33 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 		$rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
 		$galleryPath = $rootFolder;
 
-		if ($this->app->isClient('site'))
-		{
-			$galleryPath .= ($this->app->getParams()->get('galleryName') != "-1") ? $this->app->getParams()->get('galleryName') . "/" : "";
-		}
-
 		$this->rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
 		$this->startingFolder = $this->rootFolder;
 		$this->initItemURL = $this->rootFolder;
 
-		// Check if we are in site
+		$this->uploadMaxSize = JComponentHelper::getParams('com_media')->get('upload_maxsize', 0);
+
 		if ($this->app->isClient('site'))
 		{
+			$galleryPath .= ($this->app->getParams()->get('galleryName') != "-1") ? $this->app->getParams()->get('galleryName') . "/" : "";
+			
+			$bar = new JToolBar('toolbar');
+
+			$bar->appendButton('Standard', 'unpublish', 'COM_ADMIRORGALLERY_RESET_DESC', 'agReset', false);
+			$bar->appendButton('Standard', 'publish', 'COM_ADMIRORGALLERY_APPLY_DESC', 'agApply', false);
+	
+			$doc = JFactory::getApplication()->getDocument();
+			$template = JFactory::getApplication()->input->getString('template');
+
+			// Shared scripts for all views
+			$doc->addScript("{$this->juriRoot}/plugins/content/admirorgallery/admirorgallery/AG_jQuery.js");
+			$doc->addScript("{$this->juriRoot}/administrator/components/com_admirorgallery/scripts/jquery.hotkeys-0.7.9.min.js");
+			$doc->addStyleSheet("{$this->juriRoot}/administrator/components/com_admirorgallery/templates/{$this->templateName}/css/template.css");
+			$doc->addStyleSheet("{$this->juriRoot}/administrator/components/com_admirorgallery/templates/{$this->templateName}/css/toolbar.css");
+
+			$this->toolbar = $bar->render();
+			$this->addTemplatePath(JPATH_COMPONENT_ADMINISTRATOR.'/views/imagemanager/tmpl/');
+
 			$this->startingFolder = $galleryPath;
 			$this->initItemURL = $galleryPath;
 		}
@@ -168,30 +181,40 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
 			$this->initItemURL = $itemUrl;
 		}
 
+		if (is_dir(JPATH_SITE . $this->initItemURL)) {
+			$this->itemType = "folder";
+		} else {
+			$this->itemType = "file";
+		}
+
 		JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_IMAGE_MANAGER'), 'imagemanager');
 
 		parent::display($tpl);
 	}
 
-	/**
-	 * getVersionInfoHTML
-	 *
-	 * @return  string
-	 */
-	public function getVersionInfoHTML(): string
+	private function isAccessGranted(): bool
 	{
-		$xmlObject = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/com_admirorgallery.xml');
+		/**
+		 * Make sure you are logged in and have the necessary access
+		 * 5 - Publisher
+		 * 6 - Manager
+		 * 7 - Administrator
+		 * 8 - Super Users
+		 */
+		$validUsers = array(5 ,6 ,7 ,8);
+		$user = JFactory::getUser();
+		$grantAccess = false;
+		$userGroups = $user->getAuthorisedGroups();
 
-		$versionInfo = "";
-
-		if ($xmlObject)
+		foreach ($userGroups as $group)
 		{
-			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_COMPONENT_VERSION') . '&nbsp;' . $xmlObject->version . "</li>";
-			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_PLUGIN_VERSION') . '&nbsp;' . $xmlObject->pluginVersion . "</li>";
-			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_BUTTON_VERSION') . '&nbsp;' . $xmlObject->buttonVersion . "</li>";
+			if (in_array($group, $validUsers))
+			{
+				$grantAccess = true;
+				break;
+			}
 		}
-
-		return $versionInfo;
+		return $grantAccess;
 	}
 
 	/**
@@ -409,18 +432,17 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
         ';
 	}
 
-	/**
-	 * getBookmarkPath
-	 *
-	 * @return string
-	 *
-	 * @since 1.0.0
-	 */
-	public function getBookmarkPath(): ?string
+	private function getType(string $path): string
 	{
-		return $this->getModel('imagemanager')->bookmarkPath;
-	}
-
+		if(is_dir($path))
+		{
+			return "folder";
+		}
+		else
+		{
+			return "file";
+		}
+	} 
 	public function renderItems(string $path, string $type, string $thumb): string
 	{
 		$juriRoot = JURI::root(true);

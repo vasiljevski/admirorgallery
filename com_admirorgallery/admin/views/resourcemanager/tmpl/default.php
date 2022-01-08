@@ -15,21 +15,8 @@ use Joomla\CMS\Language\Text as JText;
 
 ?>
 <div class="row-fluid">
-	<div class="span2">
-		<div class="well well-small">
-			<div class="module-title nav-header"><?php echo JText::_('COM_ADMIRORGALLERY_MENU'); ?></div>
-			<?php echo $this->sidebar; ?>
-		</div>
-		<div class="well well-small">
-			<div class="module-title nav-header"> <?php echo JText::_('AG_VERSION'); ?> </div>
-			<ul class="unstyled list-striped">
-				<?php
-					echo $this->getVersionInfoHTML();
-				?>
-			</ul>
-		</div>
-	</div>
-	<div class="span10">
+	<?php echo JLayoutHelper::render('sidebar', array ("show", JFactory::getApplication()->isClient('administrator'))); ?>
+	<div id="j-main-container" class="span12">
 		<div class="well well-small">
 			<form action="<?php echo JRoute::_('index.php?option=com_admirorgallery&task=' . $this->resourceType); ?>"
 				  method="post"

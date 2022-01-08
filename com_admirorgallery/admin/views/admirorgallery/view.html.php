@@ -37,7 +37,7 @@ class AdmirorgalleryViewAdmirorgallery extends JViewLegacy
 	 *
 	 * @since 1.0.0
 	 */
-	public function display(string $tpl = null): void
+	public function display($tpl = null): void
 	{
 		// Check if plugin is installed, otherwise don't show view
 		if (!is_dir(JPATH_SITE . '/plugins/content/admirorgallery/'))
@@ -49,28 +49,6 @@ class AdmirorgalleryViewAdmirorgallery extends JViewLegacy
 
 		JToolBarHelper::title(JText::_('COM_ADMIRORGALLERY_CONTROL_PANEL'), 'controlpanel');
 		parent::display($tpl);
-	}
-
-
-	/**
-	 * getVersionInfoHTML
-	 *
-	 * @return  string
-	 */
-	public function getVersionInfoHTML(): string
-	{
-		$xmlObject = simplexml_load_file(JPATH_COMPONENT_ADMINISTRATOR . '/com_admirorgallery.xml');
-
-		$versionInfo = "";
-
-		if ($xmlObject)
-		{
-			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_COMPONENT_VERSION') . '&nbsp;' . $xmlObject->version . "</li>";
-			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_PLUGIN_VERSION') . '&nbsp;' . $xmlObject->pluginVersion . "</li>";
-			$versionInfo .= '<li>' . JText::_('COM_ADMIRORGALLERY_BUTTON_VERSION') . '&nbsp;' . $xmlObject->buttonVersion . "</li>";
-		}
-
-		return $versionInfo;
 	}
 
 	/**
