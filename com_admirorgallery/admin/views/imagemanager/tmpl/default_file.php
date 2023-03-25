@@ -1,99 +1,121 @@
 <?php
 /**
  * @version     6.0.0
- * @package     Admiror Gallery (component)
- * @author      Igor Kekeljevic & Nikola Vasiljevski
+ * @package     Admiror.Administrator
+ * @subpackage  com_admirorgallery
+ * @author      Igor Kekeljevic <igor@admiror.com>
+ * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
 
-use Admiror\Plugin\Content\AdmirorGallery\agHelper;
+use Admiror\Plugin\Content\AdmirorGallery\Helper;
 use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Filesystem\File as JFile;
 use Joomla\CMS\Filesystem\Folder as JFolder;
 use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\Uri\Uri as JURI;
 
-$ag_itemURL = $this->ag_init_itemURL;
+$folderName = dirname($this->initItemURL);
+$fileName = basename($this->initItemURL);
+$imgInfo = Helper::imageInfo(JPATH_SITE . $this->initItemURL);
 
-$ag_folderName = dirname($ag_itemURL);
-$ag_fileName = basename($ag_itemURL);
-$AG_imgInfo = agHelper::ag_imageInfo(JPATH_SITE . $ag_itemURL);
+Helper::sureRemoveDir($this->thumbsPath, true);
 
-$thumbsFolderPhysicalPath = JPATH_SITE . DIRECTORY_SEPARATOR . 'administrator' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_admirorgallery' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'thumbs';
-
-agHelper::ag_sureRemoveDir($thumbsFolderPhysicalPath, true);
-if (!JFolder::create($thumbsFolderPhysicalPath)) {
-    JFactory::getApplication()->enqueueMessage(JText::_("AG_CANNOT_CREATE_FOLDER") . "&nbsp;" . $newFolderName, 'error');
+if (!JFolder::create($this->thumbsPath))
+{
+	JFactory::getApplication()->enqueueMessage(JText::_("AG_CANNOT_CREATE_FOLDER") . "&nbsp;" . $newFolderName, 'error');
 }
 
-$ag_hasXML = "";
-$ag_hasThumb = "";
+$hasXML = "";
+$hasThumb = "";
 
 // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-$ag_pathWithStripExt = JPATH_SITE . $ag_folderName . '/' . JFile::stripExt(basename($ag_itemURL));
-$ag_imgXML_path = $ag_pathWithStripExt . ".XML";
-if (JFIle::exists($ag_pathWithStripExt . ".xml")) {
-    $ag_imgXML_path = $ag_pathWithStripExt . ".xml";
+$pathWithStripExt = JPATH_SITE . $folderName . '/' . JFile::stripExt(basename($this->initItemURL));
+$ag_imgXML_path = $pathWithStripExt . ".XML";
+
+if (JFIle::exists($pathWithStripExt . ".xml"))
+{
+	$ag_imgXML_path = $pathWithStripExt . ".xml";
 }
 
-if (file_exists(JPATH_SITE . "/plugins/content/admirorgallery/admirorgallery/thumbs/" . basename($ag_folderName) . "/" . basename($ag_fileName))) {
-    $ag_hasThumb = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasThumb.png" class="ag_hasThumb" />';
+if (file_exists(JPATH_SITE . "/plugins/content/admirorgallery/admirorgallery/thumbs/" . basename($folderName) . "/" . basename($fileName)))
+{
+	$hasThumb = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->templateName . '/images/icon-hasThumb.png" class="hasThumb" />';
 }
 
-if (file_exists($ag_imgXML_path)) {
-    $ag_hasXML = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/icon-hasXML.png" class="ag_hasXML" />';
-    $ag_imgXML_xml = simplexml_load_file($ag_imgXML_path);
-    $ag_imgXML_captions = $ag_imgXML_xml->captions;
-} else {
-    $ag_imgXML_captions = null;
+if (file_exists($ag_imgXML_path))
+{
+	$hasXML = '<img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->templateName . '/images/icon-hasXML.png" class="hasXML" />';
+	$ag_imgXML_xml = simplexml_load_file($ag_imgXML_path);
+	$imgCaptions = $ag_imgXML_xml->captions;
+}
+else
+{
+	$imgCaptions = null;
 }
 
-$ag_preview_content = '';
+$previewContent = '';
 
 // GET IMAGES FOR NEXT AND PREV IMAGES FUNCTIONS
-$ag_files = JFolder::files(JPATH_SITE . $ag_folderName);
+$files = JFolder::files(JPATH_SITE . $folderName);
 
-if (!empty($ag_files)) {
-    $ag_ext_valid = array("jpg", "jpeg", "gif", "png");// SET VALID IMAGE EXTENSION
-    $ag_images = array();
-    foreach ($ag_files as $key => $value) {
-        if (is_numeric(array_search(strtolower(JFile::getExt(basename($value))), $ag_ext_valid))) {
-            $ag_images[] = $value;
-        }
-    }
-    if (array_search($ag_fileName, $ag_images) != 0) {
-        $ag_fileName_prev = $ag_images[array_search($ag_fileName, $ag_images) - 1];
-    }
-    if (array_search($ag_fileName, $ag_images) < count($ag_images) - 1) {
-        $ag_fileName_next = $ag_images[array_search($ag_fileName, $ag_images) + 1];
-    }
-    if (!empty($ag_fileName_prev)) {
-        $ag_preview_content .= '<a class="AG_common_button" href="" onclick="AG_jQuery(\'#AG_input_itemURL\').val(\'' . $ag_folderName . '/' . $ag_fileName_prev . '\');submitbutton(\'AG_reset\');return false;"><span><span>' . JText::_("AG_PREVIOUS_IMAGE") . '</span></span></a>' . "\n";
-    }
-    if (!empty($ag_fileName_next)) {
-        $ag_preview_content .= '<a class="AG_common_button" href="" onclick="AG_jQuery(\'#AG_input_itemURL\').val(\'' . $ag_folderName . '/' . $ag_fileName_next . '\');submitbutton(\'AG_reset\');return false;"><span><span>' . JText::_("AG_NEXT_IMAGE") . '</span></span></a>' . "\n";
-    }
+if (!empty($files))
+{
+	$validExtensions = array("jpg", "jpeg", "gif", "png");// SET VALID IMAGE EXTENSION
+	$ag_images = array();
+
+	foreach ($files as $key => $value)
+	{
+		if (is_numeric(array_search(strtolower(JFile::getExt(basename($value))), $validExtensions)))
+		{
+			$ag_images[] = $value;
+		}
+	}
+
+
+	if (array_search($fileName, $ag_images) != 0)
+	{
+		$fileName_prev = $ag_images[array_search($fileName, $ag_images) - 1];
+	}
+
+
+	if (array_search($fileName, $ag_images) < count($ag_images) - 1)
+	{
+		$fileName_next = $ag_images[array_search($fileName, $ag_images) + 1];
+	}
+
+
+	if (!empty($fileName_prev))
+	{
+		$previewContent .= '<a class="AG_common_button" href="" onclick="AG_jQuery(\'#AG_input_itemURL\').val(\'' . $folderName . '/' . $fileName_prev . '\');submitbutton(\'agReset\');return false;"><span><span>' . JText::_("AG_PREVIOUS_IMAGE") . '</span></span></a>' . "\n";
+	}
+
+
+	if (!empty($fileName_next))
+	{
+		$previewContent .= '<a class="AG_common_button" href="" onclick="AG_jQuery(\'#AG_input_itemURL\').val(\'' . $folderName . '/' . $fileName_next . '\');submitbutton(\'agReset\');return false;"><span><span>' . JText::_("AG_NEXT_IMAGE") . '</span></span></a>' . "\n";
+	}
 }
 
-$ag_preview_content .= '<hr />';
+$previewContent .= '<hr />';
 
-$ag_preview_content .= '
+$previewContent .= '
 <h1>' . JText::_('AG_IMAGE_DETAILS_FOR_FILE') . '</h1>
 <div class="AG_border_color AG_border_width AG_margin_bottom AG_breadcrumbs_wrapper">
-' . $this->ag_render_breadcrumb($ag_itemURL, $this->ag_starting_folder, $ag_folderName, $ag_fileName) . '
+' . $this->renderBreadcrumb($this->initItemURL, $this->startingFolder) . '
 </div>
 ';
 
-agHelper::ag_createThumb(JPATH_SITE . $ag_itemURL, $thumbsFolderPhysicalPath . DIRECTORY_SEPARATOR . basename($ag_itemURL), 145, 80, "none");
+Helper::createThumbnail(JPATH_SITE . $this->initItemURL, $this->thumbsPath . DIRECTORY_SEPARATOR . basename($this->initItemURL), 145, 80, "none");
 
-//Image and image details
-$ag_preview_content .= $this->ag_render_image_info($ag_itemURL, $AG_imgInfo, $ag_hasXML, $ag_hasThumb);
+// Image and image details
+$previewContent .= $this->renderImageInfo($this->initItemURL, $imgInfo, $hasXML, $hasThumb);
 
-require_once(JPATH_ROOT . DIRECTORY_SEPARATOR . 'administrator' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_admirorgallery' . DIRECTORY_SEPARATOR . 'slimbox' . DIRECTORY_SEPARATOR . 'index.php');
+require_once JPATH_ROOT . DIRECTORY_SEPARATOR . 'administrator' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_admirorgallery' . DIRECTORY_SEPARATOR . 'slimbox' . DIRECTORY_SEPARATOR . 'index.php';
 
-$ag_preview_content .= $this->ag_render_captions($ag_imgXML_captions);
+$previewContent .= $this->renderCaptions($imgCaptions);
 
-$ag_preview_content .= $this->ag_render_file_footer();
+$previewContent .= $this->renderFileFooter();

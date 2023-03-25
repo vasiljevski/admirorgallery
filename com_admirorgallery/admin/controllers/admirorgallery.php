@@ -1,39 +1,66 @@
 <?php
 /**
  * @version     6.0.0
- * @package     Admiror Gallery (component)
- * @author      Igor Kekeljevic & Nikola Vasiljevski
+ * @package     Admiror.Administrator
+ * @subpackage  com_admirorgallery
+ * @author      Igor Kekeljevic <igor@admiror.com>
+ * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
 
+
+/**
+ * AdmirorgalleryControllerAdmirorgallery
+ *
+ * @since 1.0.0
+ */
 class AdmirorgalleryControllerAdmirorgallery extends AdmirorgalleryController
 {
-    function __construct()
-    {
-        parent::__construct();
+	/**
+	 * __construct
+	 *
+	 * @since 1.0.0
+	 */
+	public function __construct()
+	{
+		parent::__construct();
 
-        // Register Extra tasks
-        $this->registerTask('AG_apply', 'AG_apply');
-        $this->registerTask('AG_reset', 'AG_reset');
-    }
+		// Register Extra tasks
+		$this->registerTask('agApply', 'agApply');
+		$this->registerTask('agReset', 'agReset');
+	}
 
-    function AG_apply()
-    {
-        $model = $this->getModel('admirorgallery');
+	/**
+	 * agApply
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 */
+	public function agApply(): void
+	{
+		$model = $this->getModel('admirorgallery');
 
-        // UPDATE
-        $model->_update();
+		// UPDATE
+		$model->update();
 
-        parent::display();
-    }
+		parent::display();
+	}
 
-    function AG_reset()
-    {
-        parent::display();
-    }
+	/**
+	 * agReset
+	 *
+	 * @return void
+	 *
+	 * @since 1.0.0
+	 */
+	public function agReset(): void
+	{
+		parent::display();
+	}
 
 
 }

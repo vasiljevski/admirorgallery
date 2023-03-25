@@ -79,7 +79,7 @@
                         com_admirorgallery/admirorgallery/composer.lock,
                         admiror_extensions/**"/>
     </target>
-    <target name="buildcomponent" depends="_clean">
+    <target name="buildcomponent">
         <mkdir dir="${builddir}/${NAME}/admin"/>
         <mkdir dir="${builddir}/${NAME}/admin/language/en-GB"/>
         <mkdir dir="${builddir}/${NAME}/admin/language/de-DE"/>
