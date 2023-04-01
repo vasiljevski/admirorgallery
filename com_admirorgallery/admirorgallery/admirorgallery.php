@@ -70,6 +70,9 @@ class plgContentAdmirorGallery extends JPlugin {
                 error_reporting('E_NOTICE');
             //Joomla specific variables is passed as parameters for agGallery independent from specific CMS
             $AG->loadJS('AG_jQuery.js');
+//            $AG->loadJS('jquery-3.5.1.js');
+//            $AG->loadJS('jquery-migrate-1.4.1.js');
+//            $AG->loadJS('jquery-migrate-3.3.2.js');
             $AG->articleID = $row->id;
 
             $queryArray = null;

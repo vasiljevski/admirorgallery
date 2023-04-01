@@ -110,40 +110,21 @@ class agHelper
      */
     public function ag_foregroundColor($hex, $adjust): string
     {
-        $red = hexdec($hex[0] . $hex[1]);
-        $green = hexdec($hex[2] . $hex[3]);
-        $blue = hexdec($hex[4] . $hex[5]);
-        if (($red + $green + $blue) >= 255) {
-            $red -= $adjust;
-            $green -= $adjust;
-            $blue -= $adjust;
-            if ($red < 0) {
-                $red = 0;
-            }
-            if ($green < 0) {
-                $green = 0;
-            }
-            if ($blue < 0) {
-                $blue = 0;
-            }
-        } else {
-            $red += $adjust;
-            $green += $adjust;
-            $blue += $adjust;
-            if ($red > 255) {
-                $red = 255;
-            }
-            if ($green > 255) {
-                $green = 255;
-            }
-            if ($blue > 255) {
-                $blue = 255;
-            }
-        }
+        // Convert the hexadecimal color string to an integer using hexdec()
+        $color = hexdec($hex);
 
-        return str_pad(dechex($red), 2, '0', 0)
-        . str_pad(dechex($green), 2, '0', 0)
-        . str_pad(dechex($blue), 2, '0', 0);
+        // Extract the red, green, and blue color components using bitwise operations
+        $red = ($color >> 16) + $adjust;
+        $green = (($color >> 8) & 0xFF) + $adjust;
+        $blue = ($color & 0xFF) + $adjust;
+
+        // Clip the color values to the range 0-255
+        $red = max(min($red, 255), 0);
+        $green = max(min($green, 255), 0);
+        $blue = max(min($blue, 255), 0);
+
+        // Convert the decimal color components back to a hexadecimal color string using sprintf()
+        return sprintf('%02x%02x%02x', $red, $green, $blue);
     }
 
     /**
@@ -157,9 +138,15 @@ class agHelper
      */
     public static function ag_imageInfo(string $imageURL): ?array
     {
-        list($width, $height, $type, $attr) = getimagesize($imageURL);
+        $imageSize = @getimagesize($imageURL);
 
-        $types = array(
+        if (!$imageSize) {
+            return null;
+        }
+
+        $imageType = $imageSize[2];
+
+        $imageTypes = array(
             1 => 'GIF',
             2 => 'JPG',
             3 => 'PNG',
@@ -178,15 +165,14 @@ class agHelper
             16 => 'XBM'
         );
 
-        if ($type) {
-            return $imageInfo = array(
-        "width" => $width,
-        "height" => $height,
-        "type" => $types[$type],
-        "size" => filesize($imageURL)
-            );
-        }
-        return null;
+        $imageInfo = array(
+            "width" => $imageSize[0],
+            "height" => $imageSize[1],
+            "type" => isset($imageTypes[$imageType]) ? $imageTypes[$imageType] : 'UNKNOWN',
+            "size" => @filesize($imageURL)
+        );
+
+        return $imageInfo;
     }
 
     /**
@@ -200,15 +186,12 @@ class agHelper
      */
     public static function ag_fileRoundSize(int $size): string
     {
-        $bytes = array('B', 'KB', 'MB', 'GB', 'TB');
-        foreach ($bytes as $val) {
-            if ($size > 1024) {
-                $size = $size / 1024;
-            } else {
-                break;
-            }
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $unitCount = count($units);
+        for ($i = 0; $size >= 1024 && $i < $unitCount - 1; $i++) {
+            $size /= 1024;
         }
-        return round($size, 2) . " " . $val;
+        return round($size, 2) . ' ' . $units[$i];
     }
 
     /**
