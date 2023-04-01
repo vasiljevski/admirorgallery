@@ -34,7 +34,7 @@ AG_jQuery.extend({
 		dataKey: "AG_jQuery.timer",
 		regex: /^([0-9]+(?:\.[0-9]*)?)\s*(.*s)?$/,
 		powers: {
-			// Yeah this is major overkill...
+			// Yeah, this is major overkill...
 			'ms': 1,
 			'cs': 10,
 			'ds': 100,

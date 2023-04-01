@@ -61,7 +61,7 @@
                label="AG_ARRANGE_IMAGES_BY"
                description="AG_ARRANGE_IMAGES_BY_DESC"
             >
-                <option value="priority">AG_PRIORITY</option>
+                <option value="priority">priority</option>
                 <option value="date">AG_DATE</option>
                 <option value="name">AG_NAME</option>
             </field>

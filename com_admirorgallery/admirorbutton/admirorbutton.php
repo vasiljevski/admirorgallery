@@ -2,9 +2,10 @@
 
 /**
  * @version     6.0.0
- * @package     Admiror Gallery (plugin)
- * @subpackage  admirorbutton
- * @author      Igor Kekeljevic & Nikola Vasiljevski
+ * @package     Admiror.Plugin
+ * @subpackage  Editors-xtd.AdmirorButton
+ * @author      Igor Kekeljevic <igor@admiror.com>
+ * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
@@ -22,7 +23,7 @@ use Joomla\CMS\Uri\Uri as JURI;
  * @package Editors-xtd
  * @since   1.5
  */
-class plgButtonAdmirorbutton extends JPlugin
+class PlgButtonAdmirorbutton extends JPlugin
 {
 	/**
 	 * Load the language file on instantiation.
@@ -31,14 +32,6 @@ class plgButtonAdmirorbutton extends JPlugin
 	 * @since  3.1
 	 */
 	protected $autoloadLanguage = true;
-
-	/**
-	 * Application object.
-	 *
-	 * @var    \Joomla\CMS\Application\CMSApplication
-	 * @since  4.0.0
-	 */
-	protected $app;
 
 	/**
 	 * Display the button.
@@ -52,34 +45,35 @@ class plgButtonAdmirorbutton extends JPlugin
 	 * @throws Exception
 	 * @since   5.5.0
 	 */
-	//function onDisplay(string $name): JObject
 	public function onDisplay($name, $asset, $author)
 	{
+		$this->app = JFactory::getApplication();
 		$user      = JFactory::getUser();
 		$doc       = $this->app->getDocument();
 		$extension = $this->app->input->get('option');
 
 		// For categories, we check the extension (ex: component.section)
-		if ($extension === 'com_categories') {
+		if ($extension === 'com_categories')
+		{
 			$parts     = explode('.', $this->app->input->get('extension', 'com_content'));
 			$extension = $parts[0];
 		}
 
 		$asset = $asset !== '' ? $asset : $extension;
 
-		if (
-			$user->authorise('core.edit', $asset)
+		if ($user->authorise('core.edit', $asset)
 			|| $user->authorise('core.create', $asset)
 			|| (count($user->getAuthorisedCategories($asset, 'core.create')) > 0)
 			|| ($user->authorise('core.edit.own', $asset) && $author === $user->id)
 			|| (count($user->getAuthorisedCategories($extension, 'core.edit')) > 0)
 			|| (count($user->getAuthorisedCategories($extension, 'core.edit.own')) > 0 && $author === $user->id)
-		) {
+		)
+		{
 			$doc->addStyleSheet(JURI::root(true) . '/administrator/components/com_admirorgallery/templates/default/css/add-trigger.css');
 
 			$link = 'index.php?option=com_admirorgallery&amp;view=button&amp;tmpl=component&amp;e_name=' . $name;
 
-			$button          = new JObject();
+			$button          = new JObject;
 			$button->modal   = true;
 			$button->link    = $link;
 			$button->text    = JText::_('COM_ADMIRORGALLERY');

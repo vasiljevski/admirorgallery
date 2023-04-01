@@ -1,73 +1,79 @@
 <?php
 /**
  * @version     6.0.0
- * @package     Admiror Gallery (plugin)
- * @subpackage  admirorgallery
- * @author      Igor Kekeljevic & Nikola Vasiljevski
+ * @package     Admiror.Plugin
+ * @subpackage  Content.AdmirorGallery
+ * @author      Igor Kekeljevic <igor@admiror.com>
+ * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
 defined('_JEXEC') or die();
 
+use Admiror\Plugin\Content\AdmirorGallery\Template;
+
+$template = new Template($AG, "galleryview.css");
+
 // Load CSS from current template folder
-$AG->loadCSS($AG->currTemplateRoot.'galleryview.css');
-$AG->loadCSS($AG->currTemplateRoot.'albums/albums.css');
-$AG->loadCSS($AG->currTemplateRoot.'pagination/pagination.css');
+$template->loadStyle($AG->currTemplateRoot . 'galleryview.css');
 
-$AG->insertJSCode(' var full_loader_path = "'.$AG->pluginPath . $AG->currTemplateRoot.'";');
-$AG->loadJS($AG->currTemplateRoot.'jquery.timers-1.2.js');
-$AG->loadJS($AG->currTemplateRoot.'jquery.easing.1.3.js');
-$AG->loadJS($AG->currTemplateRoot.'jquery.galleryview-2.1.1.js');
+$template->insertScript(' var full_loader_path = "' . $AG->domainPluginPath . $AG->currTemplateRoot . '";');
+$template->loadScript($AG->currTemplateRoot . 'jquery.timers-1.2.js');
+$template->loadScript($AG->currTemplateRoot . 'jquery.easing.1.3.js');
+$template->loadScript($AG->currTemplateRoot . 'jquery.galleryview-2.1.1.js');
 
-
-$AG->insertJSCode('
+$template->insertScript('
 AG_jQuery(document).ready(function(){
-  AG_jQuery("#AG_'.$AG->getGalleryID().' #photos").galleryView({
-	  panel_width: '.$AG->params['frameWidth'].',
-	  panel_height: '.$AG->params['frameHeight'].',
-	  frame_width: '.$AG->params['thumbWidth'].',
-	  frame_height: '.$AG->params['thumbHeight'].',
+  AG_jQuery("#AG_' . $AG->getGalleryID() . ' #photos").galleryView({
+	  panel_width: ' . $AG->params['frame_width'] . ',
+	  panel_height: ' . $AG->params['frame_height'] . ',
+	  frame_width: ' . $AG->params['thumbWidth'] . ',
+	  frame_height: ' . $AG->params['thumbHeight'] . ',
 	  nav_theme: "light",
 	  pause_on_hover: true
   });
-  AG_jQuery("#AG_'.$AG->getGalleryID().' div#photos").css({backgroundColor:"black"});
-  AG_jQuery("#AG_'.$AG->getGalleryID().' div#photos .panel-content img").css({width:"'.$AG->params['frameWidth'].'px",height:"'.$AG->params['frameHeight'].'px"});
+  AG_jQuery("#AG_' . $AG->getGalleryID() . ' div#photos").css({backgroundColor:"black"});
+  AG_jQuery("#AG_' . $AG->getGalleryID() . ' div#photos .panel-content img").css({width:"' .
+	$AG->params['frame_width'] . 'px",height:"' . $AG->params['frame_height'] . 'px"});
 });
-');
+'
+);
 
 // Form HTML code, with unique ID and Class Name
-$html='<div id="AG_'.$AG->getGalleryID().'" class="ag_reseter AG_galleryView">
-<ul id="photos" class="galleryview">
-';
+$template->appendContent('<div id="AG_' . $AG->getGalleryID() . '" class="ag_reseter AG_galleryView">
+<ul id="photos" class="galleryview">'
+);
 
 foreach ($AG->images as $imageKey => $imageName)
 {
-    $html.= '
-
+	$template->appendContent( '
       <li>
-	    '.$AG->writeThumb($imageName).'
+	    ' . $AG->writeThumb($imageName) . '
 	    <div class="panel-content">
-		  <img src="'.$AG->sitePath.$AG->params['rootFolder'].$AG->imagesFolderName.'/'.$imageName.'" alt="big image" />
+		  <img src="' . $AG->sitePath . $AG->params['rootFolder'] . $AG->imagesFolderName . '/' . $imageName . '" alt="big image" />
 		  <div class="panel-overlay">
-			'.$AG->writeDescription($imageName).'
+			' . $AG->writeDescription($imageName) . '
 		  </div>
 	    </div>
       </li>
-    ';
+    '
+	);
 }
-$html .='
+
+$template->appendContent( '
 </ul>
 </div>
-';
+'
+);
 
 // Support for Pagination
-$html.= $AG->writePagination();
+$template->appendContent($AG->writePagination());
 
 // Support for Albums
-if(!empty($AG->folders) && $AG->params['albumUse']){
-     $html.= '<h1>'.JText::_( 'AG_ALBUMS' ).'</h1>'."\n";
-     $html.= $AG->writeFolderThumb("albums/album.png",$AG->params['thumbHeight']);
-}
+$template->addAlbumSupport();
+
+// Render HTML for this template
+$html = $template->render();
 
 
