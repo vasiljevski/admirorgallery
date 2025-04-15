@@ -85,7 +85,7 @@ class agParams implements ArrayAccess {
      *
      * @since 5.5.0
      */
-    public function offsetSet($offset, $value) {
+    public function offsetSet($offset, $value) : void {
         if (is_null($offset)) {
             $this->params[] = $value;
         } else {
@@ -110,7 +110,7 @@ class agParams implements ArrayAccess {
      *
      * @since 5.5.0
      */
-    public function offsetUnset($offset) {
+    public function offsetUnset($offset) : void {
         unset($this->params[$offset]);
     }
 
@@ -121,7 +121,7 @@ class agParams implements ArrayAccess {
      *
      * @since 5.5.0
      */
-    public function offsetGet($offset) {
+    public function offsetGet($offset) : mixed {
         return $this->params[$offset] ?? null;
     }
 
