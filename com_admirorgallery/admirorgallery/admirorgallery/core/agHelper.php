@@ -431,7 +431,7 @@ class agHelper
                 $dst_h = $dst_w / $src_ratio;
                 break;
             case "none":
-                // If proportion of source image is wider then proportion of thumbnail image, then use full height of source image and crop the width.
+                // If proportion of source image is wider than proportion of thumbnail image, then use full height of source image and crop the width.
                 if ($src_ratio > $dst_ratio) {
                     // KEEP HEIGHT, CROP WIDTH
                     $src_w = $src_h * $dst_ratio;
@@ -483,7 +483,7 @@ class agHelper
     }
 
     /**
-     * Parses OS name from $user_agent string
+     * Parses OS names from $user_agent string
      *
      * @param string $user_agent
      *

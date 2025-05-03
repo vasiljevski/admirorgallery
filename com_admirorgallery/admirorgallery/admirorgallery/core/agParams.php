@@ -11,7 +11,7 @@
 
 namespace Admiror\Plugin\Content\AdmirorGallery;
  
-use \ArrayAccess;
+use ArrayAccess;
 
  /**
  * Parameters class AG uses

@@ -7,7 +7,7 @@
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
-defined('_JEXEC') or die;
+defined('_JEXEC') or die();
 
 use Joomla\CMS\Factory as JFactory;
 use Joomla\CMS\Language\Text as JText;
@@ -49,7 +49,7 @@ class AdmirorgalleryController extends JControllerLegacy
         $doc->addScriptDeclaration('
 	       AG_jQuery(function(){
 
-		    // SET SHORCUTS
+		    // SET SHORTCUTS
 		    AG_jQuery(document).bind("keydown", "ctrl+return", function (){submitbutton("AG_apply");return false;});
 		    AG_jQuery(document).bind("keydown", "ctrl+backspace", function (){submitbutton("AG_reset");return false;});
 

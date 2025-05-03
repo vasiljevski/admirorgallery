@@ -114,6 +114,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
             }
         }
         $this->_save_bookmark($ag_bookmarks_xml, '');
+		return true;
     }
 
     function _cbox_priority($ag_preview_checked_array)
@@ -267,7 +268,7 @@ class AdmirorgalleryModelImagemanager extends JModelLegacy
                 }
                 $newFolderName = htmlspecialchars(strip_tags($newFolderName));
                 if (!file_exists(JPATH_SITE . $AG_itemURL . $newFolderName)) {
-                    if (JFolder::create(JPATH_SITE . $AG_itemURL . $newFolderName, 0755)) {
+                    if (JFolder::create(JPATH_SITE . $AG_itemURL . $newFolderName)) {
                         JFactory::getApplication()->enqueueMessage(JText::_("AG_FOLDER_CREATED") . "&nbsp;" . $newFolderName, 'message');
                     } else {
                         JFactory::getApplication()->enqueueMessage(JText::_("AG_CANNOT_CREATE_FOLDER") . "&nbsp;" . $newFolderName, 'error');

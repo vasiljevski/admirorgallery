@@ -16,17 +16,13 @@ use Joomla\CMS\Filesystem\Folder as JFolder;
 use Joomla\CMS\Language\Text as JText;
 use Joomla\CMS\Uri\Uri as JURI;
 
-$ag_itemURL = $this->ag_init_itemURL;
-
 $ag_XML_thumb = "";
 
-$ag_folderName = dirname($ag_itemURL);
-$ag_fileName = basename($ag_itemURL);
+$ag_folderName = dirname($this->ag_init_itemURL);
+$ag_fileName = basename($this->ag_init_itemURL);
 
-$thumbsFolderPhysicalPath = JPATH_SITE . DIRECTORY_SEPARATOR . 'administrator' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_admirorgallery' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'thumbs';
-
-agHelper::ag_sureRemoveDir($thumbsFolderPhysicalPath, true);
-if (!JFolder::create($thumbsFolderPhysicalPath)) {
+agHelper::ag_sureRemoveDir($this->thumbsPath, true);
+if (!JFolder::create($this->thumbsPath)) {
     JFactory::getApplication()->enqueueMessage(JText::_("AG_CANNOT_CREATE_FOLDER") . "&nbsp;" . $newFolderName, 'error');
 }
 
@@ -38,7 +34,7 @@ $ag_preview_content .= '
 <h1>' . JText::_('AG_CURRENT_FOLDER') . '</h1>
 
 <div class="AG_breadcrumbs_wrapper">
-     ' . $this->ag_render_breadcrumb($ag_itemURL, $this->ag_starting_folder, $ag_folderName, $ag_fileName) . '
+     ' . $this->ag_render_breadcrumb($this->ag_init_itemURL, $this->ag_starting_folder, $ag_folderName, $ag_fileName) . '
 </div>
 <hr />
 
@@ -133,7 +129,7 @@ $ag_preview_content .= '
 
 // RENDER FOLDERS
 // CREATED SORTED ARRAY OF FOLDERS
-$ag_files = JFolder::folders(JPATH_SITE . $ag_itemURL);
+$ag_files = JFolder::folders(JPATH_SITE . $this->ag_init_itemURL);
 
 if (!empty($ag_files)) {
 
@@ -142,7 +138,7 @@ if (!empty($ag_files)) {
     $ag_folders = array();
 
     foreach ($ag_files as $key => $value) {
-        $ag_folderName = $ag_itemURL;
+        $ag_folderName = $this->ag_init_itemURL;
         $ag_fileName = basename($value);
         // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
         $ag_pathWithStripExt = JPATH_SITE . $ag_folderName . JFile::stripExt($ag_fileName);
@@ -184,7 +180,7 @@ if (!empty($ag_folders)) {
         $ag_hasThumb = "";
 
         // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-        $ag_pathWithStripExt = JPATH_SITE . $ag_itemURL . JFile::stripExt(basename($value));
+        $ag_pathWithStripExt = JPATH_SITE . $this->ag_init_itemURL . JFile::stripExt(basename($value));
         $ag_XML_path = $ag_pathWithStripExt . ".xml";
         if (JFIle::exists($ag_pathWithStripExt . ".XML")) {
             $ag_XML_path = $ag_pathWithStripExt . ".XML";
@@ -208,16 +204,16 @@ if (!empty($ag_folders)) {
 
         $ag_preview_content .= '
     <div class="AG_border_color AG_border_width AG_item_wrapper">
-	    <a href="' . $ag_itemURL . $value . '/" class="AG_folderLink AG_item_link" title="' . $value . '">
+	    <a href="' . $this->ag_init_itemURL . $value . '/" class="AG_folderLink AG_item_link" title="' . $value . '">
 	        <div style="display:block; text-align:center;" class="AG_item_img_wrapper">
 		    <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/folder.png" />
 	        </div>
 	    </a>
 	    <div class="AG_border_color AG_border_width AG_item_controls_wrapper">
-	        <input type="text" value="' . $value . '" name="AG_rename[' . $ag_itemURL . $value . ']" class="AG_input" style="width:95%" /><hr />
+	        <input type="text" value="' . $value . '" name="AG_rename[' . $this->ag_init_itemURL . $value . ']" class="AG_input" style="width:95%" /><hr />
 	        ' . JText::_($ag_XML_visible) . '<hr />
-	        <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/operations.png" style="float:left;" /><input type="checkbox" value="' . $ag_itemURL . $value . '/" name="AG_cbox_selectItem[]" class="AG_cbox_selectItem"><hr />
-	        ' . JText::_('AG_PRIORITY') . ':&nbsp;<input type="text" size="3" value="' . $ag_XML_priority . '" name="AG_cbox_priority[' . $ag_itemURL . $value . ']" class="AG_input" />
+	        <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/operations.png" style="float:left;" /><input type="checkbox" value="' . $this->ag_init_itemURL . $value . '/" name="AG_cbox_selectItem[]" class="AG_cbox_selectItem"><hr />
+	        ' . JText::_('AG_PRIORITY') . ':&nbsp;<input type="text" size="3" value="' . $ag_XML_priority . '" name="AG_cbox_priority[' . $this->ag_init_itemURL . $value . ']" class="AG_input" />
 	    </div>
     </div>
     ';
@@ -226,7 +222,7 @@ if (!empty($ag_folders)) {
 
 // RENDER IMAGES
 // CREATED SORTED ARRAY OF IMAGES
-$ag_files = JFolder::files(JPATH_SITE . $ag_itemURL);
+$ag_files = JFolder::files(JPATH_SITE . $this->ag_init_itemURL);
 $ag_ext_valid = array("jpg", "jpeg", "gif", "png"); // SET VALID IMAGE EXTENSION
 
 if (!empty($ag_files)) {
@@ -238,7 +234,7 @@ if (!empty($ag_files)) {
     foreach ($ag_files as $key => $value) {
         if (is_numeric(array_search(strtolower(JFile::getExt(basename($value))), $ag_ext_valid))) {
 
-            $ag_folderName = $ag_itemURL;
+            $ag_folderName = $this->ag_init_itemURL;
             $ag_fileName = basename($value);
 
             // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
@@ -283,7 +279,7 @@ if (!empty($ag_images)) {
         $ag_hasThumb = "";
 
         // Set Possible Description File Absolute Path // Instant patch for upper and lower case...
-        $ag_pathWithStripExt = JPATH_SITE . $ag_itemURL . JFile::stripExt(basename($value));
+        $ag_pathWithStripExt = JPATH_SITE . $this->ag_init_itemURL . JFile::stripExt(basename($value));
         $ag_XML_path = $ag_pathWithStripExt . ".xml";
         if (JFIle::exists($ag_pathWithStripExt . ".XML")) {
             $ag_XML_path = $ag_pathWithStripExt . ".XML";
@@ -309,7 +305,7 @@ if (!empty($ag_images)) {
         }
 
 
-        agHelper::ag_createThumb(JPATH_SITE . $ag_itemURL . $value, $thumbsFolderPhysicalPath . DIRECTORY_SEPARATOR . $value, 145, 80, "none");
+        agHelper::ag_createThumb(JPATH_SITE . $this->ag_init_itemURL . $value, $this->thumbsPath . DIRECTORY_SEPARATOR . $value, 145, 80, "none");
 
         $AG_thumb_checked = "";
         if ($ag_XML_thumb == $value) {
@@ -318,16 +314,16 @@ if (!empty($ag_images)) {
 
         $ag_preview_content .= '
      <div class="AG_border_color AG_border_width AG_item_wrapper">
-	<a href="' . $ag_itemURL . $value . '" class="AG_fileLink AG_item_link" title="' . $value . '">
+	<a href="' . $this->ag_init_itemURL . $value . '" class="AG_fileLink AG_item_link" title="' . $value . '">
 	      <div style="display:block; text-align:center;" class="AG_item_img_wrapper">
 	      <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/assets/thumbs/' . $value . '" class="ag_imgThumb" />
 	      </div>
 	</a>
 	<div class="AG_border_color AG_border_width AG_item_controls_wrapper">
-	    <input type="text" value="' . JFile::stripExt(basename($value)) . '" name="AG_rename[' . $ag_itemURL . $value . ']" class="AG_input" style="width:95%" /><hr />
+	    <input type="text" value="' . JFile::stripExt(basename($value)) . '" name="AG_rename[' . $this->ag_init_itemURL . $value . ']" class="AG_input" style="width:95%" /><hr />
 	    ' . JText::_($ag_XML_visible) . '<hr />
-        <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/operations.png" style="float:left;" /><input type="checkbox" value="' . $ag_itemURL . $value . '" name="AG_cbox_selectItem[]" class="AG_cbox_selectItem"><hr />
-	    ' . JText::_('AG_PRIORITY') . ':&nbsp;<input type="text" size="3" value="' . $ag_XML_priority . '" name="AG_cbox_priority[' . $ag_itemURL . $value . ']" class="AG_input" /><hr />
+        <img src="' . JURI::root() . 'administrator/components/com_admirorgallery/templates/' . $this->ag_template_id . '/images/operations.png" style="float:left;" /><input type="checkbox" value="' . $this->ag_init_itemURL . $value . '" name="AG_cbox_selectItem[]" class="AG_cbox_selectItem"><hr />
+	    ' . JText::_('AG_PRIORITY') . ':&nbsp;<input type="text" size="3" value="' . $ag_XML_priority . '" name="AG_cbox_priority[' . $this->ag_init_itemURL . $value . ']" class="AG_input" /><hr />
         <input type="radio" value="' . $value . '" name="AG_folder_thumb" class="AG_folder_thumb" class="AG_input"' . $AG_thumb_checked . ' />&nbsp;' . JText::_('AG_FOLDER_THUMB') . '
 	</div>
      </div>

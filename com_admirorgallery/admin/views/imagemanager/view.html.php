@@ -25,6 +25,7 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
     var string $ag_starting_folder = '';
     var string $ag_rootFolder = '';
     var $app = null;
+	var string $thumbsPath = JPATH_SITE . DIRECTORY_SEPARATOR . 'administrator' . DIRECTORY_SEPARATOR . 'components' . DIRECTORY_SEPARATOR . 'com_admirorgallery' . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'thumbs';
 
     function display($tpl = null) {
         // Make sure you are logged in and have the necessary access
@@ -64,10 +65,11 @@ class AdmirorgalleryViewImagemanager extends JViewLegacy
         $rootFolder =  $pluginParams->get('rootFolder', '/images/sampledata/');
         $galleryPath = $rootFolder;
         if ($this->app->isClient('site')){
-            $galleryPath .= ($this->app->getParams()->get('galleryName') != "-1") ?: "";
+            $galleryPath .= ($this->app->getParams()->get('galleryName') != "-1") ? $this->app->getParams()->get('galleryName'). "/" : "";
         }
         
         $this->ag_rootFolder = $pluginParams->get('rootFolder', '/images/sampledata/');
+
         $this->ag_starting_folder = $this->ag_rootFolder;
         $this->ag_init_itemURL = $this->ag_rootFolder;
 
