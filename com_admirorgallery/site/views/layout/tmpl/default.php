@@ -2,8 +2,10 @@
 
 /**
  * @version     6.0.0
- * @package     Admiror Gallery (component)
- * @author      Igor Kekeljevic & Nikola Vasiljevski
+ * @package     Admiror.Site
+ * @subpackage  com_admirorgallery
+ * @author      Igor Kekeljevic <igor@admiror.com>
+ * @author      Nikola Vasiljevski <nikola83@gmail.com>
  * @copyright   Copyright (C) 2010 - 2021 https://www.admiror-design-studio.com All Rights Reserved.
  * @license     https://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
@@ -19,18 +21,21 @@ $app = Factory::getApplication();
 $active = $app->getMenu()->getActive();
 $params = $active->getParams();
 
-$ag_params = '';
+$inlineParams = '';
+
 foreach ($params as $key => $value) {
-    $ag_inlineParams .= ' ' . $key . '="' . $value . '"';
+    $inlineParams .= " '{$key}'='{$value}'";
 }
 
-$article = new stdClass();
+$article = new stdClass;
+$article->text = "";
 
-//Display page heading
+// Display page heading
 if ($active->getParams()->get('show_page_heading')) {
-    $article->text = '<h1>' . $active->getParams()->get('page_title') . '</h1>';
+    $article->text = "<h1>{$active->getParams()->get('page_title')}</h1>";
 }
-$article->text .= '{AG ' . $ag_params . ' }' . $params->get('galleryName') . '{/AG}';
+
+$article->text .= "{AG {$inlineParams}}{$params->get('galleryName')}{/AG}";
 $article->id = $active->id;
 
 $app->triggerEvent('onContentPrepare', array(&$context, &$article, &$params));
