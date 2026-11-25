@@ -9,3 +9,15 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+define( 'FOLDER_GALLERY_VERSION', '0.1.0' );
+define( 'FOLDER_GALLERY_PATH', plugin_dir_path( __FILE__ ) );
+define( 'FOLDER_GALLERY_URL', plugin_dir_url( __FILE__ ) );
+
+require_once FOLDER_GALLERY_PATH . 'includes/class-plugin.php';
+
+function folder_gallery_run() {
+	$plugin = new Folder_Gallery_Plugin();
+	$plugin->run();
+}
+folder_gallery_run();
