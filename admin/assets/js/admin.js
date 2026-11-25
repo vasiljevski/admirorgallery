@@ -1,8 +1,25 @@
 // Folder Gallery Admin Scripts
 document.addEventListener('DOMContentLoaded', function () {
 	initPanelResizer();
+	initDetailsEditor();
 	initFolderExplorer();
 });
+
+function initDetailsEditor() {
+	const textarea = document.getElementById('fg-details-description');
+	if (!textarea || typeof window.quicktags !== 'function') {
+		return;
+	}
+
+	window.quicktags({
+		id: 'fg-details-description',
+		buttons: 'strong,em,link,ul,ol,li,close',
+	});
+
+	if (typeof window.QTags !== 'undefined' && typeof window.QTags._buttonsInit === 'function') {
+		window.QTags._buttonsInit();
+	}
+}
 
 function initPanelResizer() {
 	const workspace = document.getElementById('fg-workspace');
@@ -80,9 +97,23 @@ function initFolderExplorer() {
 	const copyBtn = document.querySelector('.fg-toolbar-btn[data-action="copy"]');
 	const pasteBtn = document.querySelector('.fg-toolbar-btn[data-action="paste"]');
 	const imageInput = document.getElementById('fg-image-input');
-    const uploadZipBtn = document.querySelector('.fg-toolbar-btn[data-action="upload-zip"]');
+	const uploadZipBtn = document.querySelector('.fg-toolbar-btn[data-action="upload-zip"]');
 	const zipInput = document.getElementById('fg-zip-input');
-    const renameBtn = document.querySelector('.fg-toolbar-btn[data-action="rename"]');
+	const renameBtn = document.querySelector('.fg-toolbar-btn[data-action="rename"]');
+	const detailsPlaceholder = document.getElementById('fg-details-placeholder');
+	const detailsForm = document.getElementById('fg-details-form');
+	const detailsUpdateBtn = document.getElementById('fg-details-update-btn');
+	const detailsStatus = document.getElementById('fg-details-status');
+	const detailsFolderIcon = document.getElementById('fg-details-folder-icon');
+	const detailsImage = document.getElementById('fg-details-image');
+	const detailsFilename = document.getElementById('fg-details-filename');
+	const detailsTitleInput = document.getElementById('fg-details-title');
+	const detailsDescInput = document.getElementById('fg-details-description');
+    const navShortcodeText = document.getElementById('fg-nav-shortcode-text');
+	const navCopyShortcodeBtn = document.getElementById('fg-nav-copy-shortcode');
+	const detailsShortcodeWrap = document.getElementById('fg-details-shortcode-wrap');
+	const detailsShortcodeInput = document.getElementById('fg-details-shortcode-input');
+	const detailsCopyShortcodeBtn = document.getElementById('fg-details-copy-shortcode');
 
 	if (!explorer || !leftPane || !backBtn || !breadcrumbList || !deleteBtn || typeof fgAdminConfig === 'undefined') {
 		return;
@@ -93,8 +124,81 @@ function initFolderExplorer() {
 	let anchorPath = null;
 	let clipboardItems = []; // Array of { path, kind, name }
 	let isLoading = false;
+	let detailsInitialTitle = '';
+	let detailsInitialDescription = '';
 
-    function isFileTooLarge(file) {
+    function buildShortcode(path) {
+		const clean = normalizePath(path);
+		if (!clean) {
+			return '[folder_gallery]';
+		}
+		const safeAttr = clean.replace(/"/g, '&quot;');
+		return '[folder_gallery path="' + safeAttr + '"]';
+	}
+
+	function copyTextWithFeedback(text, buttonEl) {
+		if (!text) {
+			return;
+		}
+
+		function showFeedback() {
+			if (!buttonEl) {
+				return;
+			}
+			const defaultLabel = (fgAdminConfig.i18n && fgAdminConfig.i18n.copyShortcode) || 'Copy';
+			const copiedLabel = (fgAdminConfig.i18n && fgAdminConfig.i18n.copiedShortcode) || 'Copied!';
+			buttonEl.textContent = copiedLabel;
+			window.clearTimeout(buttonEl._fgCopyTimer);
+			buttonEl._fgCopyTimer = window.setTimeout(function () {
+				buttonEl.textContent = defaultLabel;
+			}, 1500);
+		}
+
+		if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+			navigator.clipboard.writeText(text).then(showFeedback).catch(function () {
+				fallbackCopyText(text);
+				showFeedback();
+			});
+		} else {
+			fallbackCopyText(text);
+			showFeedback();
+		}
+	}
+
+	function fallbackCopyText(text) {
+		const temp = document.createElement('textarea');
+		temp.value = text;
+		temp.setAttribute('readonly', '');
+		temp.style.position = 'fixed';
+		temp.style.opacity = '0';
+		document.body.appendChild(temp);
+		temp.select();
+		try {
+			document.execCommand('copy');
+		} catch (err) {
+			// Ignore if blocked.
+		}
+		document.body.removeChild(temp);
+	}
+
+	function isDetailsDirty() {
+		if (!detailsTitleInput || !detailsDescInput) {
+			return false;
+		}
+		return (
+			detailsTitleInput.value !== detailsInitialTitle ||
+			detailsDescInput.value !== detailsInitialDescription
+		);
+	}
+
+	function syncDetailsDirtyState() {
+		if (!detailsUpdateBtn) {
+			return;
+		}
+		detailsUpdateBtn.disabled = isLoading || selectedPaths.size !== 1 || !isDetailsDirty();
+	}
+
+	function isFileTooLarge(file) {
 		const maxBytes = Number(fgAdminConfig.maxUploadBytes) || 0;
 		return maxBytes > 0 && file && typeof file.size === 'number' && file.size > maxBytes;
 	}
@@ -132,11 +236,81 @@ function initFolderExplorer() {
 	function getRowItemData(row) {
 		const path = normalizePath(row.dataset.path);
 		const labelEl = row.querySelector('.fg-item-label');
+		const thumbEl = row.querySelector('.fg-thumb');
 		return {
 			path: path,
 			kind: row.dataset.kind || 'image',
 			name: labelEl ? labelEl.textContent.trim() : path.split('/').pop(),
+			url: thumbEl ? thumbEl.getAttribute('src') : '',
+			title: row.dataset.title || '',
+			description: row.dataset.description || '',
 		};
+	}
+
+	function syncDetailsPanel() {
+		if (!detailsPlaceholder || !detailsForm) {
+			return;
+		}
+
+		if (detailsStatus) {
+			detailsStatus.textContent = '';
+		}
+
+		if (selectedPaths.size === 0) {
+			detailsInitialTitle = '';
+			detailsInitialDescription = '';
+			detailsForm.hidden = true;
+			detailsPlaceholder.hidden = false;
+			detailsPlaceholder.textContent = fgAdminConfig.i18n.detailsEmpty;
+			syncDetailsDirtyState();
+			return;
+		}
+
+		if (selectedPaths.size > 1) {
+			detailsInitialTitle = '';
+			detailsInitialDescription = '';
+			detailsForm.hidden = true;
+			detailsPlaceholder.hidden = false;
+			detailsPlaceholder.textContent = fgAdminConfig.i18n.detailsMulti.replace('%d', String(selectedPaths.size));
+			syncDetailsDirtyState();
+			return;
+		}
+
+		const items = getSelectedItemsData();
+		if (items.length !== 1) {
+			return;
+		}
+
+		const item = items[0];
+		detailsPlaceholder.hidden = true;
+		detailsForm.hidden = false;
+
+		if (item.kind === 'folder') {
+			detailsFolderIcon.hidden = false;
+			detailsImage.hidden = true;
+			detailsImage.removeAttribute('src');
+			if (detailsShortcodeWrap && detailsShortcodeInput) {
+				detailsShortcodeInput.value = buildShortcode(item.path);
+				detailsShortcodeWrap.hidden = false;
+			}
+		} else {
+			detailsFolderIcon.hidden = true;
+			detailsImage.hidden = false;
+			detailsImage.src = item.url || '';
+			detailsImage.alt = item.name;
+			if (detailsShortcodeWrap && detailsShortcodeInput) {
+				detailsShortcodeInput.value = '';
+				detailsShortcodeWrap.hidden = true;
+			}
+		}
+
+		detailsInitialTitle = item.title || '';
+		detailsInitialDescription = item.description || '';
+		detailsFilename.textContent = item.name;
+		detailsTitleInput.value = detailsInitialTitle;
+		detailsDescInput.value = detailsInitialDescription;
+
+		syncDetailsDirtyState();
 	}
 
 	function syncToolbarState() {
@@ -155,15 +329,16 @@ function initFolderExplorer() {
 		if (pasteBtn) {
 			pasteBtn.disabled = isLoading || clipboardItems.length === 0;
 		}
-        if (uploadZipBtn) {
+		if (uploadZipBtn) {
 			uploadZipBtn.disabled = isLoading;
 		}
-        if (renameBtn) {
+		if (renameBtn) {
 			renameBtn.disabled = isLoading || selectedPaths.size !== 1;
 		}
+		syncDetailsDirtyState();
 	}
 
-    function renameSelectedItem() {
+	function renameSelectedItem() {
 		if (selectedPaths.size !== 1 || isLoading) {
 			return;
 		}
@@ -247,6 +422,7 @@ function initFolderExplorer() {
 			}
 		});
 		syncToolbarState();
+		syncDetailsPanel();
 	}
 
 	function clearSelection() {
@@ -387,6 +563,11 @@ function initFolderExplorer() {
 
 	function updateNavigationUI(path) {
 		currentPath = normalizePath(path);
+
+        if (navShortcodeText) {
+			navShortcodeText.textContent = buildShortcode(currentPath);
+		}
+
 		syncToolbarState();
 
 		breadcrumbList.innerHTML = '';
@@ -437,8 +618,15 @@ function initFolderExplorer() {
 		let rowsHtml = '';
 
 		folders.forEach(function (folder) {
+			const folderTitle = typeof folder.title === 'string' ? folder.title : '';
+			const folderDesc = typeof folder.description === 'string' ? folder.description : '';
+
 			rowsHtml +=
-				'<tr class="fg-row fg-row-folder" data-kind="folder" data-path="' + escapeAttr(folder.path) + '">' +
+				'<tr class="fg-row fg-row-folder"' +
+					' data-kind="folder"' +
+					' data-path="' + escapeAttr(folder.path) + '"' +
+					' data-title="' + escapeAttr(folderTitle) + '"' +
+					' data-description="' + escapeAttr(folderDesc) + '">' +
 					'<td class="fg-col-name">' +
 						'<span class="fg-item-name-cell">' +
 							'<span class="fg-folder-icon" aria-hidden="true">' +
@@ -454,8 +642,15 @@ function initFolderExplorer() {
 		});
 
 		images.forEach(function (image) {
+			const imageTitle = typeof image.title === 'string' ? image.title : '';
+			const imageDesc = typeof image.description === 'string' ? image.description : '';
+
 			rowsHtml +=
-				'<tr class="fg-row fg-row-image" data-kind="image" data-path="' + escapeAttr(image.path) + '">' +
+				'<tr class="fg-row fg-row-image"' +
+					' data-kind="image"' +
+					' data-path="' + escapeAttr(image.path) + '"' +
+					' data-title="' + escapeAttr(imageTitle) + '"' +
+					' data-description="' + escapeAttr(imageDesc) + '">' +
 					'<td class="fg-col-name">' +
 						'<span class="fg-item-name-cell">' +
 							'<img class="fg-thumb" src="' + escapeAttr(image.url) + '" alt="' + escapeAttr(image.name) + '" loading="lazy">' +
@@ -670,7 +865,7 @@ function initFolderExplorer() {
 			});
 	}
 
-    function uploadSelectedZip(file) {
+	function uploadSelectedZip(file) {
 		if (!file || isLoading) {
 			return;
 		}
@@ -697,32 +892,32 @@ function initFolderExplorer() {
 			credentials: 'same-origin',
 			body: formData,
 		})
-        .then(function (response) {
-            return response.json();
-        })
-        .then(function (payload) {
-            if (!payload || !payload.success) {
-                const errMsg = (payload && payload.data && payload.data.message)
-                    ? payload.data.message
-                    : fgAdminConfig.i18n.zipError;
-                window.alert(errMsg);
-                isLoading = false;
-                syncToolbarState();
-                return;
-            }
+			.then(function (response) {
+				return response.json();
+			})
+			.then(function (payload) {
+				if (!payload || !payload.success) {
+					const errMsg = (payload && payload.data && payload.data.message)
+						? payload.data.message
+						: fgAdminConfig.i18n.zipError;
+					window.alert(errMsg);
+					isLoading = false;
+					syncToolbarState();
+					return;
+				}
 
-            navigateTo(currentPath, { force: true });
-        })
-        .catch(function () {
-            window.alert(fgAdminConfig.i18n.zipError);
-            isLoading = false;
-            syncToolbarState();
-        })
-        .finally(function () {
-            if (zipInput) {
-                zipInput.value = '';
-            }
-        });
+				navigateTo(currentPath, { force: true });
+			})
+			.catch(function () {
+				window.alert(fgAdminConfig.i18n.zipError);
+				isLoading = false;
+				syncToolbarState();
+			})
+			.finally(function () {
+				if (zipInput) {
+					zipInput.value = '';
+				}
+			});
 	}
 
 	function deleteSelectedItems() {
@@ -812,7 +1007,7 @@ function initFolderExplorer() {
 			.replace(/"/g, '&quot;');
 	}
 
-    function escapeAttr(value) {
+	function escapeAttr(value) {
 		return escapeHtml(value).replace(/'/g, '&#39;');
 	}
 
@@ -827,6 +1022,110 @@ function initFolderExplorer() {
 
 	if (renameBtn) {
 		renameBtn.addEventListener('click', renameSelectedItem);
+	}
+
+	if (detailsTitleInput) {
+		detailsTitleInput.addEventListener('input', syncDetailsDirtyState);
+	}
+
+	if (detailsDescInput) {
+		detailsDescInput.addEventListener('input', syncDetailsDirtyState);
+		detailsDescInput.addEventListener('change', syncDetailsDirtyState);
+	}
+
+	if (detailsForm) {
+		detailsForm.addEventListener('click', function (e) {
+			if (e.target && e.target.closest('.quicktags-toolbar')) {
+				window.setTimeout(syncDetailsDirtyState, 0);
+			}
+		});
+
+		detailsForm.addEventListener('submit', function (e) {
+			e.preventDefault();
+
+			if (isLoading || selectedPaths.size !== 1 || !isDetailsDirty()) {
+				return;
+			}
+
+			const items = getSelectedItemsData();
+			if (items.length !== 1) {
+				return;
+			}
+
+			const item = items[0];
+			const newTitle = detailsTitleInput ? detailsTitleInput.value : '';
+			const newDesc = detailsDescInput ? detailsDescInput.value : '';
+
+			isLoading = true;
+			syncToolbarState();
+			if (detailsStatus) {
+				detailsStatus.textContent = '';
+			}
+
+			const formData = new URLSearchParams();
+			formData.append('action', 'fg_save_details');
+			formData.append('nonce', fgAdminConfig.nonce);
+			formData.append('path', item.path);
+			formData.append('kind', item.kind);
+			formData.append('title', newTitle);
+			formData.append('description', newDesc);
+
+			fetch(fgAdminConfig.ajaxUrl, {
+				method: 'POST',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+				},
+				body: formData.toString(),
+			})
+				.then(function (response) {
+					return response.json();
+				})
+				.then(function (payload) {
+					if (!payload || !payload.success) {
+						const errMsg = (payload && payload.data && payload.data.message)
+							? payload.data.message
+							: fgAdminConfig.i18n.updateError;
+						window.alert(errMsg);
+						return;
+					}
+
+					const savedTitle = (payload.data && typeof payload.data.title === 'string')
+						? payload.data.title
+						: newTitle;
+					const savedDesc = (payload.data && typeof payload.data.description === 'string')
+						? payload.data.description
+						: newDesc;
+
+					const matchingRow = getOrderedRows().find(function (r) {
+						return normalizePath(r.dataset.path) === item.path;
+					});
+					if (matchingRow) {
+						matchingRow.dataset.title = savedTitle;
+						matchingRow.dataset.description = savedDesc;
+					}
+
+					detailsInitialTitle = savedTitle;
+					detailsInitialDescription = savedDesc;
+
+					if (detailsTitleInput) {
+						detailsTitleInput.value = savedTitle;
+					}
+					if (detailsDescInput) {
+						detailsDescInput.value = savedDesc;
+					}
+					if (detailsStatus) {
+						detailsStatus.textContent = fgAdminConfig.i18n.updateSaved;
+					}
+				})
+				.catch(function () {
+					window.alert(fgAdminConfig.i18n.updateError);
+				})
+				.finally(function () {
+					isLoading = false;
+					syncToolbarState();
+				});
+		});
 	}
 
 	// Keyboard shortcuts: Ctrl/Cmd+C, Ctrl/Cmd+V, Delete, and F2.
@@ -885,20 +1184,38 @@ function initFolderExplorer() {
 		});
 	}
 
-    // Open ZIP chooser when Upload ZIP button is clicked.
+	// Open ZIP chooser when Upload ZIP button is clicked.
 	if (uploadZipBtn && zipInput) {
-        uploadZipBtn.addEventListener('click', function () {
-            if (isLoading) {
-                return;
-            }
-            zipInput.click();
-        });
+		uploadZipBtn.addEventListener('click', function () {
+			if (isLoading) {
+				return;
+			}
+			zipInput.click();
+		});
 
-        zipInput.addEventListener('change', function () {
-            if (zipInput.files && zipInput.files.length > 0) {
-                uploadSelectedZip(zipInput.files[0]);
-            }
-        });
+		zipInput.addEventListener('change', function () {
+			if (zipInput.files && zipInput.files.length > 0) {
+				uploadSelectedZip(zipInput.files[0]);
+			}
+		});
+	}
+
+    if (navCopyShortcodeBtn && navShortcodeText) {
+		navCopyShortcodeBtn.addEventListener('click', function () {
+			copyTextWithFeedback(navShortcodeText.textContent, navCopyShortcodeBtn);
+		});
+	}
+
+	if (detailsCopyShortcodeBtn && detailsShortcodeInput) {
+		detailsCopyShortcodeBtn.addEventListener('click', function () {
+			copyTextWithFeedback(detailsShortcodeInput.value, detailsCopyShortcodeBtn);
+		});
+	}
+
+	if (detailsShortcodeInput) {
+		detailsShortcodeInput.addEventListener('click', function () {
+			detailsShortcodeInput.select();
+		});
 	}
 
 	// Row selection with single click, Ctrl/Cmd toggle, and Shift range select.

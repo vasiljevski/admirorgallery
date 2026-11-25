@@ -49,6 +49,29 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
 		<div class="fg-explorer" id="fg-explorer">
 
+
+			<!-- Navigation Bar (Back + Breadcrumbs) -->
+			<div class="fg-nav-bar">
+				<button type="button" class="button fg-nav-back" id="fg-nav-back" title="<?php esc_attr_e( 'Back', 'folder-gallery' ); ?>" disabled>
+					<span class="dashicons dashicons-arrow-left-alt" aria-hidden="true"></span>
+				</button>
+
+				<nav class="fg-breadcrumbs" aria-label="<?php esc_attr_e( 'Current folder path', 'folder-gallery' ); ?>">
+					<span class="dashicons dashicons-admin-home fg-breadcrumb-root-icon" aria-hidden="true"></span>
+					<ol class="fg-breadcrumb-list" id="fg-breadcrumb-list">
+						<li class="fg-breadcrumb-item is-current">
+							<a href="#" data-path=""><?php esc_html_e( 'folder-gallery', 'folder-gallery' ); ?></a>
+						</li>
+					</ol>
+				</nav>
+				<div class="fg-nav-shortcode">
+					<code id="fg-nav-shortcode-text" class="fg-shortcode-code">[folder_gallery]</code>
+					<button type="button" id="fg-nav-copy-shortcode" class="button button-small fg-copy-shortcode-btn">
+						<?php esc_html_e( 'Copy', 'folder-gallery' ); ?>
+					</button>
+				</div>
+			</div>
+
 			<!-- Top Toolbar -->
 			<div class="fg-toolbar" role="toolbar" aria-label="<?php esc_attr_e( 'Gallery actions', 'folder-gallery' ); ?>">
 				<button type="button" class="button fg-toolbar-btn" data-action="upload-image">
@@ -91,22 +114,6 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 					<span class="dashicons dashicons-trash" aria-hidden="true"></span>
 					<span><?php esc_html_e( 'Delete', 'folder-gallery' ); ?></span>
 				</button>
-			</div>
-
-			<!-- Navigation Bar (Back + Breadcrumbs) -->
-			<div class="fg-nav-bar">
-				<button type="button" class="button fg-nav-back" id="fg-nav-back" title="<?php esc_attr_e( 'Back', 'folder-gallery' ); ?>" disabled>
-					<span class="dashicons dashicons-arrow-left-alt" aria-hidden="true"></span>
-				</button>
-
-				<nav class="fg-breadcrumbs" aria-label="<?php esc_attr_e( 'Current folder path', 'folder-gallery' ); ?>">
-					<span class="dashicons dashicons-admin-home fg-breadcrumb-root-icon" aria-hidden="true"></span>
-					<ol class="fg-breadcrumb-list" id="fg-breadcrumb-list">
-						<li class="fg-breadcrumb-item is-current">
-							<a href="#" data-path=""><?php esc_html_e( 'folder-gallery', 'folder-gallery' ); ?></a>
-						</li>
-					</ol>
-				</nav>
 			</div>
 
 			<!-- Workspace: Left Listing Pane, Right Details Pane -->
@@ -194,9 +201,52 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 				></div>
 
 				<div class="fg-pane fg-pane-details" id="fg-pane-details">
-					<div class="fg-pane-placeholder">
-						<?php esc_html_e( 'Details panel', 'folder-gallery' ); ?>
+					<div class="fg-pane-placeholder" id="fg-details-placeholder">
+						<?php esc_html_e( 'Select a folder or image to view and edit its details.', 'folder-gallery' ); ?>
 					</div>
+
+					<form class="fg-details-form" id="fg-details-form" hidden>
+						<div class="fg-details-header">
+							<button type="submit" class="button button-primary" id="fg-details-update-btn" disabled>
+								<?php esc_html_e( 'Update', 'folder-gallery' ); ?>
+							</button>
+							<span class="fg-details-status" id="fg-details-status" aria-live="polite"></span>
+						</div>
+
+						<div class="fg-details-preview" id="fg-details-preview">
+							<div class="fg-details-folder-icon" id="fg-details-folder-icon" hidden>
+								<span class="dashicons dashicons-portfolio" aria-hidden="true"></span>
+							</div>
+							<img id="fg-details-image" src="" alt="" hidden>
+						</div>
+
+						<div class="fg-details-field">
+							<span class="fg-details-meta-label"><?php esc_html_e( 'File / Folder Name', 'folder-gallery' ); ?></span>
+							<div class="fg-details-filename" id="fg-details-filename"></div>
+						</div>
+
+						<div id="fg-details-shortcode-wrap" class="fg-details-field fg-details-shortcode-wrap" hidden>
+							<label for="fg-details-shortcode-input"><?php esc_html_e( 'Shortcode', 'folder-gallery' ); ?></label>
+							<div class="fg-details-shortcode-row">
+								<input type="text" id="fg-details-shortcode-input" class="regular-text code" readonly value="" />
+								<button type="button" id="fg-details-copy-shortcode" class="button button-secondary fg-copy-shortcode-btn">
+									<?php esc_html_e( 'Copy', 'folder-gallery' ); ?>
+								</button>
+							</div>
+						</div>
+
+						<div class="fg-details-field">
+							<label for="fg-details-title"><?php esc_html_e( 'Title', 'folder-gallery' ); ?></label>
+							<input type="text" id="fg-details-title" class="regular-text" value="">
+						</div>
+
+						<div class="fg-details-field">
+							<label for="fg-details-description"><?php esc_html_e( 'Description', 'folder-gallery' ); ?></label>
+							<div class="wp-editor-wrap html-active" id="fg-details-editor-wrap">
+								<textarea id="fg-details-description" class="wp-editor-area" rows="8"></textarea>
+							</div>
+						</div>
+					</form>
 				</div>
 			</div>
 

@@ -16,9 +16,40 @@ class Folder_Gallery_Admin_Menu {
 		add_action( 'wp_ajax_fg_paste_item', array( $this, 'ajax_paste_item' ) );
 		add_action( 'wp_ajax_fg_upload_zip', array( $this, 'ajax_upload_zip' ) );
 		add_action( 'wp_ajax_fg_rename_item', array( $this, 'ajax_rename_item' ) );
+		add_action( 'wp_ajax_fg_save_details', array( $this, 'ajax_save_details' ) );
+	}
+
+	public function ajax_save_details() {
+		check_ajax_referer( 'fg_scan_folder_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		$target_path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
+		$kind        = isset( $_POST['kind'] ) ? sanitize_key( wp_unslash( $_POST['kind'] ) ) : 'image';
+		$title       = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
+		$description = isset( $_POST['description'] ) ? wp_unslash( $_POST['description'] ) : '';
+
+		$saved = Folder_Gallery_Scanner::save_details( $target_path, $kind, $title, $description );
+
+		if ( is_wp_error( $saved ) ) {
+			wp_send_json_error(
+				array( 'message' => $saved->get_error_message() ),
+				400
+			);
+		}
+
+		wp_send_json_success( $saved );
 	}
 
 	public function enqueue_assets( $hook_suffix ) {
+
+		wp_enqueue_script( 'quicktags' );
+
 		// Load assets only on the main Galleries screen.
 		if ( 'toplevel_page_folder-gallery' !== $hook_suffix ) {
 			return;
@@ -67,6 +98,12 @@ class Folder_Gallery_Admin_Menu {
 					'confirmMultiple' => __( 'Are you sure you want to delete %d selected items?', 'folder-gallery' ),
 					'renamePrompt'  => __( 'Enter a new name:', 'folder-gallery' ),
 					'renameError'   => __( 'Could not rename the selected item.', 'folder-gallery' ),
+					'detailsEmpty'      => __( 'Select a folder or image to view and edit its details.', 'folder-gallery' ),
+					'detailsMulti'      => __( '%d items selected. Select a single folder or image to edit details.', 'folder-gallery' ),
+					'updateSaved'       => __( 'Details saved.', 'folder-gallery' ),
+					'updateError'       => __( 'Could not save item details.', 'folder-gallery' ),
+					'copyShortcode'   => __( 'Copy', 'folder-gallery' ),
+					'copiedShortcode' => __( 'Copied!', 'folder-gallery' ),
 				),
 			)
 		);
@@ -98,6 +135,8 @@ class Folder_Gallery_Admin_Menu {
 		foreach ( $result['folders'] as $folder ) {
 			$folders[] = array(
 				'name'        => $folder['name'],
+				'title'       => isset( $folder['title'] ) ? $folder['title'] : '',
+				'description' => isset( $folder['description'] ) ? $folder['description'] : '',
 				'path'        => $folder['path'],
 				'date'        => $folder['mtime'] ? wp_date( $date_format, $folder['mtime'] ) : '—',
 				'type'        => $folder['type'],
@@ -108,12 +147,14 @@ class Folder_Gallery_Admin_Menu {
 		$images = array();
 		foreach ( $result['images'] as $image ) {
 			$images[] = array(
-				'name' => $image['name'],
-				'path' => $image['path'],
-				'url'  => $image['url'],
-				'date' => $image['mtime'] ? wp_date( $date_format, $image['mtime'] ) : '—',
-				'type' => $image['type'],
-				'size' => size_format( $image['filesize'], 1 ),
+				'name'        => $image['name'],
+				'title'       => isset( $image['title'] ) ? $image['title'] : '',
+				'description' => isset( $image['description'] ) ? $image['description'] : '',
+				'path'        => $image['path'],
+				'url'         => $image['url'],
+				'date'        => $image['mtime'] ? wp_date( $date_format, $image['mtime'] ) : '—',
+				'type'        => $image['type'],
+				'size'        => size_format( $image['filesize'], 1 ),
 			);
 		}
 

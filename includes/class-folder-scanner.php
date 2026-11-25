@@ -14,7 +14,7 @@ class Folder_Gallery_Scanner {
 	private static $allowed_extensions = array( 'jpg', 'jpeg', 'png', 'webp', 'gif' );
 
 	/**
-	 * Scan a directory and return sorted folders and images.
+	 * Scan a directory and return sorted folders and images synced with manifest.json.
 	 *
 	 * @param string $relative_path Relative path inside folder-gallery (empty for root).
 	 * @return array|WP_Error
@@ -53,26 +53,22 @@ class Folder_Gallery_Scanner {
 			);
 		}
 
-		$folders = array();
-		$images  = array();
+		$raw_folders      = array();
+		$raw_images       = array();
+		$disk_image_names = array();
 
 		foreach ( $items as $item ) {
-			// Skip current/parent directory entries and hidden files/folders.
-			if ( '.' === $item[0] ) {
+			// Skip current/parent directory entries, hidden files/folders, and manifest.json.
+			if ( '.' === $item[0] || Folder_Gallery_Manifest::FILENAME === $item ) {
 				continue;
 			}
 
 			$full_path = $real_target . DIRECTORY_SEPARATOR . $item;
 
 			if ( is_dir( $full_path ) ) {
-				$mtime     = @filemtime( $full_path );
-				$folders[] = array(
-					'kind'        => 'folder',
-					'name'        => $item,
-					'path'        => '' === $relative_path ? $item : $relative_path . '/' . $item,
-					'mtime'       => $mtime ? $mtime : 0,
-					'type'        => __( 'Folder', 'folder-gallery' ),
-					'image_count' => self::count_images_in_dir( $full_path ),
+				$raw_folders[] = array(
+					'name'      => $item,
+					'full_path' => $full_path,
 				);
 			} elseif ( is_file( $full_path ) ) {
 				$ext = strtolower( pathinfo( $item, PATHINFO_EXTENSION ) );
@@ -80,19 +76,63 @@ class Folder_Gallery_Scanner {
 					continue;
 				}
 
-				$mtime    = @filemtime( $full_path );
-				$filesize = @filesize( $full_path );
-
-				$images[] = array(
-					'kind'     => 'image',
-					'name'     => $item,
-					'path'     => '' === $relative_path ? $item : $relative_path . '/' . $item,
-					'url'      => trailingslashit( $target_url ) . rawurlencode( $item ),
-					'mtime'    => $mtime ? $mtime : 0,
-					'type'     => strtoupper( $ext ),
-					'filesize' => false !== $filesize ? $filesize : 0,
+				$disk_image_names[] = $item;
+				$raw_images[]       = array(
+					'name'      => $item,
+					'ext'       => $ext,
+					'full_path' => $full_path,
 				);
 			}
+		}
+
+		// Read and sync manifest.json for the current folder against actual images on disk.
+		$manifest = Folder_Gallery_Manifest::read_and_sync( $real_target, $disk_image_names, true );
+
+		$folders = array();
+		foreach ( $raw_folders as $f ) {
+			$item        = $f['name'];
+			$full_path   = $f['full_path'];
+			$mtime       = @filemtime( $full_path );
+			$sub_manifest = Folder_Gallery_Manifest::read_raw_manifest( $full_path );
+
+			$folders[] = array(
+				'kind'        => 'folder',
+				'name'        => $item,
+				'title'       => isset( $sub_manifest['title'] ) ? $sub_manifest['title'] : '',
+				'description' => isset( $sub_manifest['description'] ) ? $sub_manifest['description'] : '',
+				'path'        => '' === $relative_path ? $item : $relative_path . '/' . $item,
+				'mtime'       => $mtime ? $mtime : 0,
+				'type'        => __( 'Folder', 'folder-gallery' ),
+				'image_count' => self::count_images_in_dir( $full_path ),
+			);
+		}
+
+		$images = array();
+		foreach ( $raw_images as $img ) {
+			$item      = $img['name'];
+			$ext       = $img['ext'];
+			$full_path = $img['full_path'];
+			$mtime     = @filemtime( $full_path );
+			$filesize  = @filesize( $full_path );
+
+			$img_meta = isset( $manifest['images'][ $item ] ) && is_array( $manifest['images'][ $item ] )
+				? $manifest['images'][ $item ]
+				: array();
+
+			$title       = isset( $img_meta['title'] ) ? $img_meta['title'] : '';
+			$description = isset( $img_meta['description'] ) ? $img_meta['description'] : '';	
+
+			$images[] = array(
+				'kind'        => 'image',
+				'name'        => $item,
+				'title'       => $title,
+				'description' => $description,
+				'path'        => '' === $relative_path ? $item : $relative_path . '/' . $item,
+				'url'         => trailingslashit( $target_url ) . rawurlencode( $item ),
+				'mtime'       => $mtime ? $mtime : 0,
+				'type'        => strtoupper( $ext ),
+				'filesize'    => false !== $filesize ? $filesize : 0,
+			);
 		}
 
 		// Natural case-insensitive sort by name.
@@ -130,7 +170,7 @@ class Folder_Gallery_Scanner {
 
 		$count = 0;
 		foreach ( $items as $item ) {
-			if ( '.' === $item[0] ) {
+			if ( '.' === $item[0] || Folder_Gallery_Manifest::FILENAME === $item ) {
 				continue;
 			}
 
@@ -202,6 +242,8 @@ class Folder_Gallery_Scanner {
 					__( 'Could not delete the selected file.', 'folder-gallery' )
 				);
 			}
+
+			Folder_Gallery_Manifest::handle_image_delete( dirname( $real_target ), basename( $real_target ) );
 			return true;
 		}
 
@@ -242,7 +284,6 @@ class Folder_Gallery_Scanner {
 		return @rmdir( $dir_path );
 	}
 
-
 	/**
 	 * Upload one or more image files into the target relative directory.
 	 *
@@ -277,8 +318,9 @@ class Folder_Gallery_Scanner {
 			'gif'          => 'image/gif',
 		);
 
-		$uploaded = 0;
-		$errors   = array();
+		$uploaded       = 0;
+		$errors         = array();
+		$uploaded_names = array();
 
 		foreach ( $files as $file ) {
 			$original_name = isset( $file['name'] ) ? $file['name'] : '';
@@ -326,6 +368,20 @@ class Folder_Gallery_Scanner {
 			}
 
 			$uploaded++;
+			$uploaded_names[] = $unique_name;
+		}
+
+		if ( $uploaded > 0 ) {
+			$manifest = Folder_Gallery_Manifest::read_raw_manifest( $real_target );
+			foreach ( $uploaded_names as $u_name ) {
+				if ( ! isset( $manifest['images'][ $u_name ] ) ) {
+					$manifest['images'][ $u_name ] = array(
+						'title'       => '',
+						'description' => '',
+					);
+				}
+			}
+			Folder_Gallery_Manifest::write( $real_target, $manifest );
 		}
 
 		if ( 0 === $uploaded && ! empty( $errors ) ) {
@@ -390,11 +446,16 @@ class Folder_Gallery_Scanner {
 			);
 		}
 
-		// Add an empty index.html to prevent directory listing.
+		// Add an empty index.html to prevent directory listing and initialize manifest.json.
 		$index_file = $new_folder_path . DIRECTORY_SEPARATOR . 'index.html';
 		if ( ! file_exists( $index_file ) ) {
 			@file_put_contents( $index_file, '' );
 		}
+
+		Folder_Gallery_Manifest::write(
+			$new_folder_path,
+			Folder_Gallery_Manifest::default_manifest()
+		);
 
 		return array(
 			'name' => $clean_name,
@@ -478,6 +539,13 @@ class Folder_Gallery_Scanner {
 					__( 'Could not paste the selected file.', 'folder-gallery' )
 				);
 			}
+
+			Folder_Gallery_Manifest::copy_image_metadata(
+				dirname( $real_source ),
+				$source_name,
+				$real_target,
+				$dest_name
+			);
 		} else {
 			return new WP_Error(
 				'folder_gallery_source_missing',
@@ -492,7 +560,7 @@ class Folder_Gallery_Scanner {
 	}
 
 	/**
-	 * Recursively copy a directory and its contents.
+	 * Recursively copy a directory and its contents (including manifest.json files).
 	 *
 	 * @param string $source_dir Real path to source directory.
 	 * @param string $dest_dir   Destination directory path.
@@ -564,7 +632,6 @@ class Folder_Gallery_Scanner {
 		}
 	}
 
-
 	/**
 	 * Delete multiple files or folders inside the base gallery directory.
 	 *
@@ -600,7 +667,6 @@ class Folder_Gallery_Scanner {
 			'errors'  => $errors,
 		);
 	}
-
 
 	/**
 	 * Extract and import allowed folders and images from a ZIP archive into the target directory.
@@ -717,9 +783,9 @@ class Folder_Gallery_Scanner {
 		$zip->close();
 
 		$stats = array(
-			'images_imported'  => 0,
-			'folders_created'  => 0,
-			'skipped_files'    => 0,
+			'images_imported' => 0,
+			'folders_created' => 0,
+			'skipped_files'   => 0,
 		);
 
 		self::import_extracted_directory( $temp_root, $real_target, $stats );
@@ -749,6 +815,8 @@ class Folder_Gallery_Scanner {
 			'gif'          => 'image/gif',
 		);
 
+		$imported_here = array();
+
 		foreach ( $items as $item ) {
 			if ( '.' === $item || '..' === $item || '.' === $item[0] || '__MACOSX' === $item ) {
 				continue;
@@ -770,6 +838,10 @@ class Folder_Gallery_Scanner {
 						if ( ! file_exists( $index_file ) ) {
 							@file_put_contents( $index_file, '' );
 						}
+						Folder_Gallery_Manifest::write(
+							$new_dest_dir,
+							Folder_Gallery_Manifest::default_manifest()
+						);
 					} else {
 						continue;
 					}
@@ -797,10 +869,24 @@ class Folder_Gallery_Scanner {
 
 				if ( @copy( $src_path, $dest_file ) ) {
 					$stats['images_imported']++;
+					$imported_here[] = $unique_name;
 				} else {
 					$stats['skipped_files']++;
 				}
 			}
+		}
+
+		if ( ! empty( $imported_here ) ) {
+			$manifest = Folder_Gallery_Manifest::read_raw_manifest( $dest_dir );
+			foreach ( $imported_here as $u_name ) {
+				if ( ! isset( $manifest['images'][ $u_name ] ) ) {
+					$manifest['images'][ $u_name ] = array(
+						'title'       => '',
+						'description' => '',
+					);
+				}
+			}
+			Folder_Gallery_Manifest::write( $dest_dir, $manifest );
 		}
 	}
 
@@ -868,9 +954,10 @@ class Folder_Gallery_Scanner {
 
 		$parent_dir = dirname( $real_target );
 		$raw_name   = trim( (string) $new_name );
+		$is_file    = is_file( $real_target );
 
 		// Preserve file extension for images if the user types only the base name.
-		if ( is_file( $real_target ) ) {
+		if ( $is_file ) {
 			$current_ext = strtolower( pathinfo( $real_target, PATHINFO_EXTENSION ) );
 			$new_ext     = strtolower( pathinfo( $raw_name, PATHINFO_EXTENSION ) );
 
@@ -910,6 +997,10 @@ class Folder_Gallery_Scanner {
 			);
 		}
 
+		if ( $is_file ) {
+			Folder_Gallery_Manifest::handle_image_rename( $parent_dir, $current_name, $clean_name );
+		}
+
 		$parent_rel = dirname( $relative_path );
 		$new_rel    = ( '.' === $parent_rel || '' === $parent_rel )
 			? $clean_name
@@ -921,5 +1012,76 @@ class Folder_Gallery_Scanner {
 		);
 	}
 
-}
+	/**
+	 * Save title and description for a folder or image inside manifest.json.
+	 *
+	 * @param string $relative_path Relative path inside folder-gallery.
+	 * @param string $kind          'folder' or 'image'.
+	 * @param string $title         New display title.
+	 * @param string $description   New HTML description.
+	 * @return array|WP_Error
+	 */
+	public static function save_details( $relative_path, $kind, $title, $description ) {
+		$base_dir = Folder_Gallery_Storage::get_base_dir();
 
+		if ( is_wp_error( $base_dir ) ) {
+			return $base_dir;
+		}
+
+		$relative_path = trim( str_replace( '\\', '/', (string) $relative_path ), '/' );
+		if ( '' === $relative_path ) {
+			return new WP_Error(
+				'folder_gallery_invalid_details_path',
+				__( 'Invalid item path.', 'folder-gallery' )
+			);
+		}
+
+		$target_path = trailingslashit( $base_dir ) . $relative_path;
+		$real_base   = realpath( $base_dir );
+		$real_target = realpath( $target_path );
+
+		if (
+			false === $real_base ||
+			false === $real_target ||
+			$real_target === $real_base ||
+			0 !== strpos( $real_target, $real_base . DIRECTORY_SEPARATOR )
+		) {
+			return new WP_Error(
+				'folder_gallery_invalid_details_path',
+				__( 'Item not found or outside gallery directory.', 'folder-gallery' )
+			);
+		}
+
+		if ( 'folder' === $kind ) {
+			if ( ! is_dir( $real_target ) ) {
+				return new WP_Error(
+					'folder_gallery_not_a_folder',
+					__( 'Selected item is not a folder.', 'folder-gallery' )
+				);
+			}
+
+			return Folder_Gallery_Manifest::update_item_details(
+				$real_target,
+				'folder',
+				'',
+				$title,
+				$description
+			);
+		}
+
+		if ( ! is_file( $real_target ) ) {
+			return new WP_Error(
+				'folder_gallery_not_an_image',
+				__( 'Selected item is not a file.', 'folder-gallery' )
+			);
+		}
+
+		return Folder_Gallery_Manifest::update_item_details(
+			dirname( $real_target ),
+			'image',
+			basename( $real_target ),
+			$title,
+			$description
+		);
+	}
+}

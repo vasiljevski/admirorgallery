@@ -376,3 +376,151 @@
 .fg-upload-limit {
 	margin: 4px 0 12px;
 }
+
+/* Details Panel */
+.fg-pane-details {
+	padding: 16px;
+	overflow-y: auto;
+}
+
+.fg-details-form {
+	display: flex;
+	flex-direction: column;
+	gap: 14px;
+}
+
+.fg-details-form[hidden] {
+	display: none;
+}
+
+.fg-details-header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #dcdcde;
+}
+
+.fg-details-status {
+	font-size: 12px;
+	color: #50575e;
+}
+
+.fg-details-preview {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 150px;
+	max-height: 240px;
+	padding: 12px;
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	overflow: hidden;
+}
+
+.fg-details-preview img {
+	max-width: 100%;
+	max-height: 216px;
+	width: auto;
+	height: auto;
+	object-fit: contain;
+	border-radius: 2px;
+}
+
+.fg-details-folder-icon .dashicons {
+	font-size: 72px;
+	width: 72px;
+	height: 72px;
+	color: #2271b1;
+}
+
+.fg-details-field {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.fg-details-field > label,
+.fg-details-meta-label {
+	font-weight: 600;
+	font-size: 12px;
+	color: #1d2327;
+}
+
+.fg-details-filename {
+	padding: 6px 8px;
+	background: #f6f7f7;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 12px;
+	color: #50575e;
+	word-break: break-all;
+}
+
+.fg-details-field input[type="text"] {
+	width: 100%;
+	max-width: 100%;
+}
+
+#fg-details-editor-wrap {
+	border: 1px solid #8c8f94;
+	border-radius: 3px;
+	background: #fff;
+}
+
+#fg-details-editor-wrap .quicktags-toolbar {
+	border-bottom: 1px solid #dcdcde;
+	background: #f6f7f7;
+}
+
+#fg-details-description {
+	width: 100%;
+	border: 0;
+	box-shadow: none;
+	resize: vertical;
+	min-height: 140px;
+	padding: 8px;
+}
+
+.fg-pane-details [hidden] {
+	display: none !important;
+}
+
+.fg-pane-details .fg-pane-placeholder {
+	border: 0;
+	background: transparent;
+	text-align: center;
+	color: #646970;
+}
+
+.fg-nav-shortcode {
+	margin-left: auto;
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.fg-shortcode-code {
+	padding: 3px 8px;
+	background: #f0f0f1;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+	font-size: 12px;
+	color: #1d2327;
+	user-select: all;
+}
+
+.fg-details-shortcode-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.fg-details-shortcode-row input[type="text"] {
+	flex: 1;
+	min-width: 0;
+	background: #f6f7f7;
+	font-size: 12px;
+}

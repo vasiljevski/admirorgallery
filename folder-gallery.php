@@ -14,7 +14,10 @@ define( 'FOLDER_GALLERY_VERSION', '0.1.0' );
 define( 'FOLDER_GALLERY_PATH', plugin_dir_path( __FILE__ ) );
 define( 'FOLDER_GALLERY_URL', plugin_dir_url( __FILE__ ) );
 
+require_once FOLDER_GALLERY_PATH . 'includes/class-storage.php';
 require_once FOLDER_GALLERY_PATH . 'includes/class-plugin.php';
+
+register_activation_hook( __FILE__, array( 'Folder_Gallery_Storage', 'ensure_base_dir_exists' ) );
 
 function folder_gallery_run() {
 	$plugin = new Folder_Gallery_Plugin();
