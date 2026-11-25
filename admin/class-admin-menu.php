@@ -17,6 +17,7 @@ class Folder_Gallery_Admin_Menu {
 		add_action( 'wp_ajax_fg_upload_zip', array( $this, 'ajax_upload_zip' ) );
 		add_action( 'wp_ajax_fg_rename_item', array( $this, 'ajax_rename_item' ) );
 		add_action( 'wp_ajax_fg_save_details', array( $this, 'ajax_save_details' ) );
+		add_action( 'admin_post_fg_activate_theme', array( $this, 'handle_activate_theme' ) );
 	}
 
 	public function ajax_save_details() {
@@ -47,6 +48,20 @@ class Folder_Gallery_Admin_Menu {
 	}
 
 	public function enqueue_assets( $hook_suffix ) {
+		if ( 'folder-gallery_page_folder-gallery-themes' === $hook_suffix ) {
+			wp_enqueue_style(
+				'folder-gallery-admin',
+				FOLDER_GALLERY_URL . 'admin/assets/css/admin.css',
+				array(),
+				FOLDER_GALLERY_VERSION
+			);
+			return;
+		}
+
+		// Load explorer assets only on the main Galleries screen.
+		if ( 'toplevel_page_folder-gallery' !== $hook_suffix ) {
+			return;
+		}
 
 		wp_enqueue_script( 'quicktags' );
 
@@ -223,6 +238,11 @@ class Folder_Gallery_Admin_Menu {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
+
+		$themes       = Folder_Gallery_Theme_Manager::get_available_themes();
+		$active_theme = Folder_Gallery_Theme_Manager::resolve_theme();
+		$active_slug  = is_array( $active_theme ) && isset( $active_theme['slug'] ) ? $active_theme['slug'] : '';
+
 		require FOLDER_GALLERY_PATH . 'admin/views/page-gallery-themes.php';
 	}
 
@@ -467,6 +487,43 @@ class Folder_Gallery_Admin_Menu {
 		}
 
 		wp_send_json_success( $renamed );
+	}
+
+	public function handle_activate_theme() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'folder-gallery' ), 403 );
+		}
+
+		check_admin_referer( 'fg_activate_theme_nonce' );
+
+		$theme_slug = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		$themes     = Folder_Gallery_Theme_Manager::get_available_themes();
+
+		if ( '' === $theme_slug || ! isset( $themes[ $theme_slug ] ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'page'       => 'folder-gallery-themes',
+						'fg_message' => 'invalid_theme',
+					),
+					admin_url( 'admin.php' )
+				)
+			);
+			exit;
+		}
+
+		update_option( Folder_Gallery_Theme_Manager::OPTION_ACTIVE_THEME, $theme_slug );
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'       => 'folder-gallery-themes',
+					'fg_message' => 'theme_activated',
+				),
+				admin_url( 'admin.php' )
+			)
+		);
+		exit;
 	}
 
 }

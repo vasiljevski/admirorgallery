@@ -524,3 +524,141 @@
 	background: #f6f7f7;
 	font-size: 12px;
 }
+
+
+
+/* Gallery Themes Screen */
+.fg-themes-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 20px;
+	margin-top: 20px;
+}
+
+.fg-theme-card {
+	display: flex;
+	flex-direction: column;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	overflow: hidden;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.fg-theme-card.is-active {
+	border-color: #2271b1;
+	box-shadow: 0 0 0 1px #2271b1;
+}
+
+.fg-theme-card__preview {
+	aspect-ratio: 16 / 9;
+	background: #f6f7f7;
+	border-bottom: 1px solid #dcdcde;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+}
+
+.fg-theme-card__preview img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+}
+
+.fg-theme-card__placeholder {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 8px;
+	color: #646970;
+}
+
+.fg-theme-card__placeholder .dashicons {
+	font-size: 40px;
+	width: 40px;
+	height: 40px;
+}
+
+.fg-theme-card__slug {
+	font-family: monospace;
+	font-size: 12px;
+	background: #fff;
+	padding: 2px 8px;
+	border: 1px solid #dcdcde;
+	border-radius: 3px;
+}
+
+.fg-theme-card__body {
+	padding: 16px;
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.fg-theme-card__header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 8px;
+}
+
+.fg-theme-card__title {
+	margin: 0;
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.fg-theme-card__active-label {
+	color: #2271b1;
+	font-weight: 600;
+}
+
+.fg-theme-card__version {
+	font-size: 12px;
+	color: #646970;
+	white-space: nowrap;
+}
+
+.fg-theme-card__desc {
+	margin: 0;
+	color: #50575e;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+.fg-theme-card__meta {
+	margin-top: auto;
+	padding-top: 8px;
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	font-size: 12px;
+	color: #646970;
+}
+
+.fg-theme-card__shortcode {
+	display: inline-block;
+	padding: 3px 6px;
+	background: #f0f0f1;
+	border-radius: 3px;
+	font-size: 11px;
+	color: #1d2327;
+	user-select: all;
+}
+
+.fg-theme-card__actions {
+	padding: 12px 16px;
+	background: #f6f7f7;
+	border-top: 1px solid #dcdcde;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+}
+
+.fg-theme-card.is-active .fg-theme-card__actions {
+	background: #f0f6fc;
+}
