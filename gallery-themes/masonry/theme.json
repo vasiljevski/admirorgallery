@@ -1,0 +1,44 @@
+{
+  "name": "Masonry",
+  "slug": "masonry",
+  "version": "1.0.0",
+  "description": "Responsive Masonry grid gallery theme with folder cards inside the grid, breadcrumbs, medium image variants, and full-size opening in a new tab.",
+  "author": "Folder Gallery",
+  "template": "template.php",
+  "styles": [
+    "style.css"
+  ],
+  "scripts": [
+    "masonry.pkgd.min.js",
+    "script.js"
+  ],
+  "settings": {
+    "columns": {
+      "type": "number",
+      "label": "Columns",
+      "description": "Number of masonry columns on desktop.",
+      "default": 4,
+      "min": 1,
+      "max": 6,
+      "step": 1
+    },
+    "gap": {
+      "type": "number",
+      "label": "Gap (px)",
+      "description": "Spacing between cards in pixels.",
+      "default": 16,
+      "min": 0,
+      "max": 64,
+      "step": 1
+    },
+    "radius": {
+      "type": "number",
+      "label": "Border Radius (px)",
+      "description": "Card corner rounding in pixels.",
+      "default": 10,
+      "min": 0,
+      "max": 40,
+      "step": 1
+    }
+  }
+}

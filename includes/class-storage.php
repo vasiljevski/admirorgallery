@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Folder_Gallery_Storage {
+class FG_Storage {
 
 	const FOLDER_NAME = 'folder-gallery';
 

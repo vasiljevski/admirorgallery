@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Folder_Gallery_Frontend_Shortcode {
+class FG_Frontend_Shortcode {
 
 	/**
 	 * Allowed image extensions.
@@ -40,15 +40,16 @@ class Folder_Gallery_Frontend_Shortcode {
 
 		$atts = shortcode_atts(
 			array(
-				'path'  => '',
-				'theme' => '',
+				'path'     => '',
+				'gallery'  => '',
+				'lightbox' => '',
 			),
 			$atts,
 			'folder_gallery'
 		);
 
-		$base_dir = Folder_Gallery_Storage::get_base_dir();
-		$base_url = Folder_Gallery_Storage::get_base_url();
+		$base_dir = FG_Storage::get_base_dir();
+		$base_url = FG_Storage::get_base_url();
 
 		if ( is_wp_error( $base_dir ) || is_wp_error( $base_url ) ) {
 			return '<p>' . esc_html__( 'Gallery storage is not available.', 'folder-gallery' ) . '</p>';
@@ -102,14 +103,14 @@ class Folder_Gallery_Frontend_Shortcode {
 			return '<p>' . esc_html__( 'Could not read gallery folder.', 'folder-gallery' ) . '</p>';
 		}
 
-		$manifest     = class_exists( 'Folder_Gallery_Manifest' )
-			? Folder_Gallery_Manifest::read_raw_manifest( $real_current_dir )
+		$manifest     = class_exists( 'FG_Manifest' )
+			? FG_Manifest::read_raw_manifest( $real_current_dir )
 			: array( 'images' => array() );
-		$allowed_tags = class_exists( 'Folder_Gallery_Manifest' )
-			? Folder_Gallery_Manifest::get_allowed_description_tags()
+		$allowed_tags = class_exists( 'FG_Manifest' )
+			? FG_Manifest::get_allowed_description_tags()
 			: wp_kses_allowed_html( 'post' );
 
-		$has_sizes_class = class_exists( 'Folder_Gallery_Image_Sizes' );
+		$has_sizes_class = class_exists( 'FG_Image_Sizes' );
 
 		$folders = array();
 		$images  = array();
@@ -119,15 +120,15 @@ class Folder_Gallery_Frontend_Shortcode {
 				continue;
 			}
 
-			if ( $has_sizes_class && Folder_Gallery_Image_Sizes::is_generated_variant( $item ) ) {
+			if ( $has_sizes_class && FG_Image_Sizes::is_generated_variant( $item ) ) {
 				continue;
 			}
 
 			$full_path = $real_current_dir . DIRECTORY_SEPARATOR . $item;
 
 			if ( is_dir( $full_path ) ) {
-				$sub_manifest = class_exists( 'Folder_Gallery_Manifest' )
-					? Folder_Gallery_Manifest::read_raw_manifest( $full_path )
+				$sub_manifest = class_exists( 'FG_Manifest' )
+					? FG_Manifest::read_raw_manifest( $full_path )
 					: array();
 				$folder_rel   = '' === $current_rel ? $item : $current_rel . '/' . $item;
 
@@ -149,7 +150,7 @@ class Folder_Gallery_Frontend_Shortcode {
 					: array();
 
 				$variants = $has_sizes_class
-					? Folder_Gallery_Image_Sizes::get_variants_info( $real_current_dir, $current_url, $item )
+					? FG_Image_Sizes::get_variants_info( $real_current_dir, $current_url, $item )
 					: array();
 
 				$images[] = array(
@@ -196,7 +197,10 @@ class Folder_Gallery_Frontend_Shortcode {
 			'images'         => $images,
 		);
 
-		return Folder_Gallery_Theme_Manager::render( $gallery_data, $atts['theme'] );
+		$gallery_data['group_id']           = 'fg-group-' . $instance_id . '-' . substr( md5( $current_rel ), 0, 8 );
+		$gallery_data['requested_lightbox'] = $atts['lightbox'];
+
+		return FG_Gallery_Theme_Manager::render( $gallery_data, $atts['gallery'] );
 	}
 
 	/**
@@ -253,8 +257,8 @@ class Folder_Gallery_Frontend_Shortcode {
 		$crumbs = array();
 
 		$root_disk     = '' === $root_rel ? $base_dir : trailingslashit( $base_dir ) . $root_rel;
-		$root_manifest = class_exists( 'Folder_Gallery_Manifest' )
-			? Folder_Gallery_Manifest::read_raw_manifest( $root_disk )
+		$root_manifest = class_exists( 'FG_Manifest' )
+			? FG_Manifest::read_raw_manifest( $root_disk )
 			: array();
 		$root_fallback = '' === $root_rel ? __( 'Gallery', 'folder-gallery' ) : basename( $root_rel );
 		$root_label    = ! empty( $root_manifest['title'] ) ? $root_manifest['title'] : $root_fallback;
@@ -285,8 +289,8 @@ class Folder_Gallery_Frontend_Shortcode {
 		foreach ( $segments as $index => $segment ) {
 			$running_rel  = '' === $running_rel ? $segment : $running_rel . '/' . $segment;
 			$seg_disk     = trailingslashit( $base_dir ) . $running_rel;
-			$seg_manifest = class_exists( 'Folder_Gallery_Manifest' )
-				? Folder_Gallery_Manifest::read_raw_manifest( $seg_disk )
+			$seg_manifest = class_exists( 'FG_Manifest' )
+				? FG_Manifest::read_raw_manifest( $seg_disk )
 				: array();
 			$seg_label    = ! empty( $seg_manifest['title'] ) ? $seg_manifest['title'] : $segment;
 

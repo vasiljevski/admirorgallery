@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Folder_Gallery_Image_Sizes {
+class FG_Image_Sizes {
 
 	const OPTION_SMALL_HEIGHT  = 'folder_gallery_small_height';
 	const OPTION_MEDIUM_HEIGHT = 'folder_gallery_medium_height';
@@ -181,7 +181,7 @@ class Folder_Gallery_Image_Sizes {
 		}
 
 		if ( null === $manifest ) {
-			$manifest = Folder_Gallery_Manifest::read_raw_manifest( $dir_path );
+			$manifest = FG_Manifest::read_raw_manifest( $dir_path );
 		}
 
 		$cur_small  = self::get_small_height();
@@ -201,7 +201,7 @@ class Folder_Gallery_Image_Sizes {
 		$allowed_ext = array( 'jpg', 'jpeg', 'png', 'webp', 'gif' );
 
 		foreach ( $items as $item ) {
-			if ( '.' === $item[0] || Folder_Gallery_Manifest::FILENAME === $item ) {
+			if ( '.' === $item[0] || FG_Manifest::FILENAME === $item ) {
 				continue;
 			}
 
@@ -223,7 +223,7 @@ class Folder_Gallery_Image_Sizes {
 		}
 
 		if ( $force_small || $force_medium ) {
-			Folder_Gallery_Manifest::update_sizes_meta( $dir_path, $cur_small, $cur_medium );
+			FG_Manifest::update_sizes_meta( $dir_path, $cur_small, $cur_medium );
 		}
 	}
 

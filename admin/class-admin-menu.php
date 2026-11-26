@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Folder_Gallery_Admin_Menu {
+class FG_Admin_Menu {
 
 	public function init() {
 		add_action( 'admin_menu', array( $this, 'register_menus' ) );
@@ -18,8 +18,29 @@ class Folder_Gallery_Admin_Menu {
 		add_action( 'wp_ajax_fg_rename_item', array( $this, 'ajax_rename_item' ) );
 		add_action( 'wp_ajax_fg_save_details', array( $this, 'ajax_save_details' ) );
 		add_action( 'wp_ajax_fg_regenerate_sizes', array( $this, 'ajax_regenerate_sizes' ) );
-		add_action( 'admin_post_fg_activate_theme', array( $this, 'handle_activate_theme' ) );
+
+		// Gallery Themes actions (AJAX + POST fallback).
+		add_action( 'wp_ajax_fg_activate_gallery_theme', array( $this, 'ajax_activate_gallery_theme' ) );
+		add_action( 'wp_ajax_fg_save_gallery_theme_settings', array( $this, 'ajax_save_gallery_theme_settings' ) );
+		add_action( 'wp_ajax_fg_install_gallery_theme_zip', array( $this, 'ajax_install_gallery_theme_zip' ) );
+		add_action( 'wp_ajax_fg_delete_gallery_theme', array( $this, 'ajax_delete_gallery_theme' ) );
+
+		add_action( 'admin_post_fg_activate_gallery_theme', array( $this, 'handle_activate_gallery_theme' ) );
+		add_action( 'admin_post_fg_save_gallery_theme_settings', array( $this, 'handle_save_gallery_theme_settings' ) );
+		add_action( 'admin_post_fg_install_gallery_theme_zip', array( $this, 'handle_install_gallery_theme_zip' ) );
+		add_action( 'admin_post_fg_delete_gallery_theme', array( $this, 'handle_delete_gallery_theme' ) );
 		add_action( 'admin_post_fg_save_settings', array( $this, 'handle_save_settings' ) );
+
+		// Lightbox Themes actions (AJAX + POST fallback).
+		add_action( 'wp_ajax_fg_activate_lightbox_theme', array( $this, 'ajax_activate_lightbox_theme' ) );
+		add_action( 'wp_ajax_fg_save_lightbox_theme_settings', array( $this, 'ajax_save_lightbox_theme_settings' ) );
+		add_action( 'wp_ajax_fg_install_lightbox_theme_zip', array( $this, 'ajax_install_lightbox_theme_zip' ) );
+		add_action( 'wp_ajax_fg_delete_lightbox_theme', array( $this, 'ajax_delete_lightbox_theme' ) );
+
+		add_action( 'admin_post_fg_activate_lightbox_theme', array( $this, 'handle_activate_lightbox_theme' ) );
+		add_action( 'admin_post_fg_save_lightbox_theme_settings', array( $this, 'handle_save_lightbox_theme_settings' ) );
+		add_action( 'admin_post_fg_install_lightbox_theme_zip', array( $this, 'handle_install_lightbox_theme_zip' ) );
+		add_action( 'admin_post_fg_delete_lightbox_theme', array( $this, 'handle_delete_lightbox_theme' ) );
 	}
 
 	public function ajax_regenerate_sizes() {
@@ -33,7 +54,7 @@ class Folder_Gallery_Admin_Menu {
 		}
 
 		$target_path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
-		$result      = Folder_Gallery_Scanner::regenerate_folder_sizes( $target_path );
+		$result      = FG_Scanner::regenerate_folder_sizes( $target_path );
 
 		if ( is_wp_error( $result ) ) {
 			wp_send_json_error(
@@ -60,7 +81,7 @@ class Folder_Gallery_Admin_Menu {
 		$title       = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
 		$description = isset( $_POST['description'] ) ? wp_unslash( $_POST['description'] ) : '';
 
-		$saved = Folder_Gallery_Scanner::save_details( $target_path, $kind, $title, $description );
+		$saved = FG_Scanner::save_details( $target_path, $kind, $title, $description );
 
 		if ( is_wp_error( $saved ) ) {
 			wp_send_json_error(
@@ -79,6 +100,84 @@ class Folder_Gallery_Admin_Menu {
 				FOLDER_GALLERY_URL . 'admin/assets/css/admin.css',
 				array(),
 				FOLDER_GALLERY_VERSION
+			);
+
+			wp_enqueue_script(
+				'folder-gallery-admin',
+				FOLDER_GALLERY_URL . 'admin/assets/js/admin.js',
+				array(),
+				FOLDER_GALLERY_VERSION,
+				true
+			);
+
+			$max_upload_bytes = wp_max_upload_size();
+
+			wp_localize_script(
+				'folder-gallery-admin',
+				'fgGalleryThemesConfig',
+				array(
+					'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
+					'nonce'          => wp_create_nonce( 'fg_gallery_themes_nonce' ),
+					'maxUploadBytes' => (int) $max_upload_bytes,
+					'maxUploadLabel' => size_format( $max_upload_bytes ),
+					'i18n'           => array(
+						'unsavedConfirm'  => __( 'You have unsaved theme settings. Discard changes and continue?', 'folder-gallery' ),
+						'confirmDelete'   => __( 'Are you sure you want to permanently delete the "%s" gallery theme?', 'folder-gallery' ),
+						'cannotDeleteAct' => __( 'Cannot delete the currently active gallery theme.', 'folder-gallery' ),
+						'activateError'   => __( 'Could not activate the selected gallery theme.', 'folder-gallery' ),
+						'saveError'       => __( 'Could not save gallery theme settings.', 'folder-gallery' ),
+						'saveSuccess'     => __( 'Settings saved.', 'folder-gallery' ),
+						'installError'    => __( 'Could not install the gallery theme ZIP archive.', 'folder-gallery' ),
+						'deleteError'     => __( 'Could not delete the selected gallery theme.', 'folder-gallery' ),
+						'fileTooLarge'    => __( 'The file "%1$s" exceeds the maximum allowed upload size of %2$s.', 'folder-gallery' ),
+						'copyShortcode'   => __( 'Copy', 'folder-gallery' ),
+						'copiedShortcode' => __( 'Copied!', 'folder-gallery' ),
+					),
+				)
+			);
+			return;
+		}
+		
+		if ( 'folder-gallery_page_folder-gallery-lightbox-themes' === $hook_suffix ) {
+			wp_enqueue_style(
+				'folder-gallery-admin',
+				FOLDER_GALLERY_URL . 'admin/assets/css/admin.css',
+				array(),
+				FOLDER_GALLERY_VERSION
+			);
+
+			wp_enqueue_script(
+				'folder-gallery-admin',
+				FOLDER_GALLERY_URL . 'admin/assets/js/admin.js',
+				array(),
+				FOLDER_GALLERY_VERSION,
+				true
+			);
+
+			$max_upload_bytes = wp_max_upload_size();
+
+			wp_localize_script(
+				'folder-gallery-admin',
+				'fgLightboxThemesConfig',
+				array(
+					'ajaxUrl'        => admin_url( 'admin-ajax.php' ),
+					'nonce'          => wp_create_nonce( 'fg_lightbox_themes_nonce' ),
+					'maxUploadBytes' => (int) $max_upload_bytes,
+					'maxUploadLabel' => size_format( $max_upload_bytes ),
+					'i18n'           => array(
+						'unsavedConfirm'  => __( 'You have unsaved lightbox theme settings. Discard changes and continue?', 'folder-gallery' ),
+						'confirmDelete'   => __( 'Are you sure you want to permanently delete the "%s" lightbox theme?', 'folder-gallery' ),
+						'cannotDeleteAct' => __( 'Cannot delete the currently active lightbox theme.', 'folder-gallery' ),
+						'activateError'   => __( 'Could not activate the selected lightbox theme.', 'folder-gallery' ),
+						'saveError'       => __( 'Could not save lightbox theme settings.', 'folder-gallery' ),
+						'saveSuccess'     => __( 'Settings saved.', 'folder-gallery' ),
+						'installError'    => __( 'Could not install the lightbox theme ZIP archive.', 'folder-gallery' ),
+						'deleteError'     => __( 'Could not delete the selected lightbox theme.', 'folder-gallery' ),
+						'fileTooLarge'    => __( 'The file "%1$s" exceeds the maximum allowed upload size of %2$s.', 'folder-gallery' ),
+						'copyShortcode'   => __( 'Copy', 'folder-gallery' ),
+						'copiedShortcode' => __( 'Copied!', 'folder-gallery' ),
+					),
+				)
 			);
 			return;
 		}
@@ -140,6 +239,7 @@ class Folder_Gallery_Admin_Menu {
 					'detailsMulti'    => __( '%d items selected. Select a single folder or image to edit details.', 'folder-gallery' ),
 					'updateSaved'     => __( 'Details saved.', 'folder-gallery' ),
 					'updateError'     => __( 'Could not save item details.', 'folder-gallery' ),
+					'unsavedConfirm'  => __( 'You have unsaved changes. Discard them and continue?', 'folder-gallery' ),
 					'copyShortcode'   => __( 'Copy', 'folder-gallery' ),
 					'copiedShortcode' => __( 'Copied!', 'folder-gallery' ),
 				),
@@ -158,7 +258,7 @@ class Folder_Gallery_Admin_Menu {
 		}
 
 		$relative_path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
-		$result        = Folder_Gallery_Scanner::scan( $relative_path );
+		$result        = FG_Scanner::scan( $relative_path );
 
 		if ( is_wp_error( $result ) ) {
 			wp_send_json_error(
@@ -226,13 +326,39 @@ class Folder_Gallery_Admin_Menu {
 			array( $this, 'render_galleries_page' )
 		);
 
+		$gallery_themes_count  = count( FG_Gallery_Theme_Manager::get_available_themes() );
+		$lightbox_themes_count = class_exists( 'FG_Lightbox_Theme_Manager' )
+			? count( FG_Lightbox_Theme_Manager::get_available_themes() )
+			: 0;
+
+		$gallery_menu_title = sprintf(
+			/* translators: %s: number of installed gallery themes */
+			__( 'Gallery Themes %s', 'folder-gallery' ),
+			'<span class="awaiting-mod count-' . (int) $gallery_themes_count . '"><span class="plugin-count">' . (int) $gallery_themes_count . '</span></span>'
+		);
+
+		$lightbox_menu_title = sprintf(
+			/* translators: %s: number of installed lightbox themes */
+			__( 'Lightbox Themes %s', 'folder-gallery' ),
+			'<span class="awaiting-mod count-' . (int) $lightbox_themes_count . '"><span class="plugin-count">' . (int) $lightbox_themes_count . '</span></span>'
+		);
+
 		add_submenu_page(
 			'folder-gallery',
 			__( 'Gallery Themes', 'folder-gallery' ),
-			__( 'Gallery Themes', 'folder-gallery' ),
+			$gallery_menu_title,
 			'manage_options',
 			'folder-gallery-themes',
 			array( $this, 'render_gallery_themes_page' )
+		);
+
+		add_submenu_page(
+			'folder-gallery',
+			__( 'Lightbox Themes', 'folder-gallery' ),
+			$lightbox_menu_title,
+			'manage_options',
+			'folder-gallery-lightbox-themes',
+			array( $this, 'render_lightbox_themes_page' )
 		);
 
 		add_submenu_page(
@@ -250,10 +376,10 @@ class Folder_Gallery_Admin_Menu {
 			return;
 		}
 
-		$storage_status = Folder_Gallery_Storage::ensure_base_dir_exists();
+		$storage_status = FG_Storage::ensure_base_dir_exists();
 		$scan_result    = is_wp_error( $storage_status )
 			? $storage_status
-			: Folder_Gallery_Scanner::scan( '' );
+			: FG_Scanner::scan( '' );
 
 		require FOLDER_GALLERY_PATH . 'admin/views/page-galleries.php';
 	}
@@ -263,11 +389,45 @@ class Folder_Gallery_Admin_Menu {
 			return;
 		}
 
-		$themes       = Folder_Gallery_Theme_Manager::get_available_themes();
-		$active_theme = Folder_Gallery_Theme_Manager::resolve_theme();
-		$active_slug  = is_array( $active_theme ) && isset( $active_theme['slug'] ) ? $active_theme['slug'] : '';
+		$themes        = FG_Gallery_Theme_Manager::get_available_themes();
+		$active_slug   = FG_Gallery_Theme_Manager::get_active_theme_slug();
+		$selected_slug = isset( $_GET['theme'] ) ? sanitize_key( wp_unslash( $_GET['theme'] ) ) : '';
+
+		if ( '' === $selected_slug || ! isset( $themes[ $selected_slug ] ) ) {
+			if ( '' !== $active_slug && isset( $themes[ $active_slug ] ) ) {
+				$selected_slug = $active_slug;
+			} elseif ( ! empty( $themes ) ) {
+				$first         = reset( $themes );
+				$selected_slug = isset( $first['slug'] ) ? (string) $first['slug'] : '';
+			} else {
+				$selected_slug = '';
+			}
+		}
 
 		require FOLDER_GALLERY_PATH . 'admin/views/page-gallery-themes.php';
+	}
+
+	public function render_lightbox_themes_page() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		$themes        = FG_Lightbox_Theme_Manager::get_available_themes();
+		$active_slug   = FG_Lightbox_Theme_Manager::get_active_theme_slug();
+		$selected_slug = isset( $_GET['theme'] ) ? sanitize_key( wp_unslash( $_GET['theme'] ) ) : '';
+
+		if ( '' === $selected_slug || ! isset( $themes[ $selected_slug ] ) ) {
+			if ( '' !== $active_slug && isset( $themes[ $active_slug ] ) ) {
+				$selected_slug = $active_slug;
+			} elseif ( ! empty( $themes ) ) {
+				$first         = reset( $themes );
+				$selected_slug = isset( $first['slug'] ) ? (string) $first['slug'] : '';
+			} else {
+				$selected_slug = '';
+			}
+		}
+
+		require FOLDER_GALLERY_PATH . 'admin/views/page-lightbox-themes.php';
 	}
 
 	public function render_settings_page() {
@@ -303,7 +463,7 @@ class Folder_Gallery_Admin_Menu {
 			}
 		}
 
-		$result = Folder_Gallery_Scanner::delete_items( $paths );
+		$result = FG_Scanner::delete_items( $paths );
 
 		if ( is_wp_error( $result ) ) {
 			wp_send_json_error(
@@ -332,7 +492,6 @@ class Folder_Gallery_Admin_Menu {
 			);
 		}
 
-		// Normalize multi-file $_FILES['images'] structure into a clean list of file arrays.
 		$normalized_files = array();
 		$file_count       = count( $_FILES['images']['name'] );
 
@@ -347,7 +506,7 @@ class Folder_Gallery_Admin_Menu {
 		}
 
 		$target_path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
-		$result      = Folder_Gallery_Scanner::upload_images( $target_path, $normalized_files );
+		$result      = FG_Scanner::upload_images( $target_path, $normalized_files );
 
 		if ( is_wp_error( $result ) ) {
 			wp_send_json_error(
@@ -372,7 +531,7 @@ class Folder_Gallery_Admin_Menu {
 		$parent_path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
 		$folder_name = isset( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
 
-		$created = Folder_Gallery_Scanner::create_folder( $parent_path, $folder_name );
+		$created = FG_Scanner::create_folder( $parent_path, $folder_name );
 
 		if ( is_wp_error( $created ) ) {
 			wp_send_json_error(
@@ -422,7 +581,7 @@ class Folder_Gallery_Admin_Menu {
 		$errors = array();
 
 		foreach ( $source_paths as $src ) {
-			$res = Folder_Gallery_Scanner::paste_item( $src, $target_path );
+			$res = FG_Scanner::paste_item( $src, $target_path );
 			if ( is_wp_error( $res ) ) {
 				$errors[] = $res->get_error_message();
 			} else {
@@ -476,7 +635,7 @@ class Folder_Gallery_Admin_Menu {
 		);
 
 		$target_path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
-		$result      = Folder_Gallery_Scanner::upload_zip( $target_path, $file );
+		$result      = FG_Scanner::upload_zip( $target_path, $file );
 
 		if ( is_wp_error( $result ) ) {
 			wp_send_json_error(
@@ -501,7 +660,7 @@ class Folder_Gallery_Admin_Menu {
 		$target_path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
 		$new_name    = isset( $_POST['new_name'] ) ? sanitize_text_field( wp_unslash( $_POST['new_name'] ) ) : '';
 
-		$renamed = Folder_Gallery_Scanner::rename_item( $target_path, $new_name );
+		$renamed = FG_Scanner::rename_item( $target_path, $new_name );
 
 		if ( is_wp_error( $renamed ) ) {
 			wp_send_json_error(
@@ -513,38 +672,623 @@ class Folder_Gallery_Admin_Menu {
 		wp_send_json_success( $renamed );
 	}
 
-	public function handle_activate_theme() {
+	/* =========================================================================
+	 * Gallery Themes Handlers (AJAX + admin-post fallbacks)
+	 * ========================================================================= */
+
+	public function ajax_activate_gallery_theme() {
+		check_ajax_referer( 'fg_gallery_themes_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		$slug = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		if ( ! FG_Gallery_Theme_Manager::set_active_theme( $slug ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Selected gallery theme could not be found.', 'folder-gallery' ) ),
+				400
+			);
+		}
+
+		wp_send_json_success(
+			array(
+				'activeSlug' => FG_Gallery_Theme_Manager::get_active_theme_slug(),
+				'message'    => __( 'Gallery theme activated.', 'folder-gallery' ),
+			)
+		);
+	}
+
+	public function ajax_save_gallery_theme_settings() {
+		check_ajax_referer( 'fg_gallery_themes_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		$slug   = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		$themes = FG_Gallery_Theme_Manager::get_available_themes();
+
+		if ( '' === $slug || ! isset( $themes[ $slug ] ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Selected gallery theme could not be found.', 'folder-gallery' ) ),
+				400
+			);
+		}
+
+		$raw_settings = isset( $_POST['settings'] ) && is_array( $_POST['settings'] )
+			? wp_unslash( $_POST['settings'] )
+			: array();
+
+		$saved = FG_Gallery_Theme_Manager::update_theme_settings( $slug, $raw_settings );
+
+		wp_send_json_success(
+			array(
+				'slug'     => $slug,
+				'settings' => $saved,
+				'message'  => __( 'Theme settings saved.', 'folder-gallery' ),
+			)
+		);
+	}
+
+	public function ajax_install_gallery_theme_zip() {
+		if ( ! check_ajax_referer( 'fg_gallery_themes_nonce', 'nonce', false ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Security check failed. Refresh the page and try again.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		if ( empty( $_FILES['theme_zip'] ) || ! is_array( $_FILES['theme_zip'] ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'No ZIP file received.', 'folder-gallery' ) ),
+				400
+			);
+		}
+
+		$error_code = isset( $_FILES['theme_zip']['error'] ) ? (int) $_FILES['theme_zip']['error'] : UPLOAD_ERR_NO_FILE;
+		$tmp_name   = isset( $_FILES['theme_zip']['tmp_name'] ) ? $_FILES['theme_zip']['tmp_name'] : '';
+		$file_name  = isset( $_FILES['theme_zip']['name'] ) ? sanitize_text_field( wp_unslash( $_FILES['theme_zip']['name'] ) ) : '';
+
+		if ( UPLOAD_ERR_OK !== $error_code || '' === $tmp_name || ! is_uploaded_file( $tmp_name ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Upload failed or file is invalid.', 'folder-gallery' ) ),
+				400
+			);
+		}
+
+		$ext = strtolower( pathinfo( $file_name, PATHINFO_EXTENSION ) );
+		if ( 'zip' !== $ext ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Only .zip archives are allowed.', 'folder-gallery' ) ),
+				400
+			);
+		}
+
+		$result = FG_Gallery_Theme_Manager::install_theme_from_zip( $tmp_name );
+		if ( empty( $result['ok'] ) ) {
+			wp_send_json_error(
+				array(
+					'message' => isset( $result['error'] ) ? $result['error'] : __( 'Could not install gallery theme.', 'folder-gallery' ),
+				),
+				400
+			);
+		}
+
+		wp_send_json_success(
+			array(
+				'slug'    => isset( $result['slug'] ) ? $result['slug'] : '',
+				'message' => __( 'Gallery theme installed.', 'folder-gallery' ),
+			)
+		);
+	}
+
+	public function ajax_delete_gallery_theme() {
+		check_ajax_referer( 'fg_gallery_themes_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		$slug   = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		$result = FG_Gallery_Theme_Manager::delete_theme( $slug );
+
+		if ( empty( $result['ok'] ) ) {
+			wp_send_json_error(
+				array(
+					'message' => isset( $result['error'] ) ? $result['error'] : __( 'Could not delete gallery theme.', 'folder-gallery' ),
+				),
+				400
+			);
+		}
+
+		wp_send_json_success(
+			array(
+				'slug'    => $slug,
+				'message' => __( 'Gallery theme deleted.', 'folder-gallery' ),
+			)
+		);
+	}
+
+	public function handle_activate_gallery_theme() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_die( esc_html__( 'Permission denied.', 'folder-gallery' ), 403 );
 		}
 
-		check_admin_referer( 'fg_activate_theme_nonce' );
+		check_admin_referer( 'fg_activate_gallery_theme_nonce' );
 
-		$theme_slug = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
-		$themes     = Folder_Gallery_Theme_Manager::get_available_themes();
+		$theme_slug    = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		$redirect_base = admin_url( 'admin.php?page=folder-gallery-themes' );
 
-		if ( '' === $theme_slug || ! isset( $themes[ $theme_slug ] ) ) {
+		if ( ! FG_Gallery_Theme_Manager::set_active_theme( $theme_slug ) ) {
 			wp_safe_redirect(
 				add_query_arg(
 					array(
-						'page'       => 'folder-gallery-themes',
 						'fg_message' => 'invalid_theme',
 					),
-					admin_url( 'admin.php' )
+					$redirect_base
 				)
 			);
 			exit;
 		}
 
-		update_option( Folder_Gallery_Theme_Manager::OPTION_ACTIVE_THEME, $theme_slug );
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'theme'      => $theme_slug,
+					'fg_message' => 'theme_activated',
+				),
+				$redirect_base
+			)
+		);
+		exit;
+	}
+
+	public function handle_save_gallery_theme_settings() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'folder-gallery' ), 403 );
+		}
+
+		$slug = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		check_admin_referer( 'fg_save_gallery_theme_settings_' . $slug );
+
+		$themes        = FG_Gallery_Theme_Manager::get_available_themes();
+		$redirect_base = admin_url( 'admin.php?page=folder-gallery-themes' );
+
+		if ( '' === $slug || ! isset( $themes[ $slug ] ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'fg_message' => 'invalid_theme',
+					),
+					$redirect_base
+				)
+			);
+			exit;
+		}
+
+		$raw_post = wp_unslash( $_POST );
+		unset( $raw_post['action'], $raw_post['theme'], $raw_post['_wpnonce'], $raw_post['_wp_http_referer'] );
+		FG_Gallery_Theme_Manager::update_theme_settings( $slug, $raw_post );
 
 		wp_safe_redirect(
 			add_query_arg(
 				array(
-					'page'       => 'folder-gallery-themes',
+					'theme'      => $slug,
+					'fg_message' => 'theme_settings_saved',
+				),
+				$redirect_base
+			)
+		);
+		exit;
+	}
+
+	public function handle_install_gallery_theme_zip() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'folder-gallery' ), 403 );
+		}
+
+		check_admin_referer( 'fg_install_gallery_theme_zip_nonce' );
+
+		$redirect_base = admin_url( 'admin.php?page=folder-gallery-themes' );
+
+		if (
+			empty( $_FILES['theme_zip']['tmp_name'] ) ||
+			! is_uploaded_file( $_FILES['theme_zip']['tmp_name'] )
+		) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'fg_message' => 'install_error',
+					),
+					$redirect_base
+				)
+			);
+			exit;
+		}
+
+		$result = FG_Gallery_Theme_Manager::install_theme_from_zip( $_FILES['theme_zip']['tmp_name'] );
+		if ( empty( $result['ok'] ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'fg_message' => 'install_error',
+					),
+					$redirect_base
+				)
+			);
+			exit;
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'theme'      => isset( $result['slug'] ) ? $result['slug'] : '',
+					'fg_message' => 'theme_installed',
+				),
+				$redirect_base
+			)
+		);
+		exit;
+	}
+
+	public function handle_delete_gallery_theme() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'folder-gallery' ), 403 );
+		}
+
+		$slug = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		check_admin_referer( 'fg_delete_gallery_theme_' . $slug );
+
+		$redirect_base = admin_url( 'admin.php?page=folder-gallery-themes' );
+		$result        = FG_Gallery_Theme_Manager::delete_theme( $slug );
+
+		if ( empty( $result['ok'] ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'theme'      => $slug,
+						'fg_message' => 'delete_error',
+					),
+					$redirect_base
+				)
+			);
+			exit;
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'fg_message' => 'theme_deleted',
+				),
+				$redirect_base
+			)
+		);
+		exit;
+	}
+
+	/* =========================================================================
+	 * Lightbox Themes Handlers (AJAX + admin-post fallbacks)
+	 * ========================================================================= */
+
+	public function ajax_activate_lightbox_theme() {
+		check_ajax_referer( 'fg_lightbox_themes_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		$slug = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		if ( ! FG_Lightbox_Theme_Manager::set_active_theme( $slug ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Selected lightbox theme could not be found.', 'folder-gallery' ) ),
+				400
+			);
+		}
+
+		wp_send_json_success(
+			array(
+				'activeSlug' => FG_Lightbox_Theme_Manager::get_active_theme_slug(),
+				'message'    => __( 'Lightbox theme activated.', 'folder-gallery' ),
+			)
+		);
+	}
+
+	public function ajax_save_lightbox_theme_settings() {
+		check_ajax_referer( 'fg_lightbox_themes_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		$slug   = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		$themes = FG_Lightbox_Theme_Manager::get_available_themes();
+
+		if ( '' === $slug || ! isset( $themes[ $slug ] ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Selected lightbox theme could not be found.', 'folder-gallery' ) ),
+				400
+			);
+		}
+
+		$raw_settings = isset( $_POST['settings'] ) && is_array( $_POST['settings'] )
+			? wp_unslash( $_POST['settings'] )
+			: array();
+
+		$saved = FG_Lightbox_Theme_Manager::update_theme_settings( $slug, $raw_settings );
+
+		wp_send_json_success(
+			array(
+				'slug'     => $slug,
+				'settings' => $saved,
+				'message'  => __( 'Lightbox theme settings saved.', 'folder-gallery' ),
+			)
+		);
+	}
+
+	public function ajax_install_lightbox_theme_zip() {
+		if ( ! check_ajax_referer( 'fg_lightbox_themes_nonce', 'nonce', false ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Security check failed. Refresh the page and try again.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		if ( empty( $_FILES['theme_zip'] ) || ! is_array( $_FILES['theme_zip'] ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'No ZIP file received.', 'folder-gallery' ) ),
+				400
+			);
+		}
+
+		$error_code = isset( $_FILES['theme_zip']['error'] ) ? (int) $_FILES['theme_zip']['error'] : UPLOAD_ERR_NO_FILE;
+		$tmp_name   = isset( $_FILES['theme_zip']['tmp_name'] ) ? $_FILES['theme_zip']['tmp_name'] : '';
+		$file_name  = isset( $_FILES['theme_zip']['name'] ) ? sanitize_text_field( wp_unslash( $_FILES['theme_zip']['name'] ) ) : '';
+
+		if ( UPLOAD_ERR_OK !== $error_code || '' === $tmp_name || ! is_uploaded_file( $tmp_name ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Upload failed or file is invalid.', 'folder-gallery' ) ),
+				400
+			);
+		}
+
+		$ext = strtolower( pathinfo( $file_name, PATHINFO_EXTENSION ) );
+		if ( 'zip' !== $ext ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Only .zip archives are allowed.', 'folder-gallery' ) ),
+				400
+			);
+		}
+
+		$result = FG_Lightbox_Theme_Manager::install_theme_from_zip( $tmp_name );
+		if ( empty( $result['ok'] ) ) {
+			wp_send_json_error(
+				array(
+					'message' => isset( $result['error'] ) ? $result['error'] : __( 'Could not install lightbox theme.', 'folder-gallery' ),
+				),
+				400
+			);
+		}
+
+		wp_send_json_success(
+			array(
+				'slug'    => isset( $result['slug'] ) ? $result['slug'] : '',
+				'message' => __( 'Lightbox theme installed.', 'folder-gallery' ),
+			)
+		);
+	}
+
+	public function ajax_delete_lightbox_theme() {
+		check_ajax_referer( 'fg_lightbox_themes_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		$slug   = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		$result = FG_Lightbox_Theme_Manager::delete_theme( $slug );
+
+		if ( empty( $result['ok'] ) ) {
+			wp_send_json_error(
+				array(
+					'message' => isset( $result['error'] ) ? $result['error'] : __( 'Could not delete lightbox theme.', 'folder-gallery' ),
+				),
+				400
+			);
+		}
+
+		wp_send_json_success(
+			array(
+				'slug'    => $slug,
+				'message' => __( 'Lightbox theme deleted.', 'folder-gallery' ),
+			)
+		);
+	}
+
+	public function handle_activate_lightbox_theme() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'folder-gallery' ), 403 );
+		}
+
+		check_admin_referer( 'fg_activate_lightbox_theme_nonce' );
+
+		$theme_slug    = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		$redirect_base = admin_url( 'admin.php?page=folder-gallery-lightbox-themes' );
+
+		if ( ! FG_Lightbox_Theme_Manager::set_active_theme( $theme_slug ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'fg_message' => 'invalid_theme',
+					),
+					$redirect_base
+				)
+			);
+			exit;
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'theme'      => $theme_slug,
 					'fg_message' => 'theme_activated',
 				),
-				admin_url( 'admin.php' )
+				$redirect_base
+			)
+		);
+		exit;
+	}
+
+	public function handle_save_lightbox_theme_settings() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'folder-gallery' ), 403 );
+		}
+
+		$slug = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		check_admin_referer( 'fg_save_lightbox_theme_settings_' . $slug );
+
+		$themes        = FG_Lightbox_Theme_Manager::get_available_themes();
+		$redirect_base = admin_url( 'admin.php?page=folder-gallery-lightbox-themes' );
+
+		if ( '' === $slug || ! isset( $themes[ $slug ] ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'fg_message' => 'invalid_theme',
+					),
+					$redirect_base
+				)
+			);
+			exit;
+		}
+
+		$raw_post = wp_unslash( $_POST );
+		unset( $raw_post['action'], $raw_post['theme'], $raw_post['_wpnonce'], $raw_post['_wp_http_referer'] );
+		FG_Lightbox_Theme_Manager::update_theme_settings( $slug, $raw_post );
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'theme'      => $slug,
+					'fg_message' => 'theme_settings_saved',
+				),
+				$redirect_base
+			)
+		);
+		exit;
+	}
+
+	public function handle_install_lightbox_theme_zip() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'folder-gallery' ), 403 );
+		}
+
+		check_admin_referer( 'fg_install_lightbox_theme_zip_nonce' );
+
+		$redirect_base = admin_url( 'admin.php?page=folder-gallery-lightbox-themes' );
+
+		if (
+			empty( $_FILES['theme_zip']['tmp_name'] ) ||
+			! is_uploaded_file( $_FILES['theme_zip']['tmp_name'] )
+		) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'fg_message' => 'install_error',
+					),
+					$redirect_base
+				)
+			);
+			exit;
+		}
+
+		$result = FG_Lightbox_Theme_Manager::install_theme_from_zip( $_FILES['theme_zip']['tmp_name'] );
+		if ( empty( $result['ok'] ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'fg_message' => 'install_error',
+					),
+					$redirect_base
+				)
+			);
+			exit;
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'theme'      => isset( $result['slug'] ) ? $result['slug'] : '',
+					'fg_message' => 'theme_installed',
+				),
+				$redirect_base
+			)
+		);
+		exit;
+	}
+
+	public function handle_delete_lightbox_theme() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'folder-gallery' ), 403 );
+		}
+
+		$slug = isset( $_POST['theme'] ) ? sanitize_key( wp_unslash( $_POST['theme'] ) ) : '';
+		check_admin_referer( 'fg_delete_lightbox_theme_' . $slug );
+
+		$redirect_base = admin_url( 'admin.php?page=folder-gallery-lightbox-themes' );
+		$result        = FG_Lightbox_Theme_Manager::delete_theme( $slug );
+
+		if ( empty( $result['ok'] ) ) {
+			wp_safe_redirect(
+				add_query_arg(
+					array(
+						'theme'      => $slug,
+						'fg_message' => 'delete_error',
+					),
+					$redirect_base
+				)
+			);
+			exit;
+		}
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'fg_message' => 'theme_deleted',
+				),
+				$redirect_base
 			)
 		);
 		exit;
@@ -557,14 +1301,14 @@ class Folder_Gallery_Admin_Menu {
 
 		check_admin_referer( 'fg_save_settings_nonce' );
 
-		$raw_small  = isset( $_POST['small_height'] ) ? (int) wp_unslash( $_POST['small_height'] ) : Folder_Gallery_Image_Sizes::DEFAULT_SMALL_HEIGHT;
-		$raw_medium = isset( $_POST['medium_height'] ) ? (int) wp_unslash( $_POST['medium_height'] ) : Folder_Gallery_Image_Sizes::DEFAULT_MEDIUM_HEIGHT;
+		$raw_small  = isset( $_POST['small_height'] ) ? (int) wp_unslash( $_POST['small_height'] ) : FG_Image_Sizes::DEFAULT_SMALL_HEIGHT;
+		$raw_medium = isset( $_POST['medium_height'] ) ? (int) wp_unslash( $_POST['medium_height'] ) : FG_Image_Sizes::DEFAULT_MEDIUM_HEIGHT;
 
-		$small_height  = ( $raw_small >= 50 && $raw_small <= 4000 ) ? $raw_small : Folder_Gallery_Image_Sizes::DEFAULT_SMALL_HEIGHT;
-		$medium_height = ( $raw_medium >= 50 && $raw_medium <= 4000 ) ? $raw_medium : Folder_Gallery_Image_Sizes::DEFAULT_MEDIUM_HEIGHT;
+		$small_height  = ( $raw_small >= 50 && $raw_small <= 4000 ) ? $raw_small : FG_Image_Sizes::DEFAULT_SMALL_HEIGHT;
+		$medium_height = ( $raw_medium >= 50 && $raw_medium <= 4000 ) ? $raw_medium : FG_Image_Sizes::DEFAULT_MEDIUM_HEIGHT;
 
-		update_option( Folder_Gallery_Image_Sizes::OPTION_SMALL_HEIGHT, $small_height );
-		update_option( Folder_Gallery_Image_Sizes::OPTION_MEDIUM_HEIGHT, $medium_height );
+		update_option( FG_Image_Sizes::OPTION_SMALL_HEIGHT, $small_height );
+		update_option( FG_Image_Sizes::OPTION_MEDIUM_HEIGHT, $medium_height );
 
 		wp_safe_redirect(
 			add_query_arg(
@@ -577,5 +1321,4 @@ class Folder_Gallery_Admin_Menu {
 		);
 		exit;
 	}
-
 }

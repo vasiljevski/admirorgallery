@@ -1,0 +1,95 @@
+.fg-theme-swiper {
+	width: 100%;
+}
+
+.fg-theme-swiper__breadcrumbs {
+	margin-bottom: 1rem;
+}
+
+.fg-theme-swiper__breadcrumb-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+.fg-theme-swiper__breadcrumb-item:not(:last-child)::after {
+	content: "/";
+	margin-left: 0.5rem;
+	opacity: 0.5;
+}
+
+.fg-theme-swiper__header {
+	margin-bottom: 1.25rem;
+}
+
+.fg-theme-swiper__heading {
+	margin: 0 0 0.4rem;
+}
+
+.fg-theme-swiper__description {
+	opacity: 0.85;
+}
+
+.fg-theme-swiper__folders {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.6rem;
+	margin-bottom: 1.25rem;
+}
+
+.fg-theme-swiper__folder-chip {
+	display: inline-flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	padding: 0.6rem 0.9rem;
+	border: 1px solid rgba(0, 0, 0, 0.14);
+	border-radius: 6px;
+	text-decoration: none;
+}
+
+.fg-theme-swiper__folder-title {
+	font-weight: 600;
+}
+
+.fg-theme-swiper__folder-desc {
+	font-size: 0.85rem;
+	opacity: 0.8;
+}
+
+.fg-theme-swiper__container {
+	width: 100%;
+}
+
+.fg-theme-swiper__card {
+	margin: 0;
+	width: 100%;
+}
+
+.fg-theme-swiper__img {
+	display: block;
+	width: 100%;
+	height: auto;
+}
+
+.fg-theme-swiper__caption {
+	padding: 0.85rem 1rem;
+}
+
+.fg-theme-swiper__title {
+	margin: 0 0 0.35rem;
+	font-size: 1.05rem;
+	line-height: 1.35;
+}
+
+.fg-theme-swiper__item-desc {
+	font-size: 0.92rem;
+	line-height: 1.45;
+	opacity: 0.85;
+}
+
+.fg-theme-swiper__item-desc p:last-child {
+	margin-bottom: 0;
+}

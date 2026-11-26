@@ -4,8 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$small_height  = Folder_Gallery_Image_Sizes::get_small_height();
-$medium_height = Folder_Gallery_Image_Sizes::get_medium_height();
+$small_height  = FG_Image_Sizes::get_small_height();
+$medium_height = FG_Image_Sizes::get_medium_height();
 $message       = isset( $_GET['fg_message'] ) ? sanitize_key( wp_unslash( $_GET['fg_message'] ) ) : '';
 ?>
 <div class="wrap fg-wrap">
@@ -48,7 +48,7 @@ $message       = isset( $_GET['fg_message'] ) ? sanitize_key( wp_unslash( $_GET[
 							printf(
 								/* translators: %d: default height in pixels */
 								esc_html__( 'Used for thumbnails and compact views (default: %d px).', 'folder-gallery' ),
-								(int) Folder_Gallery_Image_Sizes::DEFAULT_SMALL_HEIGHT
+								(int) FG_Image_Sizes::DEFAULT_SMALL_HEIGHT
 							);
 							?>
 						</p>
@@ -74,7 +74,7 @@ $message       = isset( $_GET['fg_message'] ) ? sanitize_key( wp_unslash( $_GET[
 							printf(
 								/* translators: %d: default height in pixels */
 								esc_html__( 'Used for carousels and intermediate previews (default: %d px).', 'folder-gallery' ),
-								(int) Folder_Gallery_Image_Sizes::DEFAULT_MEDIUM_HEIGHT
+								(int) FG_Image_Sizes::DEFAULT_MEDIUM_HEIGHT
 							);
 							?>
 						</p>

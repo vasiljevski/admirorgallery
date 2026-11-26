@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Folder_Gallery_Scanner {
+class FG_Scanner {
 
 	/**
 	 * Allowed image extensions.
@@ -20,8 +20,8 @@ class Folder_Gallery_Scanner {
 	 * @return array|WP_Error
 	 */
 	public static function scan( $relative_path = '' ) {
-		$base_dir = Folder_Gallery_Storage::get_base_dir();
-		$base_url = Folder_Gallery_Storage::get_base_url();
+		$base_dir = FG_Storage::get_base_dir();
+		$base_url = FG_Storage::get_base_url();
 
 		if ( is_wp_error( $base_dir ) ) {
 			return $base_dir;
@@ -68,8 +68,8 @@ class Folder_Gallery_Scanner {
 			// Skip current/parent directory entries, hidden files/folders, manifest.json, and generated size variants.
 			if (
 				'.' === $item[0] ||
-				Folder_Gallery_Manifest::FILENAME === $item ||
-				Folder_Gallery_Image_Sizes::is_generated_variant( $item )
+				FG_Manifest::FILENAME === $item ||
+				FG_Image_Sizes::is_generated_variant( $item )
 			) {
 				continue;
 			}
@@ -97,17 +97,17 @@ class Folder_Gallery_Scanner {
 		}
 
 		// Read and sync manifest.json for the current folder against actual images on disk.
-		$manifest = Folder_Gallery_Manifest::read_and_sync( $real_target, $disk_image_names, true );
+		$manifest = FG_Manifest::read_and_sync( $real_target, $disk_image_names, true );
 
 		// Ensure small and medium size variants exist and match current Settings dimensions.
-		Folder_Gallery_Image_Sizes::process_directory( $real_target, false, $manifest );
+		FG_Image_Sizes::process_directory( $real_target, false, $manifest );
 
 		$folders = array();
 		foreach ( $raw_folders as $f ) {
 			$item         = $f['name'];
 			$full_path    = $f['full_path'];
 			$mtime        = @filemtime( $full_path );
-			$sub_manifest = Folder_Gallery_Manifest::read_raw_manifest( $full_path );
+			$sub_manifest = FG_Manifest::read_raw_manifest( $full_path );
 
 			$folders[] = array(
 				'kind'        => 'folder',
@@ -146,7 +146,7 @@ class Folder_Gallery_Scanner {
 				'mtime'       => $mtime ? $mtime : 0,
 				'type'        => strtoupper( $ext ),
 				'filesize'    => false !== $filesize ? $filesize : 0,
-				'variants'    => Folder_Gallery_Image_Sizes::get_variants_info( $real_target, $target_url, $item ),
+				'variants'    => FG_Image_Sizes::get_variants_info( $real_target, $target_url, $item ),
 			);
 		}
 
@@ -178,7 +178,7 @@ class Folder_Gallery_Scanner {
 	 * @return array|WP_Error
 	 */
 	public static function regenerate_folder_sizes( $relative_path ) {
-		$base_dir = Folder_Gallery_Storage::get_base_dir();
+		$base_dir = FG_Storage::get_base_dir();
 		if ( is_wp_error( $base_dir ) ) {
 			return $base_dir;
 		}
@@ -196,7 +196,7 @@ class Folder_Gallery_Scanner {
 			);
 		}
 
-		Folder_Gallery_Image_Sizes::process_directory( $real_target, true );
+		FG_Image_Sizes::process_directory( $real_target, true );
 
 		return array(
 			'regenerated' => true,
@@ -219,8 +219,8 @@ class Folder_Gallery_Scanner {
 		foreach ( $items as $item ) {
 			if (
 				'.' === $item[0] ||
-				Folder_Gallery_Manifest::FILENAME === $item ||
-				Folder_Gallery_Image_Sizes::is_generated_variant( $item )
+				FG_Manifest::FILENAME === $item ||
+				FG_Image_Sizes::is_generated_variant( $item )
 			) {
 				continue;
 			}
@@ -244,7 +244,7 @@ class Folder_Gallery_Scanner {
 	 * @return true|WP_Error
 	 */
 	public static function delete( $relative_path ) {
-		$base_dir = Folder_Gallery_Storage::get_base_dir();
+		$base_dir = FG_Storage::get_base_dir();
 
 		if ( is_wp_error( $base_dir ) ) {
 			return $base_dir;
@@ -297,8 +297,8 @@ class Folder_Gallery_Scanner {
 				);
 			}
 
-			Folder_Gallery_Image_Sizes::delete_for_image( $parent_dir, $file_name );
-			Folder_Gallery_Manifest::handle_image_delete( $parent_dir, $file_name );
+			FG_Image_Sizes::delete_for_image( $parent_dir, $file_name );
+			FG_Manifest::handle_image_delete( $parent_dir, $file_name );
 			return true;
 		}
 
@@ -347,7 +347,7 @@ class Folder_Gallery_Scanner {
 	 * @return array|WP_Error       Summary with uploaded count and any per-file errors.
 	 */
 	public static function upload_images( $relative_path, $files ) {
-		$base_dir = Folder_Gallery_Storage::get_base_dir();
+		$base_dir = FG_Storage::get_base_dir();
 
 		if ( is_wp_error( $base_dir ) ) {
 			return $base_dir;
@@ -422,13 +422,13 @@ class Folder_Gallery_Scanner {
 				continue;
 			}
 
-			Folder_Gallery_Image_Sizes::generate_for_image( $destination, true );
+			FG_Image_Sizes::generate_for_image( $destination, true );
 			$uploaded++;
 			$uploaded_names[] = $unique_name;
 		}
 
 		if ( $uploaded > 0 ) {
-			$manifest = Folder_Gallery_Manifest::read_raw_manifest( $real_target );
+			$manifest = FG_Manifest::read_raw_manifest( $real_target );
 			foreach ( $uploaded_names as $u_name ) {
 				if ( ! isset( $manifest['images'][ $u_name ] ) ) {
 					$manifest['images'][ $u_name ] = array(
@@ -437,7 +437,7 @@ class Folder_Gallery_Scanner {
 					);
 				}
 			}
-			Folder_Gallery_Manifest::write( $real_target, $manifest );
+			FG_Manifest::write( $real_target, $manifest );
 		}
 
 		if ( 0 === $uploaded && ! empty( $errors ) ) {
@@ -458,7 +458,7 @@ class Folder_Gallery_Scanner {
 	 * @return array|WP_Error
 	 */
 	public static function create_folder( $relative_path, $folder_name ) {
-		$base_dir = Folder_Gallery_Storage::get_base_dir();
+		$base_dir = FG_Storage::get_base_dir();
 
 		if ( is_wp_error( $base_dir ) ) {
 			return $base_dir;
@@ -508,9 +508,9 @@ class Folder_Gallery_Scanner {
 			@file_put_contents( $index_file, '' );
 		}
 
-		Folder_Gallery_Manifest::write(
+		FG_Manifest::write(
 			$new_folder_path,
-			Folder_Gallery_Manifest::default_manifest()
+			FG_Manifest::default_manifest()
 		);
 
 		return array(
@@ -527,7 +527,7 @@ class Folder_Gallery_Scanner {
 	 * @return array|WP_Error
 	 */
 	public static function paste_item( $source_relative_path, $target_folder_relative_path ) {
-		$base_dir = Folder_Gallery_Storage::get_base_dir();
+		$base_dir = FG_Storage::get_base_dir();
 
 		if ( is_wp_error( $base_dir ) ) {
 			return $base_dir;
@@ -588,7 +588,7 @@ class Folder_Gallery_Scanner {
 
 			self::ensure_variants_recursive( $dest_path );
 		} elseif ( is_file( $real_source ) ) {
-			if ( Folder_Gallery_Image_Sizes::is_generated_variant( $source_name ) ) {
+			if ( FG_Image_Sizes::is_generated_variant( $source_name ) ) {
 				return new WP_Error(
 					'folder_gallery_cannot_copy_variant',
 					__( 'Cannot copy a generated image size variant directly.', 'folder-gallery' )
@@ -605,8 +605,8 @@ class Folder_Gallery_Scanner {
 				);
 			}
 
-			Folder_Gallery_Image_Sizes::generate_for_image( $dest_path, true );
-			Folder_Gallery_Manifest::copy_image_metadata(
+			FG_Image_Sizes::generate_for_image( $dest_path, true );
+			FG_Manifest::copy_image_metadata(
 				dirname( $real_source ),
 				$source_name,
 				$real_target,
@@ -636,7 +636,7 @@ class Folder_Gallery_Scanner {
 			return;
 		}
 
-		Folder_Gallery_Image_Sizes::process_directory( $dir_path, true );
+		FG_Image_Sizes::process_directory( $dir_path, true );
 
 		$items = @scandir( $dir_path );
 		if ( false === $items ) {
@@ -778,7 +778,7 @@ class Folder_Gallery_Scanner {
 			);
 		}
 
-		$base_dir = Folder_Gallery_Storage::get_base_dir();
+		$base_dir = FG_Storage::get_base_dir();
 		if ( is_wp_error( $base_dir ) ) {
 			return $base_dir;
 		}
@@ -933,9 +933,9 @@ class Folder_Gallery_Scanner {
 						if ( ! file_exists( $index_file ) ) {
 							@file_put_contents( $index_file, '' );
 						}
-						Folder_Gallery_Manifest::write(
+						FG_Manifest::write(
 							$new_dest_dir,
-							Folder_Gallery_Manifest::default_manifest()
+							FG_Manifest::default_manifest()
 						);
 					} else {
 						continue;
@@ -947,7 +947,7 @@ class Folder_Gallery_Scanner {
 					self::import_extracted_directory( $src_path, $real_new_dest, $stats );
 				}
 			} elseif ( is_file( $src_path ) ) {
-				if ( Folder_Gallery_Image_Sizes::is_generated_variant( $item ) ) {
+				if ( FG_Image_Sizes::is_generated_variant( $item ) ) {
 					$stats['skipped_files']++;
 					continue;
 				}
@@ -968,7 +968,7 @@ class Folder_Gallery_Scanner {
 				$dest_file   = $dest_dir . DIRECTORY_SEPARATOR . $unique_name;
 
 				if ( @copy( $src_path, $dest_file ) ) {
-					Folder_Gallery_Image_Sizes::generate_for_image( $dest_file, true );
+					FG_Image_Sizes::generate_for_image( $dest_file, true );
 					$stats['images_imported']++;
 					$imported_here[] = $unique_name;
 				} else {
@@ -978,7 +978,7 @@ class Folder_Gallery_Scanner {
 		}
 
 		if ( ! empty( $imported_here ) ) {
-			$manifest = Folder_Gallery_Manifest::read_raw_manifest( $dest_dir );
+			$manifest = FG_Manifest::read_raw_manifest( $dest_dir );
 			foreach ( $imported_here as $u_name ) {
 				if ( ! isset( $manifest['images'][ $u_name ] ) ) {
 					$manifest['images'][ $u_name ] = array(
@@ -987,7 +987,7 @@ class Folder_Gallery_Scanner {
 					);
 				}
 			}
-			Folder_Gallery_Manifest::write( $dest_dir, $manifest );
+			FG_Manifest::write( $dest_dir, $manifest );
 		}
 	}
 
@@ -1023,7 +1023,7 @@ class Folder_Gallery_Scanner {
 	 * @return array|WP_Error
 	 */
 	public static function rename_item( $relative_path, $new_name ) {
-		$base_dir = Folder_Gallery_Storage::get_base_dir();
+		$base_dir = FG_Storage::get_base_dir();
 
 		if ( is_wp_error( $base_dir ) ) {
 			return $base_dir;
@@ -1099,8 +1099,8 @@ class Folder_Gallery_Scanner {
 		}
 
 		if ( $is_file ) {
-			Folder_Gallery_Image_Sizes::rename_for_image( $parent_dir, $current_name, $clean_name );
-			Folder_Gallery_Manifest::handle_image_rename( $parent_dir, $current_name, $clean_name );
+			FG_Image_Sizes::rename_for_image( $parent_dir, $current_name, $clean_name );
+			FG_Manifest::handle_image_rename( $parent_dir, $current_name, $clean_name );
 		}
 
 		$parent_rel = dirname( $relative_path );
@@ -1124,7 +1124,7 @@ class Folder_Gallery_Scanner {
 	 * @return array|WP_Error
 	 */
 	public static function save_details( $relative_path, $kind, $title, $description ) {
-		$base_dir = Folder_Gallery_Storage::get_base_dir();
+		$base_dir = FG_Storage::get_base_dir();
 
 		if ( is_wp_error( $base_dir ) ) {
 			return $base_dir;
@@ -1162,7 +1162,7 @@ class Folder_Gallery_Scanner {
 				);
 			}
 
-			return Folder_Gallery_Manifest::update_item_details(
+			return FG_Manifest::update_item_details(
 				$real_target,
 				'folder',
 				'',
@@ -1178,7 +1178,7 @@ class Folder_Gallery_Scanner {
 			);
 		}
 
-		return Folder_Gallery_Manifest::update_item_details(
+		return FG_Manifest::update_item_details(
 			dirname( $real_target ),
 			'image',
 			basename( $real_target ),

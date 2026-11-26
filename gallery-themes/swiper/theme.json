@@ -1,0 +1,41 @@
+{
+	"name": "Swiper Carousel",
+	"description": "Full-width single-slide carousel powered by Swiper with optional title, description, dots, and autoplay.",
+	"version": "1.0.0",
+	"author": "Folder Gallery",
+	"template": "template.php",
+	"styles": [
+		"swiper-bundle.min.css",
+		"style.css"
+	],
+	"scripts": [
+		"swiper-bundle.min.js",
+		"script.js"
+	],
+	"settings": {
+		"showTitle": {
+			"type": "boolean",
+			"label": "Show title",
+			"description": "Display image title on slides.",
+			"default": true
+		},
+		"showDescription": {
+			"type": "boolean",
+			"label": "Show description",
+			"description": "Display image description on slides.",
+			"default": true
+		},
+		"dots": {
+			"type": "boolean",
+			"label": "Show dots",
+			"description": "Display pagination dots below the carousel.",
+			"default": true
+		},
+		"autoplay": {
+			"type": "boolean",
+			"label": "Autoplay",
+			"description": "Automatically advance slides.",
+			"default": false
+		}
+	}
+}

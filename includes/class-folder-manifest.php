@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-class Folder_Gallery_Manifest {
+class FG_Manifest {
 
 	const FILENAME = 'manifest.json';
 	const VERSION  = 1;

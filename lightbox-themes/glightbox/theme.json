@@ -1,0 +1,75 @@
+{
+	"name": "GLightbox",
+	"description": "Responsive touch-friendly lightbox powered by GLightbox with keyboard navigation, zoom, and rich captions.",
+	"version": "1.0.0",
+	"author": "Folder Gallery",
+	"styles": [
+		"glightbox.min.css",
+		"style.css"
+	],
+	"scripts": [
+		"glightbox.min.js",
+		"script.js"
+	],
+	"settings": {
+		"loop": {
+			"type": "boolean",
+			"label": "Loop slides",
+			"description": "Wrap around from the last image back to the first.",
+			"default": true
+		},
+		"zoomable": {
+			"type": "boolean",
+			"label": "Enable zoom",
+			"description": "Allow zooming in on full-size images.",
+			"default": true
+		},
+		"draggable": {
+			"type": "boolean",
+			"label": "Touch & mouse drag",
+			"description": "Allow swiping or dragging between images.",
+			"default": true
+		},
+		"closeOnOutsideClick": {
+			"type": "boolean",
+			"label": "Close on backdrop click",
+			"description": "Close the lightbox when clicking outside the image.",
+			"default": true
+		},
+		"openEffect": {
+			"type": "select",
+			"label": "Open / close animation",
+			"description": "Transition effect when opening and closing the modal.",
+			"default": "zoom",
+			"options": {
+				"zoom": "Zoom",
+				"fade": "Fade",
+				"none": "None"
+			}
+		},
+		"slideEffect": {
+			"type": "select",
+			"label": "Slide transition",
+			"description": "Animation style when moving between images.",
+			"default": "slide",
+			"options": {
+				"slide": "Slide",
+				"fade": "Fade",
+				"zoom": "Zoom",
+				"none": "None"
+			}
+		},
+		"descPosition": {
+			"type": "select",
+			"label": "Caption position",
+			"description": "Where image title and description appear inside the lightbox.",
+			"default": "bottom",
+			"options": {
+				"bottom": "Bottom",
+				"top": "Top",
+				"left": "Left",
+				"right": "Right"
+			}
+		}
+	}
+}
