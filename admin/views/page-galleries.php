@@ -49,7 +49,6 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
 		<div class="fg-explorer" id="fg-explorer">
 
-
 			<!-- Navigation Bar (Back + Breadcrumbs) -->
 			<div class="fg-nav-bar">
 				<button type="button" class="button fg-nav-back" id="fg-nav-back" title="<?php esc_attr_e( 'Back', 'folder-gallery' ); ?>" disabled>
@@ -110,6 +109,13 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
 				<span class="fg-toolbar-separator" aria-hidden="true"></span>
 
+				<button type="button" class="button fg-toolbar-btn" data-action="regenerate-sizes" title="<?php esc_attr_e( 'Regenerate small and medium images in current folder', 'folder-gallery' ); ?>">
+					<span class="dashicons dashicons-image-rotate" aria-hidden="true"></span>
+					<span><?php esc_html_e( 'Generate Sizes', 'folder-gallery' ); ?></span>
+				</button>
+
+				<span class="fg-toolbar-separator" aria-hidden="true"></span>
+
 				<button type="button" class="button fg-toolbar-btn fg-btn-danger" data-action="delete" disabled>
 					<span class="dashicons dashicons-trash" aria-hidden="true"></span>
 					<span><?php esc_html_e( 'Delete', 'folder-gallery' ); ?></span>
@@ -131,6 +137,8 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 									<th class="fg-col-date"><?php esc_html_e( 'Date', 'folder-gallery' ); ?></th>
 									<th class="fg-col-type"><?php esc_html_e( 'Type', 'folder-gallery' ); ?></th>
 									<th class="fg-col-size"><?php esc_html_e( 'Size', 'folder-gallery' ); ?></th>
+									<th class="fg-col-variant" title="<?php esc_attr_e( 'Small image variant', 'folder-gallery' ); ?>"><?php esc_html_e( 'S', 'folder-gallery' ); ?></th>
+									<th class="fg-col-variant" title="<?php esc_attr_e( 'Medium image variant', 'folder-gallery' ); ?>"><?php esc_html_e( 'M', 'folder-gallery' ); ?></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -159,10 +167,16 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 											);
 											?>
 										</td>
+										<td class="fg-col-variant">—</td>
+										<td class="fg-col-variant">—</td>
 									</tr>
 								<?php endforeach; ?>
 
-								<?php foreach ( $images as $image ) : ?>
+								<?php
+								foreach ( $images as $image ) :
+									$small_v  = isset( $image['variants']['small'] ) ? $image['variants']['small'] : array( 'exists' => false );
+									$medium_v = isset( $image['variants']['medium'] ) ? $image['variants']['medium'] : array( 'exists' => false );
+									?>
 									<tr class="fg-row fg-row-image" data-kind="image" data-path="<?php echo esc_attr( $image['path'] ); ?>">
 										<td class="fg-col-name">
 											<span class="fg-item-name-cell">
@@ -183,6 +197,32 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 										</td>
 										<td class="fg-col-size">
 											<?php echo esc_html( size_format( $image['filesize'], 1 ) ); ?>
+										</td>
+										<td class="fg-col-variant">
+											<?php if ( ! empty( $small_v['exists'] ) && ! empty( $small_v['url'] ) ) : ?>
+												<img
+													class="fg-variant-thumb"
+													src="<?php echo esc_url( $small_v['url'] ); ?>"
+													alt="<?php esc_attr_e( 'Small', 'folder-gallery' ); ?>"
+													title="<?php echo esc_attr( $small_v['width'] . '×' . $small_v['height'] ); ?>"
+													loading="lazy"
+												>
+											<?php else : ?>
+												<span class="fg-variant-missing">—</span>
+											<?php endif; ?>
+										</td>
+										<td class="fg-col-variant">
+											<?php if ( ! empty( $medium_v['exists'] ) && ! empty( $medium_v['url'] ) ) : ?>
+												<img
+													class="fg-variant-thumb"
+													src="<?php echo esc_url( $medium_v['url'] ); ?>"
+													alt="<?php esc_attr_e( 'Medium', 'folder-gallery' ); ?>"
+													title="<?php echo esc_attr( $medium_v['width'] . '×' . $medium_v['height'] ); ?>"
+													loading="lazy"
+												>
+											<?php else : ?>
+												<span class="fg-variant-missing">—</span>
+											<?php endif; ?>
 										</td>
 									</tr>
 								<?php endforeach; ?>

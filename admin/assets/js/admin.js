@@ -100,6 +100,7 @@ function initFolderExplorer() {
 	const uploadZipBtn = document.querySelector('.fg-toolbar-btn[data-action="upload-zip"]');
 	const zipInput = document.getElementById('fg-zip-input');
 	const renameBtn = document.querySelector('.fg-toolbar-btn[data-action="rename"]');
+	const regenSizesBtn = document.querySelector('.fg-toolbar-btn[data-action="regenerate-sizes"]');
 	const detailsPlaceholder = document.getElementById('fg-details-placeholder');
 	const detailsForm = document.getElementById('fg-details-form');
 	const detailsUpdateBtn = document.getElementById('fg-details-update-btn');
@@ -109,7 +110,7 @@ function initFolderExplorer() {
 	const detailsFilename = document.getElementById('fg-details-filename');
 	const detailsTitleInput = document.getElementById('fg-details-title');
 	const detailsDescInput = document.getElementById('fg-details-description');
-    const navShortcodeText = document.getElementById('fg-nav-shortcode-text');
+	const navShortcodeText = document.getElementById('fg-nav-shortcode-text');
 	const navCopyShortcodeBtn = document.getElementById('fg-nav-copy-shortcode');
 	const detailsShortcodeWrap = document.getElementById('fg-details-shortcode-wrap');
 	const detailsShortcodeInput = document.getElementById('fg-details-shortcode-input');
@@ -127,7 +128,7 @@ function initFolderExplorer() {
 	let detailsInitialTitle = '';
 	let detailsInitialDescription = '';
 
-    function buildShortcode(path) {
+	function buildShortcode(path) {
 		const clean = normalizePath(path);
 		if (!clean) {
 			return '[folder_gallery]';
@@ -335,7 +336,54 @@ function initFolderExplorer() {
 		if (renameBtn) {
 			renameBtn.disabled = isLoading || selectedPaths.size !== 1;
 		}
+		if (regenSizesBtn) {
+			regenSizesBtn.disabled = isLoading;
+		}
 		syncDetailsDirtyState();
+	}
+
+	function regenerateCurrentFolderSizes() {
+		if (isLoading) {
+			return;
+		}
+
+		isLoading = true;
+		syncToolbarState();
+
+		const formData = new URLSearchParams();
+		formData.append('action', 'fg_regenerate_sizes');
+		formData.append('nonce', fgAdminConfig.nonce);
+		formData.append('path', currentPath);
+
+		fetch(fgAdminConfig.ajaxUrl, {
+			method: 'POST',
+			credentials: 'same-origin',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+			},
+			body: formData.toString(),
+		})
+			.then(function (response) {
+				return response.json();
+			})
+			.then(function (payload) {
+				if (!payload || !payload.success) {
+					const errMsg = (payload && payload.data && payload.data.message)
+						? payload.data.message
+						: (fgAdminConfig.i18n.regenError || 'Could not regenerate image sizes for this folder.');
+					window.alert(errMsg);
+					isLoading = false;
+					syncToolbarState();
+					return;
+				}
+
+				navigateTo(currentPath, { force: true });
+			})
+			.catch(function () {
+				window.alert(fgAdminConfig.i18n.regenError || 'Could not regenerate image sizes for this folder.');
+				isLoading = false;
+				syncToolbarState();
+			});
 	}
 
 	function renameSelectedItem() {
@@ -564,7 +612,7 @@ function initFolderExplorer() {
 	function updateNavigationUI(path) {
 		currentPath = normalizePath(path);
 
-        if (navShortcodeText) {
+		if (navShortcodeText) {
 			navShortcodeText.textContent = buildShortcode(currentPath);
 		}
 
@@ -599,6 +647,21 @@ function initFolderExplorer() {
 	function formatFolderCount(count) {
 		const template = count === 1 ? fgAdminConfig.i18n.singleImage : fgAdminConfig.i18n.pluralImages;
 		return template.replace('%d', String(count));
+	}
+
+	function renderVariantCell(variantData, fallbackLabel) {
+		if (variantData && variantData.exists && variantData.url) {
+			const dims = (variantData.width && variantData.height)
+				? String(variantData.width) + '×' + String(variantData.height)
+				: '';
+			return '<td class="fg-col-variant">' +
+				'<img class="fg-variant-thumb" src="' + escapeAttr(variantData.url) + '" alt="' + escapeAttr(fallbackLabel) + '"' +
+				(dims ? ' title="' + escapeAttr(dims) + '"' : '') +
+				' loading="lazy">' +
+				'</td>';
+		}
+
+		return '<td class="fg-col-variant"><span class="fg-variant-missing">—</span></td>';
 	}
 
 	function renderList(data) {
@@ -638,12 +701,18 @@ function initFolderExplorer() {
 					'<td class="fg-col-date">' + escapeHtml(folder.date) + '</td>' +
 					'<td class="fg-col-type">' + escapeHtml(folder.type) + '</td>' +
 					'<td class="fg-col-size">' + escapeHtml(formatFolderCount(folder.image_count)) + '</td>' +
+					'<td class="fg-col-variant">—</td>' +
+					'<td class="fg-col-variant">—</td>' +
 				'</tr>';
 		});
+
+		const smallLabel = (fgAdminConfig.i18n && fgAdminConfig.i18n.smallVariant) || 'Small';
+		const mediumLabel = (fgAdminConfig.i18n && fgAdminConfig.i18n.mediumVariant) || 'Medium';
 
 		images.forEach(function (image) {
 			const imageTitle = typeof image.title === 'string' ? image.title : '';
 			const imageDesc = typeof image.description === 'string' ? image.description : '';
+			const variants = (image && typeof image.variants === 'object' && image.variants !== null) ? image.variants : {};
 
 			rowsHtml +=
 				'<tr class="fg-row fg-row-image"' +
@@ -660,6 +729,8 @@ function initFolderExplorer() {
 					'<td class="fg-col-date">' + escapeHtml(image.date) + '</td>' +
 					'<td class="fg-col-type">' + escapeHtml(image.type) + '</td>' +
 					'<td class="fg-col-size">' + escapeHtml(image.size) + '</td>' +
+					renderVariantCell(variants.small, smallLabel) +
+					renderVariantCell(variants.medium, mediumLabel) +
 				'</tr>';
 		});
 
@@ -671,6 +742,8 @@ function initFolderExplorer() {
 						'<th class="fg-col-date">Date</th>' +
 						'<th class="fg-col-type">Type</th>' +
 						'<th class="fg-col-size">Size</th>' +
+						'<th class="fg-col-variant" title="Small image variant">S</th>' +
+						'<th class="fg-col-variant" title="Medium image variant">M</th>' +
 					'</tr>' +
 				'</thead>' +
 				'<tbody>' + rowsHtml + '</tbody>' +
@@ -1011,7 +1084,7 @@ function initFolderExplorer() {
 		return escapeHtml(value).replace(/'/g, '&#39;');
 	}
 
-	// Toolbar actions: Copy, Paste, and Rename.
+	// Toolbar actions: Copy, Paste, Rename, and Generate Sizes.
 	if (copyBtn) {
 		copyBtn.addEventListener('click', copySelectedItems);
 	}
@@ -1022,6 +1095,10 @@ function initFolderExplorer() {
 
 	if (renameBtn) {
 		renameBtn.addEventListener('click', renameSelectedItem);
+	}
+
+	if (regenSizesBtn) {
+		regenSizesBtn.addEventListener('click', regenerateCurrentFolderSizes);
 	}
 
 	if (detailsTitleInput) {
@@ -1128,9 +1205,60 @@ function initFolderExplorer() {
 		});
 	}
 
-	// Keyboard shortcuts: Ctrl/Cmd+C, Ctrl/Cmd+V, Delete, and F2.
+	// Keyboard shortcuts: Ctrl/Cmd+C, Ctrl/Cmd+V, Delete, F2, ArrowUp/ArrowDown, and Enter.
 	document.addEventListener('keydown', function (e) {
 		if (isLoading || isEditableTarget(e.target)) {
+			return;
+		}
+
+		if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+			if (selectedPaths.size === 0) {
+				return;
+			}
+
+			const rows = getOrderedRows();
+			if (rows.length === 0) {
+				return;
+			}
+
+			const currentIndex = rows.findIndex(function (row) {
+				return selectedPaths.has(normalizePath(row.dataset.path));
+			});
+			if (currentIndex === -1) {
+				return;
+			}
+
+			const nextIndex = e.key === 'ArrowDown' ? currentIndex + 1 : currentIndex - 1;
+			if (nextIndex < 0 || nextIndex >= rows.length) {
+				return;
+			}
+
+			e.preventDefault();
+
+			const nextRow  = rows[nextIndex];
+			const nextPath = normalizePath(nextRow.dataset.path);
+
+			selectedPaths.clear();
+			selectedPaths.add(nextPath);
+			anchorPath = nextPath;
+			applySelectionClasses();
+
+			if (typeof nextRow.scrollIntoView === 'function') {
+				nextRow.scrollIntoView({ block: 'nearest' });
+			}
+			return;
+		}
+
+		if (!e.ctrlKey && !e.metaKey && !e.altKey && e.key === 'Enter') {
+			if (selectedPaths.size === 1) {
+				const selectedRow = getOrderedRows().find(function (row) {
+					return selectedPaths.has(normalizePath(row.dataset.path));
+				});
+				if (selectedRow && selectedRow.dataset.kind === 'folder' && selectedRow.dataset.path) {
+					e.preventDefault();
+					navigateTo(selectedRow.dataset.path);
+				}
+			}
 			return;
 		}
 
@@ -1200,7 +1328,7 @@ function initFolderExplorer() {
 		});
 	}
 
-    if (navCopyShortcodeBtn && navShortcodeText) {
+	if (navCopyShortcodeBtn && navShortcodeText) {
 		navCopyShortcodeBtn.addEventListener('click', function () {
 			copyTextWithFeedback(navShortcodeText.textContent, navCopyShortcodeBtn);
 		});

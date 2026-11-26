@@ -14,12 +14,12 @@ $breadcrumbs = isset( $gallery_data['breadcrumbs'] ) && is_array( $gallery_data[
 $folders     = isset( $gallery_data['folders'] ) && is_array( $gallery_data['folders'] ) ? $gallery_data['folders'] : array();
 $images      = isset( $gallery_data['images'] ) && is_array( $gallery_data['images'] ) ? $gallery_data['images'] : array();
 ?>
-<div class="fg-gallery fg-theme-plain">
+<div class="fg-gallery fg-theme-simple">
 	<?php if ( ! empty( $breadcrumbs ) ) : ?>
-		<nav class="fg-theme-plain__breadcrumbs" aria-label="<?php esc_attr_e( 'Gallery navigation', 'folder-gallery' ); ?>">
-			<ol class="fg-theme-plain__breadcrumb-list">
+		<nav class="fg-theme-simple__breadcrumbs" aria-label="<?php esc_attr_e( 'Gallery navigation', 'folder-gallery' ); ?>">
+			<ol class="fg-theme-simple__breadcrumb-list">
 				<?php foreach ( $breadcrumbs as $crumb ) : ?>
-					<li class="fg-theme-plain__breadcrumb-item">
+					<li class="fg-theme-simple__breadcrumb-item">
 						<?php if ( ! empty( $crumb['current'] ) ) : ?>
 							<span><?php echo esc_html( $crumb['label'] ); ?></span>
 						<?php else : ?>
@@ -32,9 +32,9 @@ $images      = isset( $gallery_data['images'] ) && is_array( $gallery_data['imag
 	<?php endif; ?>
 
 	<?php if ( empty( $folders ) && empty( $images ) ) : ?>
-		<p class="fg-theme-plain__empty"><?php esc_html_e( 'This gallery folder is empty.', 'folder-gallery' ); ?></p>
+		<p class="fg-theme-simple__empty"><?php esc_html_e( 'This gallery folder is empty.', 'folder-gallery' ); ?></p>
 	<?php else : ?>
-		<table class="fg-theme-plain__table">
+		<table class="fg-theme-simple__table">
 			<thead>
 				<tr>
 					<th><?php esc_html_e( 'Thumbnail', 'folder-gallery' ); ?></th>
@@ -47,7 +47,7 @@ $images      = isset( $gallery_data['images'] ) && is_array( $gallery_data['imag
 				<?php foreach ( $folders as $folder ) : ?>
 					<tr>
 						<td>
-							<span class="fg-theme-plain__folder-badge"><?php esc_html_e( 'Folder', 'folder-gallery' ); ?></span>
+							<span class="fg-theme-simple__folder-badge"><?php esc_html_e( 'Folder', 'folder-gallery' ); ?></span>
 						</td>
 						<td>
 							<a href="<?php echo esc_url( $folder['url'] ); ?>">
@@ -64,7 +64,7 @@ $images      = isset( $gallery_data['images'] ) && is_array( $gallery_data['imag
 						<td>
 							<a href="<?php echo esc_url( $image['url'] ); ?>" target="_blank" rel="noopener noreferrer">
 								<img
-									class="fg-theme-plain__thumb"
+									class="fg-theme-simple__thumb"
 									src="<?php echo esc_url( $image['url'] ); ?>"
 									alt="<?php echo esc_attr( '' !== $image['title'] ? $image['title'] : $image['name'] ); ?>"
 									loading="lazy"

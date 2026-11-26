@@ -65,7 +65,7 @@ class Folder_Gallery_Manifest {
 	}
 
 	/**
-	 * Build default manifest array for a folder (empty title and description by default).
+	 * Build default manifest array for a folder.
 	 *
 	 * @return array
 	 */
@@ -74,6 +74,10 @@ class Folder_Gallery_Manifest {
 			'version'     => self::VERSION,
 			'title'       => '',
 			'description' => '',
+			'sizes_meta'  => array(
+				'small_height'  => 0,
+				'medium_height' => 0,
+			),
 			'images'      => array(),
 		);
 	}
@@ -98,6 +102,12 @@ class Folder_Gallery_Manifest {
 					}
 					if ( isset( $decoded['description'] ) && is_string( $decoded['description'] ) ) {
 						$manifest['description'] = self::sanitize_description( $decoded['description'] );
+					}
+					if ( isset( $decoded['sizes_meta'] ) && is_array( $decoded['sizes_meta'] ) ) {
+						$manifest['sizes_meta'] = array(
+							'small_height'  => isset( $decoded['sizes_meta']['small_height'] ) ? (int) $decoded['sizes_meta']['small_height'] : 0,
+							'medium_height' => isset( $decoded['sizes_meta']['medium_height'] ) ? (int) $decoded['sizes_meta']['medium_height'] : 0,
+						);
 					}
 					if ( isset( $decoded['images'] ) && is_array( $decoded['images'] ) ) {
 						foreach ( $decoded['images'] as $img_name => $meta ) {
@@ -169,6 +179,23 @@ class Folder_Gallery_Manifest {
 	}
 
 	/**
+	 * Update sizes_meta in manifest.json when variant dimensions are generated or refreshed.
+	 *
+	 * @param string $dir_path      Real directory path on disk.
+	 * @param int    $small_height  Generated small max height.
+	 * @param int    $medium_height Generated medium max height.
+	 * @return bool
+	 */
+	public static function update_sizes_meta( $dir_path, $small_height, $medium_height ) {
+		$manifest               = self::read_raw_manifest( $dir_path );
+		$manifest['sizes_meta'] = array(
+			'small_height'  => (int) $small_height,
+			'medium_height' => (int) $medium_height,
+		);
+		return self::write( $dir_path, $manifest );
+	}
+
+	/**
 	 * Write manifest.json safely with exclusive lock.
 	 *
 	 * @param string $dir_path Real directory path on disk.
@@ -201,10 +228,18 @@ class Folder_Gallery_Manifest {
 			}
 		}
 
+		$sizes_meta = isset( $manifest['sizes_meta'] ) && is_array( $manifest['sizes_meta'] )
+			? $manifest['sizes_meta']
+			: array();
+
 		$payload = array(
 			'version'     => self::VERSION,
 			'title'       => isset( $manifest['title'] ) ? sanitize_text_field( (string) $manifest['title'] ) : '',
 			'description' => isset( $manifest['description'] ) ? self::sanitize_description( (string) $manifest['description'] ) : '',
+			'sizes_meta'  => array(
+				'small_height'  => isset( $sizes_meta['small_height'] ) ? (int) $sizes_meta['small_height'] : 0,
+				'medium_height' => isset( $sizes_meta['medium_height'] ) ? (int) $sizes_meta['medium_height'] : 0,
+			),
 			'images'      => $clean_images,
 		);
 

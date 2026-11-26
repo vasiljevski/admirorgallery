@@ -1,13 +1,13 @@
-.fg-theme-plain {
+.fg-theme-simple {
 	margin: 1.5em 0;
 }
 
-.fg-theme-plain__breadcrumbs {
+.fg-theme-simple__breadcrumbs {
 	margin-bottom: 12px;
 	font-size: 14px;
 }
 
-.fg-theme-plain__breadcrumb-list {
+.fg-theme-simple__breadcrumb-list {
 	list-style: none;
 	margin: 0;
 	padding: 0;
@@ -17,7 +17,7 @@
 	gap: 6px;
 }
 
-.fg-theme-plain__breadcrumb-item {
+.fg-theme-simple__breadcrumb-item {
 	margin: 0;
 	padding: 0;
 	display: inline-flex;
@@ -25,36 +25,36 @@
 	gap: 6px;
 }
 
-.fg-theme-plain__breadcrumb-item + .fg-theme-plain__breadcrumb-item::before {
+.fg-theme-simple__breadcrumb-item + .fg-theme-simple__breadcrumb-item::before {
 	content: "/";
 	opacity: 0.6;
 }
 
-.fg-theme-plain__table {
+.fg-theme-simple__table {
 	width: 100%;
 	border-collapse: collapse;
 }
 
-.fg-theme-plain__table th,
-.fg-theme-plain__table td {
+.fg-theme-simple__table th,
+.fg-theme-simple__table td {
 	border: 1px solid #dcdcde;
 	padding: 8px 10px;
 	text-align: left;
 	vertical-align: top;
 }
 
-.fg-theme-plain__table th {
+.fg-theme-simple__table th {
 	background: #f6f7f7;
 	font-weight: 600;
 }
 
-.fg-theme-plain__thumb {
+.fg-theme-simple__thumb {
 	max-width: 96px;
 	height: auto;
 	display: block;
 }
 
-.fg-theme-plain__folder-badge {
+.fg-theme-simple__folder-badge {
 	display: inline-block;
 	padding: 2px 6px;
 	font-size: 12px;

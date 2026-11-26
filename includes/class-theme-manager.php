@@ -118,8 +118,8 @@ class Folder_Gallery_Theme_Manager {
 			return $themes[ $saved_slug ];
 		}
 
-		if ( isset( $themes['plain'] ) ) {
-			return $themes['plain'];
+		if ( isset( $themes['simple'] ) ) {
+			return $themes['simple'];
 		}
 
 		return reset( $themes );

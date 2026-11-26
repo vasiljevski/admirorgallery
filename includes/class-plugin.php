@@ -22,6 +22,7 @@ class Folder_Gallery_Plugin {
 		require_once FOLDER_GALLERY_PATH . 'includes/class-storage.php';
 		require_once FOLDER_GALLERY_PATH . 'includes/class-folder-scanner.php';
 		require_once FOLDER_GALLERY_PATH . 'includes/class-folder-manifest.php';
+		require_once FOLDER_GALLERY_PATH . 'includes/class-image-sizes.php';
 		require_once FOLDER_GALLERY_PATH . 'includes/class-theme-manager.php';
 		require_once FOLDER_GALLERY_PATH . 'includes/class-frontend-shortcode.php';
 		require_once FOLDER_GALLERY_PATH . 'admin/class-admin-menu.php';

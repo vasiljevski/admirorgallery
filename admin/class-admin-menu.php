@@ -17,7 +17,32 @@ class Folder_Gallery_Admin_Menu {
 		add_action( 'wp_ajax_fg_upload_zip', array( $this, 'ajax_upload_zip' ) );
 		add_action( 'wp_ajax_fg_rename_item', array( $this, 'ajax_rename_item' ) );
 		add_action( 'wp_ajax_fg_save_details', array( $this, 'ajax_save_details' ) );
+		add_action( 'wp_ajax_fg_regenerate_sizes', array( $this, 'ajax_regenerate_sizes' ) );
 		add_action( 'admin_post_fg_activate_theme', array( $this, 'handle_activate_theme' ) );
+		add_action( 'admin_post_fg_save_settings', array( $this, 'handle_save_settings' ) );
+	}
+
+	public function ajax_regenerate_sizes() {
+		check_ajax_referer( 'fg_scan_folder_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error(
+				array( 'message' => __( 'Permission denied.', 'folder-gallery' ) ),
+				403
+			);
+		}
+
+		$target_path = isset( $_POST['path'] ) ? sanitize_text_field( wp_unslash( $_POST['path'] ) ) : '';
+		$result      = Folder_Gallery_Scanner::regenerate_folder_sizes( $target_path );
+
+		if ( is_wp_error( $result ) ) {
+			wp_send_json_error(
+				array( 'message' => $result->get_error_message() ),
+				400
+			);
+		}
+
+		wp_send_json_success( $result );
 	}
 
 	public function ajax_save_details() {
@@ -65,11 +90,6 @@ class Folder_Gallery_Admin_Menu {
 
 		wp_enqueue_script( 'quicktags' );
 
-		// Load assets only on the main Galleries screen.
-		if ( 'toplevel_page_folder-gallery' !== $hook_suffix ) {
-			return;
-		}
-
 		wp_enqueue_style(
 			'folder-gallery-admin',
 			FOLDER_GALLERY_URL . 'admin/assets/css/admin.css',
@@ -111,12 +131,15 @@ class Folder_Gallery_Admin_Menu {
 					'confirmFolder'   => __( 'Are you sure you want to delete the folder "%s" and all its contents?', 'folder-gallery' ),
 					'confirmImage'    => __( 'Are you sure you want to delete "%s"?', 'folder-gallery' ),
 					'confirmMultiple' => __( 'Are you sure you want to delete %d selected items?', 'folder-gallery' ),
-					'renamePrompt'  => __( 'Enter a new name:', 'folder-gallery' ),
-					'renameError'   => __( 'Could not rename the selected item.', 'folder-gallery' ),
-					'detailsEmpty'      => __( 'Select a folder or image to view and edit its details.', 'folder-gallery' ),
-					'detailsMulti'      => __( '%d items selected. Select a single folder or image to edit details.', 'folder-gallery' ),
-					'updateSaved'       => __( 'Details saved.', 'folder-gallery' ),
-					'updateError'       => __( 'Could not save item details.', 'folder-gallery' ),
+					'renamePrompt'    => __( 'Enter a new name:', 'folder-gallery' ),
+					'renameError'     => __( 'Could not rename the selected item.', 'folder-gallery' ),
+					'regenError'      => __( 'Could not regenerate image sizes for this folder.', 'folder-gallery' ),
+					'smallVariant'    => __( 'Small', 'folder-gallery' ),
+					'mediumVariant'   => __( 'Medium', 'folder-gallery' ),
+					'detailsEmpty'    => __( 'Select a folder or image to view and edit its details.', 'folder-gallery' ),
+					'detailsMulti'    => __( '%d items selected. Select a single folder or image to edit details.', 'folder-gallery' ),
+					'updateSaved'     => __( 'Details saved.', 'folder-gallery' ),
+					'updateError'     => __( 'Could not save item details.', 'folder-gallery' ),
 					'copyShortcode'   => __( 'Copy', 'folder-gallery' ),
 					'copiedShortcode' => __( 'Copied!', 'folder-gallery' ),
 				),
@@ -170,6 +193,7 @@ class Folder_Gallery_Admin_Menu {
 				'date'        => $image['mtime'] ? wp_date( $date_format, $image['mtime'] ) : '—',
 				'type'        => $image['type'],
 				'size'        => size_format( $image['filesize'], 1 ),
+				'variants'    => isset( $image['variants'] ) ? $image['variants'] : array(),
 			);
 		}
 
@@ -519,6 +543,34 @@ class Folder_Gallery_Admin_Menu {
 				array(
 					'page'       => 'folder-gallery-themes',
 					'fg_message' => 'theme_activated',
+				),
+				admin_url( 'admin.php' )
+			)
+		);
+		exit;
+	}
+
+	public function handle_save_settings() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'Permission denied.', 'folder-gallery' ), 403 );
+		}
+
+		check_admin_referer( 'fg_save_settings_nonce' );
+
+		$raw_small  = isset( $_POST['small_height'] ) ? (int) wp_unslash( $_POST['small_height'] ) : Folder_Gallery_Image_Sizes::DEFAULT_SMALL_HEIGHT;
+		$raw_medium = isset( $_POST['medium_height'] ) ? (int) wp_unslash( $_POST['medium_height'] ) : Folder_Gallery_Image_Sizes::DEFAULT_MEDIUM_HEIGHT;
+
+		$small_height  = ( $raw_small >= 50 && $raw_small <= 4000 ) ? $raw_small : Folder_Gallery_Image_Sizes::DEFAULT_SMALL_HEIGHT;
+		$medium_height = ( $raw_medium >= 50 && $raw_medium <= 4000 ) ? $raw_medium : Folder_Gallery_Image_Sizes::DEFAULT_MEDIUM_HEIGHT;
+
+		update_option( Folder_Gallery_Image_Sizes::OPTION_SMALL_HEIGHT, $small_height );
+		update_option( Folder_Gallery_Image_Sizes::OPTION_MEDIUM_HEIGHT, $medium_height );
+
+		wp_safe_redirect(
+			add_query_arg(
+				array(
+					'page'       => 'folder-gallery-settings',
+					'fg_message' => 'settings_saved',
 				),
 				admin_url( 'admin.php' )
 			)
