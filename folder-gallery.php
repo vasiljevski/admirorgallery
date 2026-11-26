@@ -2,8 +2,9 @@
 /**
  * Plugin Name: Folder Gallery
  * Description: This plugin created gallery from folders with images.
- * Version: 0.1.0
- * Author: Igor Kekeljevic, Nikola Vasiljevski
+ * Version:     0.1.0
+ * Author:      Igor Kekeljevic, Nikola Vasiljevski
+ * Text Domain: folder-gallery
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -47,4 +48,20 @@ function folder_gallery_plugins_list_icon_css() {
 		}
 	</style>
 	<?php
+}
+
+add_filter( 'plugin_row_meta', 'folder_gallery_plugin_row_meta', 10, 2 );
+
+function folder_gallery_plugin_row_meta( $links, $file ) {
+	if ( plugin_basename( FOLDER_GALLERY_PATH . 'folder-gallery.php' ) !== $file ) {
+		return $links;
+	}
+
+	$links[] = sprintf(
+		'<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+		esc_url( 'https://wordpress-folder-gallery.com' ),
+		esc_html__( 'View details', 'folder-gallery' )
+	);
+
+	return $links;
 }
