@@ -1,9 +1,21 @@
 <?php
 /**
- * Plain Table theme template for Folder Gallery.
+ * Plain Table theme template for Folder Gallery (reference custom theme example).
  *
- * Available variable:
- * - $gallery_data (array)
+ * Available variables in template scope:
+ * - $gallery_data (array):
+ *   - 'breadcrumbs' (array[]): list of ['label' => string, 'url' => string, 'current' => bool]
+ *   - 'folders'     (array[]): list of ['name' => string, 'title' => string, 'description' => string, 'url' => string]
+ *   - 'images'      (array[]): list of [
+ *       'name'        => string,
+ *       'title'       => string,
+ *       'description' => string,
+ *       'url'         => string, // Full-size image URL
+ *       'variants'    => array,  // Optional ['small' => ['exists' => bool, 'url' => string, ...], 'medium' => [...]]
+ *     ]
+ *
+ * Variant usage pattern:
+ * Prefer $image['variants']['small']['url'] when available, and always fall back to $image['url'].
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -60,19 +72,34 @@ $images      = isset( $gallery_data['images'] ) && is_array( $gallery_data['imag
 				<?php endforeach; ?>
 
 				<?php foreach ( $images as $image ) : ?>
+					<?php
+					$full_url  = isset( $image['url'] ) ? $image['url'] : '';
+					$small_url = $full_url;
+
+					if (
+						isset( $image['variants']['small'] ) &&
+						is_array( $image['variants']['small'] ) &&
+						! empty( $image['variants']['small']['url'] ) &&
+						( ! isset( $image['variants']['small']['exists'] ) || ! empty( $image['variants']['small']['exists'] ) )
+					) {
+						$small_url = $image['variants']['small']['url'];
+					}
+
+					$alt_text = '' !== $image['title'] ? $image['title'] : $image['name'];
+					?>
 					<tr>
 						<td>
-							<a href="<?php echo esc_url( $image['url'] ); ?>" target="_blank" rel="noopener noreferrer">
+							<a href="<?php echo esc_url( $full_url ); ?>" target="_blank" rel="noopener noreferrer">
 								<img
 									class="fg-theme-simple__thumb"
-									src="<?php echo esc_url( $image['url'] ); ?>"
-									alt="<?php echo esc_attr( '' !== $image['title'] ? $image['title'] : $image['name'] ); ?>"
+									src="<?php echo esc_url( $small_url ); ?>"
+									alt="<?php echo esc_attr( $alt_text ); ?>"
 									loading="lazy"
 								/>
 							</a>
 						</td>
 						<td>
-							<a href="<?php echo esc_url( $image['url'] ); ?>" target="_blank" rel="noopener noreferrer">
+							<a href="<?php echo esc_url( $full_url ); ?>" target="_blank" rel="noopener noreferrer">
 								<?php echo esc_html( $image['name'] ); ?>
 							</a>
 						</td>

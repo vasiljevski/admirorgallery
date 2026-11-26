@@ -109,11 +109,17 @@ class Folder_Gallery_Frontend_Shortcode {
 			? Folder_Gallery_Manifest::get_allowed_description_tags()
 			: wp_kses_allowed_html( 'post' );
 
+		$has_sizes_class = class_exists( 'Folder_Gallery_Image_Sizes' );
+
 		$folders = array();
 		$images  = array();
 
 		foreach ( $items as $item ) {
 			if ( '.' === $item[0] || 'manifest.json' === $item ) {
+				continue;
+			}
+
+			if ( $has_sizes_class && Folder_Gallery_Image_Sizes::is_generated_variant( $item ) ) {
 				continue;
 			}
 
@@ -142,6 +148,10 @@ class Folder_Gallery_Frontend_Shortcode {
 					? $manifest['images'][ $item ]
 					: array();
 
+				$variants = $has_sizes_class
+					? Folder_Gallery_Image_Sizes::get_variants_info( $real_current_dir, $current_url, $item )
+					: array();
+
 				$images[] = array(
 					'name'        => $item,
 					'title'       => isset( $img_meta['title'] ) ? $img_meta['title'] : '',
@@ -149,6 +159,7 @@ class Folder_Gallery_Frontend_Shortcode {
 					'path'        => '' === $current_rel ? $item : $current_rel . '/' . $item,
 					'url'         => trailingslashit( $current_url ) . rawurlencode( $item ),
 					'ext'         => strtoupper( $ext ),
+					'variants'    => $variants,
 				);
 			}
 		}
