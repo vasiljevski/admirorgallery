@@ -24,3 +24,27 @@ function folder_gallery_run() {
 	$plugin->run();
 }
 folder_gallery_run();
+
+add_action( 'admin_head-plugins.php', 'folder_gallery_plugins_list_icon_css' );
+
+function folder_gallery_plugins_list_icon_css() {
+	$plugin_slug = plugin_basename( __FILE__ );
+	$logo_url    = esc_url( FOLDER_GALLERY_URL . 'admin/assets/images/logo.svg' );
+	?>
+	<style>
+		tr[data-plugin="<?php echo esc_attr( $plugin_slug ); ?>"] .plugin-title strong {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+		tr[data-plugin="<?php echo esc_attr( $plugin_slug ); ?>"] .plugin-title strong::before {
+			content: "";
+			display: inline-block;
+			width: 24px;
+			height: 24px;
+			flex: 0 0 24px;
+			background: url("<?php echo $logo_url; ?>") no-repeat center / contain;
+		}
+	</style>
+	<?php
+}

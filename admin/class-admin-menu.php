@@ -307,13 +307,23 @@ class FG_Admin_Menu {
 	}
 
 	public function register_menus() {
+		$icon_path = trailingslashit( FOLDER_GALLERY_PATH ) . 'admin/assets/images/menu-icon.svg';
+		$menu_icon = 'dashicons-format-gallery';
+
+		if ( is_readable( $icon_path ) ) {
+			$svg_raw = file_get_contents( $icon_path );
+			if ( is_string( $svg_raw ) && '' !== trim( $svg_raw ) ) {
+				$menu_icon = 'data:image/svg+xml;base64,' . base64_encode( trim( $svg_raw ) );
+			}
+		}
+
 		add_menu_page(
 			__( 'Folder Gallery', 'folder-gallery' ),
 			__( 'Folder Gallery', 'folder-gallery' ),
 			'manage_options',
 			'folder-gallery',
 			array( $this, 'render_galleries_page' ),
-			'dashicons-format-gallery',
+			$menu_icon,
 			25
 		);
 

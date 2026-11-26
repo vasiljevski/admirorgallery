@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="256mm"
+   height="256mm"
+   viewBox="0 0 256 256"
+   version="1.1"
+   id="svg1"
+   xml:space="preserve"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"><defs
+     id="defs1"><linearGradient
+       id="linearGradient4662"><stop
+         style="stop-color:#dd0b50;stop-opacity:1;"
+         offset="0"
+         id="stop4664" /><stop
+         style="stop-color:#fea804;stop-opacity:1;"
+         offset="1"
+         id="stop4666" /></linearGradient></defs><g
+     id="layer1"><path
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:26.847px;line-height:125%;font-family:'Aller Light';-inkscape-font-specification:'Aller Light,';text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#fea804;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3.65251;marker:none;enable-background:accumulate"
+       d="m 183.06857,85.23283 45.83806,5.443607 -45.7492,108.234383 -117.150488,-35.62364 8.645953,-19.89801 85.500435,18.81147 z"
+       id="path4854" /><path
+       style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:26.847px;line-height:125%;font-family:Aller;-inkscape-font-specification:Aller;text-indent:0;text-align:start;text-decoration:none;text-decoration-line:none;letter-spacing:normal;word-spacing:normal;text-transform:none;writing-mode:lr-tb;direction:ltr;text-anchor:start;display:inline;overflow:visible;visibility:visible;fill:#dd0b50;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3.65251;marker:none;enable-background:accumulate"
+       d="M 186.51578,25.83995 152.77069,134.03056 33.460266,112.43875 67.987152,19.181794 Z"
+       id="path4856" /><path
+       style="fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.65251"
+       d="M 203.86852,0 158.75378,159.61107 18.350725,129.69951 174.42766,172.68408 Z"
+       id="path4858" /><path
+       style="fill:#808080;fill-opacity:1;stroke:none;stroke-width:3.65251"
+       d="M 184.88578,222.28371 247.6772,69.747052 193.04791,256 68.873078,185.13855 Z"
+       id="path4860" /></g></svg>
