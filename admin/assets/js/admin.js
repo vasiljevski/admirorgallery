@@ -292,6 +292,9 @@
 		var detailsFolderIcon = document.getElementById('fg-details-folder-icon');
 		var detailsImage = document.getElementById('fg-details-image');
 		var detailsFilename = document.getElementById('fg-details-filename');
+		var detailsDimensionsWrap = document.getElementById('fg-details-dimensions-wrap');
+		var detailsDimensions = document.getElementById('fg-details-dimensions');
+		var detailsTooLargeBadge = document.getElementById('fg-details-too-large-badge');
 		var detailsTitleInput = document.getElementById('fg-details-title');
 		var detailsDescInput = document.getElementById('fg-details-description');
 		var navShortcodeText = document.getElementById('fg-nav-shortcode-text');
@@ -445,6 +448,10 @@
 				url: thumbEl ? thumbEl.getAttribute('src') : '',
 				title: row.dataset.title || '',
 				description: row.dataset.description || '',
+				width: parseInt(row.dataset.width || '0', 10) || 0,
+				height: parseInt(row.dataset.height || '0', 10) || 0,
+				megapixels: parseFloat(row.dataset.megapixels || '0') || 0,
+				tooLarge: row.dataset.tooLarge === '1',
 			};
 		}
 
@@ -490,6 +497,12 @@
 				detailsFolderIcon.hidden = false;
 				detailsImage.hidden = true;
 				detailsImage.removeAttribute('src');
+				if (detailsDimensionsWrap) {
+					detailsDimensionsWrap.hidden = true;
+				}
+				if (detailsTooLargeBadge) {
+					detailsTooLargeBadge.hidden = true;
+				}
 				if (detailsShortcodeWrap && detailsShortcodeInput) {
 					detailsShortcodeInput.value = buildShortcode(item.path);
 					detailsShortcodeWrap.hidden = false;
@@ -499,6 +512,22 @@
 				detailsImage.hidden = false;
 				detailsImage.src = item.url || '';
 				detailsImage.alt = item.name;
+				if (detailsDimensionsWrap && detailsDimensions) {
+					if (item.width > 0 && item.height > 0) {
+						var dimLabel = String(item.width) + ' × ' + String(item.height) + ' px';
+						if (item.megapixels > 0) {
+							dimLabel += ' (' + String(item.megapixels) + ' MP)';
+						}
+						detailsDimensions.textContent = dimLabel;
+						detailsDimensionsWrap.hidden = false;
+					} else {
+						detailsDimensions.textContent = '';
+						detailsDimensionsWrap.hidden = true;
+					}
+				}
+				if (detailsTooLargeBadge) {
+					detailsTooLargeBadge.hidden = !item.tooLarge;
+				}
 				if (detailsShortcodeWrap && detailsShortcodeInput) {
 					detailsShortcodeInput.value = '';
 					detailsShortcodeWrap.hidden = true;
@@ -910,21 +939,37 @@
 
 			var smallLabel = (fgAdminConfig.i18n && fgAdminConfig.i18n.smallVariant) || 'Small';
 			var mediumLabel = (fgAdminConfig.i18n && fgAdminConfig.i18n.mediumVariant) || 'Medium';
+			var tooLargeLabel = (fgAdminConfig.i18n && fgAdminConfig.i18n.imageTooLarge) || 'Image too large';
 
 			images.forEach(function (image) {
 				var imageTitle = typeof image.title === 'string' ? image.title : '';
 				var imageDesc = typeof image.description === 'string' ? image.description : '';
 				var variants = (image && typeof image.variants === 'object' && image.variants !== null) ? image.variants : {};
+				var imgW = parseInt(image.width || '0', 10) || 0;
+				var imgH = parseInt(image.height || '0', 10) || 0;
+				var imgMp = parseFloat(image.megapixels || '0') || 0;
+				var isTooLarge = Boolean(image.too_large);
+				var thumbSrc = (variants.small && variants.small.exists && variants.small.url) ? variants.small.url : image.url;
+				var warningHtml = isTooLarge
+					? '<span class="fg-warning-badge" title="' + escapeAttr(tooLargeLabel) + '" aria-label="' + escapeAttr(tooLargeLabel) + '">' +
+						'<span class="dashicons dashicons-warning" aria-hidden="true"></span>' +
+					  '</span>'
+					: '';
 
 				rowsHtml +=
-					'<tr class="fg-row fg-row-image"' +
+					'<tr class="fg-row fg-row-image' + (isTooLarge ? ' is-too-large' : '') + '"' +
 						' data-kind="image"' +
 						' data-path="' + escapeAttr(image.path) + '"' +
 						' data-title="' + escapeAttr(imageTitle) + '"' +
-						' data-description="' + escapeAttr(imageDesc) + '">' +
+						' data-description="' + escapeAttr(imageDesc) + '"' +
+						' data-width="' + escapeAttr(imgW) + '"' +
+						' data-height="' + escapeAttr(imgH) + '"' +
+						' data-megapixels="' + escapeAttr(imgMp) + '"' +
+						' data-too-large="' + (isTooLarge ? '1' : '0') + '">' +
 						'<td class="fg-col-name">' +
 							'<span class="fg-item-name-cell">' +
-								'<img class="fg-thumb" src="' + escapeAttr(image.url) + '" alt="' + escapeAttr(image.name) + '" loading="lazy">' +
+								'<img class="fg-thumb" src="' + escapeAttr(thumbSrc) + '" alt="' + escapeAttr(image.name) + '" loading="lazy">' +
+								warningHtml +
 								'<span class="fg-item-label">' + escapeHtml(image.name) + '</span>' +
 							'</span>' +
 						'</td>' +

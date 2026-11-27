@@ -4,7 +4,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+$date_format  = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
+$max_image_mp = FG_Image_Sizes::get_max_image_mp();
 ?>
 <div class="wrap fg-wrap">
 	<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
@@ -12,9 +13,10 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 	<p class="description fg-upload-limit">
 		<?php
 		printf(
-			/* translators: %s: maximum upload file size, e.g. 64 MB */
-			esc_html__( 'Maximum upload file size: %s', 'folder-gallery' ),
-			esc_html( size_format( wp_max_upload_size() ) )
+			/* translators: 1: maximum upload file size, e.g. 64 MB, 2: large image megapixel limit, e.g. 12 */
+			esc_html__( 'Maximum upload file size: %1$s | Large image resize limit: %2$d MP', 'folder-gallery' ),
+			esc_html( size_format( wp_max_upload_size() ) ),
+			(int) $max_image_mp
 		);
 		?>
 	</p>
@@ -143,7 +145,13 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 							</thead>
 							<tbody>
 								<?php foreach ( $folders as $folder ) : ?>
-									<tr class="fg-row fg-row-folder" data-kind="folder" data-path="<?php echo esc_attr( $folder['path'] ); ?>">
+									<tr
+										class="fg-row fg-row-folder"
+										data-kind="folder"
+										data-path="<?php echo esc_attr( $folder['path'] ); ?>"
+										data-title="<?php echo esc_attr( isset( $folder['title'] ) ? $folder['title'] : '' ); ?>"
+										data-description="<?php echo esc_attr( isset( $folder['description'] ) ? $folder['description'] : '' ); ?>"
+									>
 										<td class="fg-col-name">
 											<span class="fg-item-name-cell">
 												<span class="fg-folder-icon" aria-hidden="true">
@@ -174,18 +182,38 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 
 								<?php
 								foreach ( $images as $image ) :
-									$small_v  = isset( $image['variants']['small'] ) ? $image['variants']['small'] : array( 'exists' => false );
-									$medium_v = isset( $image['variants']['medium'] ) ? $image['variants']['medium'] : array( 'exists' => false );
+									$small_v   = isset( $image['variants']['small'] ) ? $image['variants']['small'] : array( 'exists' => false );
+									$medium_v  = isset( $image['variants']['medium'] ) ? $image['variants']['medium'] : array( 'exists' => false );
+									$img_w     = isset( $image['width'] ) ? (int) $image['width'] : 0;
+									$img_h     = isset( $image['height'] ) ? (int) $image['height'] : 0;
+									$img_mp    = isset( $image['megapixels'] ) ? (float) $image['megapixels'] : 0.0;
+									$too_large = ! empty( $image['too_large'] );
+									$thumb_src = ( ! empty( $small_v['exists'] ) && ! empty( $small_v['url'] ) ) ? $small_v['url'] : $image['url'];
 									?>
-									<tr class="fg-row fg-row-image" data-kind="image" data-path="<?php echo esc_attr( $image['path'] ); ?>">
+									<tr
+										class="fg-row fg-row-image<?php echo $too_large ? ' is-too-large' : ''; ?>"
+										data-kind="image"
+										data-path="<?php echo esc_attr( $image['path'] ); ?>"
+										data-title="<?php echo esc_attr( isset( $image['title'] ) ? $image['title'] : '' ); ?>"
+										data-description="<?php echo esc_attr( isset( $image['description'] ) ? $image['description'] : '' ); ?>"
+										data-width="<?php echo esc_attr( $img_w ); ?>"
+										data-height="<?php echo esc_attr( $img_h ); ?>"
+										data-megapixels="<?php echo esc_attr( $img_mp ); ?>"
+										data-too-large="<?php echo $too_large ? '1' : '0'; ?>"
+									>
 										<td class="fg-col-name">
 											<span class="fg-item-name-cell">
 												<img
 													class="fg-thumb"
-													src="<?php echo esc_url( $image['url'] ); ?>"
+													src="<?php echo esc_url( $thumb_src ); ?>"
 													alt="<?php echo esc_attr( $image['name'] ); ?>"
 													loading="lazy"
 												>
+												<?php if ( $too_large ) : ?>
+													<span class="fg-warning-badge" title="<?php esc_attr_e( 'Image too large', 'folder-gallery' ); ?>" aria-label="<?php esc_attr_e( 'Image too large', 'folder-gallery' ); ?>">
+														<span class="dashicons dashicons-warning" aria-hidden="true"></span>
+													</span>
+												<?php endif; ?>
 												<span class="fg-item-label"><?php echo esc_html( $image['name'] ); ?></span>
 											</span>
 										</td>
@@ -263,6 +291,17 @@ $date_format = get_option( 'date_format' ) . ' ' . get_option( 'time_format' );
 						<div class="fg-details-field">
 							<span class="fg-details-meta-label"><?php esc_html_e( 'File / Folder Name', 'folder-gallery' ); ?></span>
 							<div class="fg-details-filename" id="fg-details-filename"></div>
+						</div>
+
+						<div class="fg-details-field" id="fg-details-dimensions-wrap" hidden>
+							<span class="fg-details-meta-label"><?php esc_html_e( 'Dimensions', 'folder-gallery' ); ?></span>
+							<div class="fg-details-dimensions-row">
+								<span class="fg-details-dimensions" id="fg-details-dimensions"></span>
+								<span class="fg-details-too-large-badge" id="fg-details-too-large-badge" hidden>
+									<span class="dashicons dashicons-warning" aria-hidden="true"></span>
+									<span><?php esc_html_e( 'Image too large', 'folder-gallery' ); ?></span>
+								</span>
+							</div>
 						</div>
 
 						<div id="fg-details-shortcode-wrap" class="fg-details-field fg-details-shortcode-wrap" hidden>

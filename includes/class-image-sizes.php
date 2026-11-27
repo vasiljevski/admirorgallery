@@ -8,12 +8,23 @@ class FG_Image_Sizes {
 
 	const OPTION_SMALL_HEIGHT  = 'folder_gallery_small_height';
 	const OPTION_MEDIUM_HEIGHT = 'folder_gallery_medium_height';
+	const OPTION_MAX_IMAGE_MP  = 'folder_gallery_max_image_mp';
 
 	const DEFAULT_SMALL_HEIGHT  = 320;
 	const DEFAULT_MEDIUM_HEIGHT = 900;
+	const DEFAULT_MAX_IMAGE_MP  = 12;
 
 	const SUFFIX_SMALL  = '-fg-small';
 	const SUFFIX_MEDIUM = '-fg-medium';
+
+	/**
+	 * Allowed preset megapixel limits for Settings dropdown.
+	 *
+	 * @return int[]
+	 */
+	public static function get_allowed_max_mp_options() {
+		return array( 8, 12, 16, 24, 32, 48 );
+	}
 
 	/**
 	 * Get configured max height for small variant.
@@ -33,6 +44,63 @@ class FG_Image_Sizes {
 	public static function get_medium_height() {
 		$val = (int) get_option( self::OPTION_MEDIUM_HEIGHT, self::DEFAULT_MEDIUM_HEIGHT );
 		return $val >= 50 && $val <= 4000 ? $val : self::DEFAULT_MEDIUM_HEIGHT;
+	}
+
+	/**
+	 * Get configured max image size in megapixels (MP) before skipping resize.
+	 *
+	 * @return int
+	 */
+	public static function get_max_image_mp() {
+		$val = (int) get_option( self::OPTION_MAX_IMAGE_MP, self::DEFAULT_MAX_IMAGE_MP );
+		return in_array( $val, self::get_allowed_max_mp_options(), true ) ? $val : self::DEFAULT_MAX_IMAGE_MP;
+	}
+
+	/**
+	 * Get configured max image size in total pixels.
+	 *
+	 * @return int
+	 */
+	public static function get_max_image_pixels() {
+		return self::get_max_image_mp() * 1000000;
+	}
+
+	/**
+	 * Lightweight metadata & megapixel check without decoding the image bitmap into RAM.
+	 *
+	 * @param string $file_path Full filesystem path to image.
+	 * @return array{width: int, height: int, megapixels: float, too_large: bool, readable: bool}
+	 */
+	public static function inspect_image_dimensions( $file_path ) {
+		$info = array(
+			'width'      => 0,
+			'height'     => 0,
+			'megapixels' => 0.0,
+			'too_large'  => false,
+			'readable'   => false,
+		);
+
+		if ( ! is_file( $file_path ) ) {
+			return $info;
+		}
+
+		$size = function_exists( 'wp_getimagesize' ) ? @wp_getimagesize( $file_path ) : @getimagesize( $file_path );
+		if ( ! is_array( $size ) || empty( $size[0] ) || empty( $size[1] ) ) {
+			return $info;
+		}
+
+		$w      = (int) $size[0];
+		$h      = (int) $size[1];
+		$pixels = $w * $h;
+		$mp     = round( $pixels / 1000000, 1 );
+
+		$info['width']      = $w;
+		$info['height']     = $h;
+		$info['megapixels'] = $mp;
+		$info['readable']   = true;
+		$info['too_large']  = ( $pixels > self::get_max_image_pixels() );
+
+		return $info;
 	}
 
 	/**
@@ -66,12 +134,56 @@ class FG_Image_Sizes {
 	}
 
 	/**
+	 * Create a single resized variant and immediately free editor memory.
+	 *
+	 * @param string $src_path Source image path.
+	 * @param string $dst_path Destination variant path.
+	 * @param int    $src_w    Source width.
+	 * @param int    $src_h    Source height.
+	 * @param int    $target_h Target max height.
+	 * @param bool   $force    Overwrite existing destination if present.
+	 * @return bool
+	 */
+	private static function create_resized_variant( $src_path, $dst_path, $src_w, $src_h, $target_h, $force ) {
+		if ( $force && file_exists( $dst_path ) ) {
+			@unlink( $dst_path );
+		}
+
+		// Do not upscale images shorter than or equal to target height; copy source instead.
+		if ( $src_h <= $target_h ) {
+			return (bool) @copy( $src_path, $dst_path );
+		}
+
+		$new_w  = max( 1, (int) round( $src_w * ( $target_h / $src_h ) ) );
+		$editor = wp_get_image_editor( $src_path );
+		if ( is_wp_error( $editor ) ) {
+			return false;
+		}
+
+		$ok      = false;
+		$resized = $editor->resize( $new_w, $target_h, false );
+		if ( ! is_wp_error( $resized ) ) {
+			$saved = $editor->save( $dst_path );
+			if ( ! is_wp_error( $saved ) && is_file( $dst_path ) ) {
+				$ok = true;
+			}
+		}
+
+		unset( $editor );
+		if ( function_exists( 'gc_collect_cycles' ) ) {
+			gc_collect_cycles();
+		}
+
+		return $ok;
+	}
+
+	/**
 	 * Generate or refresh small and medium variants for a single image file on disk.
 	 *
 	 * @param string $file_path    Full filesystem path to original image.
 	 * @param bool   $force_small  Overwrite existing small variant even if present.
 	 * @param bool   $force_medium Overwrite existing medium variant even if present.
-	 * @return array{small: bool, medium: bool}
+	 * @return array{small: bool, medium: bool, skipped: bool}
 	 */
 	public static function generate_for_image( $file_path, $force_small = false, $force_medium = null ) {
 		if ( null === $force_medium ) {
@@ -79,8 +191,9 @@ class FG_Image_Sizes {
 		}
 
 		$result = array(
-			'small'  => false,
-			'medium' => false,
+			'small'   => false,
+			'medium'  => false,
+			'skipped' => false,
 		);
 
 		if ( ! is_file( $file_path ) ) {
@@ -94,74 +207,74 @@ class FG_Image_Sizes {
 			return $result;
 		}
 
-		$targets = array(
-			'small'  => array(
-				'height' => self::get_small_height(),
-				'force'  => (bool) $force_small,
-			),
-			'medium' => array(
-				'height' => self::get_medium_height(),
-				'force'  => (bool) $force_medium,
-			),
-		);
+		$small_h   = self::get_small_height();
+		$medium_h  = self::get_medium_height();
+		$small_dst = $dir . DIRECTORY_SEPARATOR . self::get_variant_filename( $filename, 'small' );
+		$med_dst   = $dir . DIRECTORY_SEPARATOR . self::get_variant_filename( $filename, 'medium' );
 
-		$to_process = array();
-		foreach ( $targets as $key => $cfg ) {
-			$dest = $dir . DIRECTORY_SEPARATOR . self::get_variant_filename( $filename, $key );
-			if ( $cfg['force'] || ! is_file( $dest ) ) {
-				$to_process[ $key ] = $dest;
-			} else {
-				$result[ $key ] = true;
-			}
+		$need_small  = (bool) $force_small || ! is_file( $small_dst );
+		$need_medium = (bool) $force_medium || ! is_file( $med_dst );
+
+		if ( ! $need_small ) {
+			$result['small'] = true;
+		}
+		if ( ! $need_medium ) {
+			$result['medium'] = true;
 		}
 
-		if ( empty( $to_process ) ) {
+		if ( ! $need_small && ! $need_medium ) {
 			return $result;
 		}
 
-		$editor = wp_get_image_editor( $file_path );
-		if ( is_wp_error( $editor ) ) {
+		// Lightweight header check BEFORE opening wp_get_image_editor() so huge bitmaps never exhaust PHP RAM.
+		$meta = self::inspect_image_dimensions( $file_path );
+		if ( ! $meta['readable'] || $meta['too_large'] ) {
+			$result['skipped'] = true;
 			return $result;
 		}
 
-		$size = $editor->get_size();
-		if ( empty( $size['width'] ) || empty( $size['height'] ) ) {
-			return $result;
+		$orig_w = $meta['width'];
+		$orig_h = $meta['height'];
+
+		if ( function_exists( 'wp_raise_memory_limit' ) ) {
+			wp_raise_memory_limit( 'image' );
 		}
 
-		$orig_w = (int) $size['width'];
-		$orig_h = (int) $size['height'];
+		// 1. Generate medium first from original if needed.
+		if ( $need_medium ) {
+			$result['medium'] = self::create_resized_variant(
+				$file_path,
+				$med_dst,
+				$orig_w,
+				$orig_h,
+				$medium_h,
+				(bool) $force_medium
+			);
+		}
 
-		foreach ( $to_process as $key => $dest_path ) {
-			$target_h = $targets[ $key ]['height'];
+		// 2. Generate small from medium when available (uses a fraction of RAM), otherwise from original.
+		if ( $need_small ) {
+			$small_src   = $file_path;
+			$small_src_w = $orig_w;
+			$small_src_h = $orig_h;
 
-			if ( $targets[ $key ]['force'] && file_exists( $dest_path ) ) {
-				@unlink( $dest_path );
-			}
-
-			// Do not upscale images shorter than or equal to target height; copy original instead.
-			if ( $orig_h <= $target_h ) {
-				if ( @copy( $file_path, $dest_path ) ) {
-					$result[ $key ] = true;
+			if ( $result['medium'] && is_file( $med_dst ) && $medium_h >= $small_h ) {
+				$med_dims = @wp_getimagesize( $med_dst );
+				if ( is_array( $med_dims ) && ! empty( $med_dims[0] ) && ! empty( $med_dims[1] ) ) {
+					$small_src   = $med_dst;
+					$small_src_w = (int) $med_dims[0];
+					$small_src_h = (int) $med_dims[1];
 				}
-				continue;
 			}
 
-			$new_w      = max( 1, (int) round( $orig_w * ( $target_h / $orig_h ) ) );
-			$sub_editor = wp_get_image_editor( $file_path );
-			if ( is_wp_error( $sub_editor ) ) {
-				continue;
-			}
-
-			$resized = $sub_editor->resize( $new_w, $target_h, false );
-			if ( is_wp_error( $resized ) ) {
-				continue;
-			}
-
-			$saved = $sub_editor->save( $dest_path );
-			if ( ! is_wp_error( $saved ) && is_file( $dest_path ) ) {
-				$result[ $key ] = true;
-			}
+			$result['small'] = self::create_resized_variant(
+				$small_src,
+				$small_dst,
+				$small_src_w,
+				$small_src_h,
+				$small_h,
+				(bool) $force_small
+			);
 		}
 
 		return $result;

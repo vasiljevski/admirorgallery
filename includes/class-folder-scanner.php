@@ -128,6 +128,7 @@ class FG_Scanner {
 			$full_path = $img['full_path'];
 			$mtime     = @filemtime( $full_path );
 			$filesize  = @filesize( $full_path );
+			$dim_info  = FG_Image_Sizes::inspect_image_dimensions( $full_path );
 
 			$img_meta = isset( $manifest['images'][ $item ] ) && is_array( $manifest['images'][ $item ] )
 				? $manifest['images'][ $item ]
@@ -146,6 +147,10 @@ class FG_Scanner {
 				'mtime'       => $mtime ? $mtime : 0,
 				'type'        => strtoupper( $ext ),
 				'filesize'    => false !== $filesize ? $filesize : 0,
+				'width'       => $dim_info['width'],
+				'height'      => $dim_info['height'],
+				'megapixels'  => $dim_info['megapixels'],
+				'too_large'   => $dim_info['too_large'],
 				'variants'    => FG_Image_Sizes::get_variants_info( $real_target, $target_url, $item ),
 			);
 		}

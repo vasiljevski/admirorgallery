@@ -235,6 +235,7 @@ class FG_Admin_Menu {
 					'regenError'      => __( 'Could not regenerate image sizes for this folder.', 'folder-gallery' ),
 					'smallVariant'    => __( 'Small', 'folder-gallery' ),
 					'mediumVariant'   => __( 'Medium', 'folder-gallery' ),
+					'imageTooLarge'   => __( 'Image too large', 'folder-gallery' ),
 					'detailsEmpty'    => __( 'Select a folder or image to view and edit its details.', 'folder-gallery' ),
 					'detailsMulti'    => __( '%d items selected. Select a single folder or image to edit details.', 'folder-gallery' ),
 					'updateSaved'     => __( 'Details saved.', 'folder-gallery' ),
@@ -293,6 +294,10 @@ class FG_Admin_Menu {
 				'date'        => $image['mtime'] ? wp_date( $date_format, $image['mtime'] ) : '—',
 				'type'        => $image['type'],
 				'size'        => size_format( $image['filesize'], 1 ),
+				'width'       => isset( $image['width'] ) ? (int) $image['width'] : 0,
+				'height'      => isset( $image['height'] ) ? (int) $image['height'] : 0,
+				'megapixels'  => isset( $image['megapixels'] ) ? (float) $image['megapixels'] : 0.0,
+				'too_large'   => ! empty( $image['too_large'] ),
 				'variants'    => isset( $image['variants'] ) ? $image['variants'] : array(),
 			);
 		}
@@ -1313,12 +1318,17 @@ class FG_Admin_Menu {
 
 		$raw_small  = isset( $_POST['small_height'] ) ? (int) wp_unslash( $_POST['small_height'] ) : FG_Image_Sizes::DEFAULT_SMALL_HEIGHT;
 		$raw_medium = isset( $_POST['medium_height'] ) ? (int) wp_unslash( $_POST['medium_height'] ) : FG_Image_Sizes::DEFAULT_MEDIUM_HEIGHT;
+		$raw_max_mp = isset( $_POST['max_image_mp'] ) ? (int) wp_unslash( $_POST['max_image_mp'] ) : FG_Image_Sizes::DEFAULT_MAX_IMAGE_MP;
 
 		$small_height  = ( $raw_small >= 50 && $raw_small <= 4000 ) ? $raw_small : FG_Image_Sizes::DEFAULT_SMALL_HEIGHT;
 		$medium_height = ( $raw_medium >= 50 && $raw_medium <= 4000 ) ? $raw_medium : FG_Image_Sizes::DEFAULT_MEDIUM_HEIGHT;
+		$max_image_mp  = in_array( $raw_max_mp, FG_Image_Sizes::get_allowed_max_mp_options(), true )
+			? $raw_max_mp
+			: FG_Image_Sizes::DEFAULT_MAX_IMAGE_MP;
 
 		update_option( FG_Image_Sizes::OPTION_SMALL_HEIGHT, $small_height );
 		update_option( FG_Image_Sizes::OPTION_MEDIUM_HEIGHT, $medium_height );
+		update_option( FG_Image_Sizes::OPTION_MAX_IMAGE_MP, $max_image_mp );
 
 		wp_safe_redirect(
 			add_query_arg(

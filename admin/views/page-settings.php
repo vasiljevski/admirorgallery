@@ -6,6 +6,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $small_height  = FG_Image_Sizes::get_small_height();
 $medium_height = FG_Image_Sizes::get_medium_height();
+$max_image_mp  = FG_Image_Sizes::get_max_image_mp();
+$mp_options    = FG_Image_Sizes::get_allowed_max_mp_options();
 $message       = isset( $_GET['fg_message'] ) ? sanitize_key( wp_unslash( $_GET['fg_message'] ) ) : '';
 ?>
 <div class="wrap fg-wrap">
@@ -75,6 +77,35 @@ $message       = isset( $_GET['fg_message'] ) ? sanitize_key( wp_unslash( $_GET[
 								/* translators: %d: default height in pixels */
 								esc_html__( 'Used for carousels and intermediate previews (default: %d px).', 'folder-gallery' ),
 								(int) FG_Image_Sizes::DEFAULT_MEDIUM_HEIGHT
+							);
+							?>
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">
+						<label for="fg-max-image-mp"><?php esc_html_e( 'Large Image Limit (MP)', 'folder-gallery' ); ?></label>
+					</th>
+					<td>
+						<select id="fg-max-image-mp" name="max_image_mp">
+							<?php foreach ( $mp_options as $mp_val ) : ?>
+								<option value="<?php echo esc_attr( (int) $mp_val ); ?>" <?php selected( (int) $max_image_mp, (int) $mp_val ); ?>>
+									<?php
+									printf(
+										/* translators: %d: megapixels */
+										esc_html__( '%d MP', 'folder-gallery' ),
+										(int) $mp_val
+									);
+									?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+						<p class="description">
+							<?php
+							printf(
+								/* translators: %d: default megapixels */
+								esc_html__( 'Images larger than this resolution are skipped when generating small and medium variants to prevent PHP memory exhaustion (default: %d MP).', 'folder-gallery' ),
+								(int) FG_Image_Sizes::DEFAULT_MAX_IMAGE_MP
 							);
 							?>
 						</p>
