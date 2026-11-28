@@ -9,21 +9,39 @@ $folders        = isset( $gallery_data['folders'] ) && is_array( $gallery_data['
 $images         = isset( $gallery_data['images'] ) && is_array( $gallery_data['images'] ) ? $gallery_data['images'] : array();
 $theme_settings = isset( $gallery_data['theme_settings'] ) && is_array( $gallery_data['theme_settings'] ) ? $gallery_data['theme_settings'] : array();
 
-$show_title = isset( $theme_settings['showTitle'] ) ? (bool) $theme_settings['showTitle'] : true;
-$show_desc  = isset( $theme_settings['showDescription'] ) ? (bool) $theme_settings['showDescription'] : true;
-$dots       = isset( $theme_settings['dots'] ) ? (bool) $theme_settings['dots'] : true;
-$autoplay   = isset( $theme_settings['autoplay'] ) ? (bool) $theme_settings['autoplay'] : false;
+$raw_height = isset( $theme_settings['height'] ) ? strtolower( trim( (string) $theme_settings['height'] ) ) : 'auto';
+if ( '' === $raw_height || 'auto' === $raw_height ) {
+	$fg_height = 'auto';
+} elseif ( preg_match( '/^\d+(?:\.\d+)?$/', $raw_height ) ) {
+	$fg_height = $raw_height . 'px';
+} elseif ( preg_match( '/^\d+(?:\.\d+)?(?:px|rem|em|vh|svh|dvh|%)$/', $raw_height ) ) {
+	$fg_height = $raw_height;
+} else {
+	$fg_height = 'auto';
+}
+
+$fg_is_fixed_height = ( 'auto' !== $fg_height );
+$show_title          = isset( $theme_settings['showTitle'] ) ? (bool) $theme_settings['showTitle'] : true;
+$show_desc           = isset( $theme_settings['showDescription'] ) ? (bool) $theme_settings['showDescription'] : true;
+$dots                = isset( $theme_settings['dots'] ) ? (bool) $theme_settings['dots'] : true;
+$autoplay            = isset( $theme_settings['autoplay'] ) ? (bool) $theme_settings['autoplay'] : false;
 
 $folder_title = ! empty( $current_folder['title'] ) ? $current_folder['title'] : '';
 $folder_desc  = ! empty( $current_folder['description'] ) ? $current_folder['description'] : '';
 $has_header   = ( '' !== $folder_title ) || ( '' !== $folder_desc );
 
 $swiper_config = array(
-	'dots'     => $dots,
-	'autoplay' => $autoplay,
+	'dots'       => $dots,
+	'autoplay'   => $autoplay,
+	'autoHeight' => ! $fg_is_fixed_height,
 );
+
+$wrapper_classes = 'fg-gallery fg-theme-swiper' . ( $fg_is_fixed_height ? ' fg-theme-swiper--fixed-height' : '' );
 ?>
-<div class="fg-gallery fg-theme-swiper">
+<div
+	class="<?php echo esc_attr( $wrapper_classes ); ?>"
+	style="--fg-swiper-height: <?php echo esc_attr( $fg_height ); ?>;"
+>
 	<?php if ( ! empty( $breadcrumbs ) ) : ?>
 		<nav class="fg-theme-swiper__breadcrumbs" aria-label="<?php esc_attr_e( 'Gallery navigation', 'folder-gallery' ); ?>">
 			<ol class="fg-theme-swiper__breadcrumb-list">

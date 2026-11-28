@@ -1,6 +1,6 @@
 {
 	"name": "Swiper Carousel",
-	"description": "Full-width single-slide carousel powered by Swiper with optional title, description, dots, and autoplay.",
+	"description": "Full-width single-slide carousel powered by Swiper with optional height, title, description, dots, and autoplay.",
 	"version": "1.0.0",
 	"author": "Folder Gallery",
 	"template": "template.php",
@@ -13,6 +13,12 @@
 		"script.js"
 	],
 	"settings": {
+		"height": {
+			"type": "text",
+			"label": "Height",
+			"description": "Carousel image height (e.g. auto, 500px, 70vh). Leave as auto for natural image height.",
+			"default": "auto"
+		},
 		"showTitle": {
 			"type": "boolean",
 			"label": "Show title",

@@ -24,6 +24,7 @@
 		var options = {
 			slidesPerView: 1,
 			spaceBetween: 0,
+			autoHeight: Boolean(cfg.autoHeight),
 			loop: slideCount > 1,
 			watchOverflow: true,
 			navigation: {
@@ -46,8 +47,19 @@
 			};
 		}
 
-		new window.Swiper(el, options);
+		var swiperInstance = new window.Swiper(el, options);
 		el.dataset.fgSwiperReady = '1';
+
+		if (options.autoHeight && swiperInstance && typeof swiperInstance.updateAutoHeight === 'function') {
+			el.querySelectorAll('img').forEach(function (img) {
+				if (img.complete) {
+					return;
+				}
+				img.addEventListener('load', function () {
+					swiperInstance.updateAutoHeight();
+				}, { once: true });
+			});
+		}
 	}
 
 	function initAll() {

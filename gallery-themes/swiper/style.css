@@ -1,4 +1,5 @@
 .fg-theme-swiper {
+	--fg-swiper-height: auto;
 	width: 100%;
 }
 
@@ -63,6 +64,37 @@
 	width: 100%;
 }
 
+/* Remove blue browser/WordPress focus outline on navigation arrows */
+.fg-theme-swiper__container .swiper-button-prev,
+.fg-theme-swiper__container .swiper-button-next,
+.fg-theme-swiper__container .swiper-button-prev:focus,
+.fg-theme-swiper__container .swiper-button-next:focus,
+.fg-theme-swiper__container .swiper-button-prev:focus-visible,
+.fg-theme-swiper__container .swiper-button-next:focus-visible,
+.fg-theme-swiper__container .swiper-button-prev:active,
+.fg-theme-swiper__container .swiper-button-next:active {
+	outline: none !important;
+	box-shadow: none !important;
+	-webkit-tap-highlight-color: transparent;
+}
+
+/* Place pagination dots below the carousel content instead of overlapping caption text */
+.fg-theme-swiper__container .swiper-pagination {
+	position: static;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	gap: 6px;
+	margin-top: 0.75rem;
+	padding-bottom: 0.25rem;
+	width: 100%;
+}
+
+.fg-theme-swiper__container .swiper-pagination-bullet {
+	margin: 0 !important;
+}
+
 .fg-theme-swiper__card {
 	margin: 0;
 	width: 100%;
@@ -72,6 +104,12 @@
 	display: block;
 	width: 100%;
 	height: auto;
+}
+
+.fg-theme-swiper--fixed-height .fg-theme-swiper__img {
+	height: var(--fg-swiper-height);
+	max-height: var(--fg-swiper-height);
+	object-fit: cover;
 }
 
 .fg-theme-swiper__caption {
